@@ -9,7 +9,7 @@ from bareasgi.types import (
 )
 
 
-class LifespanManager:
+class LifespanInstance:
 
     def __init__(self, scope: Scope, context: Optional[Context] = None, info: Optional[Info] = None) -> None:
         self.scope = scope

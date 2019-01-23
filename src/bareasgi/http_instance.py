@@ -1,4 +1,4 @@
-from typing import List, Optional, AsyncIterable, Mapping, Callable, Tuple, Any, AsyncGenerator
+from typing import List, Optional, AsyncIterable, AsyncGenerator
 from .types import (
     Scope,
     Context,
@@ -6,7 +6,7 @@ from .types import (
     Send,
     Receive,
     Header,
-    WebHandler,
+    RouteHandler,
     Content
 )
 import codecs
@@ -37,13 +37,13 @@ async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[byte
     yield text.encode(encoding=encoding)
 
 
-class HttpManager:
+class HttpInstance:
 
     def __init__(self, scope: Scope, context: Optional[Context] = None, info: Optional[Info] = None) -> None:
         self.scope = scope
         self.context = context or {}
         self.info = info or {}
-        route_handler: Callable[[Scope], Tuple[WebHandler, Mapping[str, Any]]] = self.context['http.request']
+        route_handler: RouteHandler = self.context['http.request']
         self.request_handler, self.matches = route_handler(scope)
 
 

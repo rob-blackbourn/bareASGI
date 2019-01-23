@@ -1,18 +1,15 @@
 from __future__ import annotations
-from typing import List, Optional, AsyncIterable, Tuple, Union
+from typing import Optional, Union
 from .types import (
     Scope,
     Context,
     Info,
     Send,
-    Receive,
-    Header
+    Receive
 )
-import codecs
-from .utils import anext
 
 
-class WebSocketHandler:
+class WebSocketInstance:
 
     def __init__(self, scope: Scope, receive: Receive, send: Send):
         self.scope = scope
@@ -67,6 +64,6 @@ class WebSocketManager:
         request = await receive()
 
         if request['type'] == 'websocket.connect':
-            await self.request_handler(WebSocketHandler(self.scope, receive, send))
+            await self.request_handler(WebSocketInstance(self.scope, receive, send))
         elif request['type'] == 'http.disconnect':
             pass

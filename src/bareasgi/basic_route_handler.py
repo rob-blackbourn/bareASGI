@@ -117,7 +117,7 @@ class PathDefinition:
             raise Exception('Paths must be absolute')
 
         # Handle trailing slash
-        if path.endswith('/'):
+        if path[1:].endswith('/'):
             if not self.ends_with_slash:
                 return self.NO_MATCH
             path = path[:-1]
@@ -154,20 +154,20 @@ class PathDefinition:
 
 class BasicRouteHandler:
 
-    def __init__(self):
-        self.routes = {}
+    def __init__(self) -> None:
+        self._routes = {}
 
 
-    def add_route(
+    def add(
             self,
-            handler,
+            handler: WebHandler,
             path: str,
             methods: AbstractSet[str] = DEFAULT_METHODS,
             schemes: AbstractSet[str] = DEFAULT_SCHEMES
     ) -> None:
         """Add a route"""
         for scheme in schemes:
-            method_dict = self.routes.setdefault(scheme, {})
+            method_dict = self._routes.setdefault(scheme, {})
             for method in methods:
                 path_definition_list = method_dict.setdefault(method, [])
                 path_definition_list.append((PathDefinition(path), handler))
@@ -181,7 +181,7 @@ class BasicRouteHandler:
         :param path: The path: e.g. '/foo/bar/{name:str}'.
         :return: A tuple of handler:callable, matches:dict.
         """
-        method_dict = self.routes.get(scheme)
+        method_dict = self._routes.get(scheme)
         if method_dict:
             path_definition_list = method_dict.get(method)
             if path_definition_list:

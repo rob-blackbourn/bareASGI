@@ -1,45 +1,24 @@
-from __future__ import annotations
-from typing import Mapping, Any
+from typing import Mapping, List, Any, Optional
 from .types import (
     Scope,
-    Send,
-    Receive,
     ASGIInstance,
+    RouteHandler,
+    StartupHandler,
+    ShutdownHandler
 )
-from .lifespan_manager import LifespanManager
-from .http_manager import HttpManager
-from .websocket_manager import WebSocketManager
-
-
-class Instance:
-    HANDLERS = {
-        'lifespan': LifespanManager,
-        'http': HttpManager,
-        'websocket': WebSocketManager
-    }
-
-
-    def __init__(self, context: Mapping[str, Any], scope: Scope):
-        scope_type = scope['type']
-        klass = self.HANDLERS[scope_type]
-        klass_context = context.get(scope_type)
-        info = context.get('info')
-        self.handler = klass(scope, klass_context, info)
-
-
-    async def __call__(self, receive: Receive, send: Send) -> None:
-        await self.handler(receive, send)
+from .instance import Instance
+from .basic_route_handler import BasicRouteHandler
 
 
 class Application:
 
     def __init__(
             self,
-            route_handler,
-            startup_handlers=None,
-            shutdown_handlers=None
+            route_handler: Optional[RouteHandler] = None,
+            startup_handlers: Optional[List[StartupHandler]] = None,
+            shutdown_handlers: Optional[List[ShutdownHandler]] = None
     ) -> None:
-        self.context = {
+        self._context: Mapping[str, Any] = {
             'info': {},
             'lifespan': {
                 'lifespan.startup': startup_handlers or [],
@@ -49,25 +28,25 @@ class Application:
                 'http.request': route_handler
             },
             'websocket': {
-                'websocket.connect': route_handler
+                'websocket.connect': route_handler or BasicRouteHandler()
             }
         }
 
 
     @property
-    def route_handler(self):
-        return self.context['http']['http.request']
+    def route_handler(self) -> RouteHandler:
+        return self._context['http']['http.request']
 
 
     @property
-    def startup_handlers(self):
-        return self.context['lifespan']['lifespan.startup']
+    def startup_handlers(self) -> List[StartupHandler]:
+        return self._context['lifespan']['lifespan.startup']
 
 
     @property
-    def shutdown_handlers(self):
-        return self.context['lifespan']['lifespan.shutdown']
+    def shutdown_handlers(self) -> List[ShutdownHandler]:
+        return self._context['lifespan']['lifespan.shutdown']
 
 
     def __call__(self, scope: Scope) -> ASGIInstance:
-        return Instance(self.context, scope)
+        return Instance(self._context, scope)

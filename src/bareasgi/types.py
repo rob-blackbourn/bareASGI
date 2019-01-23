@@ -25,3 +25,4 @@ Content = AsyncIterable[bytes]
 Reply = Callable[[int, List[Header], AsyncGenerator[bytes, None]], Awaitable[None]]
 
 WebHandler = Callable[[Scope, RouteMatches, Content, Reply], Awaitable[None]]
+RouteHandler = Callable[[Scope], Tuple[WebHandler, Mapping[str, Any]]]

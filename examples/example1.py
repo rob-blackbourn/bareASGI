@@ -1,5 +1,5 @@
 from bareasgi.types import Scope, RouteMatches, Content, Reply
-from bareasgi.http_manager import text_reader, text_writer
+from bareasgi.http_instance import text_reader, text_writer
 from bareasgi.application import Application
 
 
@@ -20,11 +20,11 @@ async def handle_any_websocket_route(scope: Scope, matches: RouteMatches, conten
 
 if __name__ == "__main__":
     import uvicorn
-    from examples.routing import BasicRouteHandler
+    from bareasgi import BasicRouteHandler
 
     route_handler = BasicRouteHandler()
-    route_handler.add_route(handle_any_http_route, '/{path}', {'GET', 'POST', 'PUT', 'DELETE'}, {'http', 'https'})
-    route_handler.add_route(handle_any_websocket_route, '/{path}', {'UPGRADE'}, {'ws', 'wss'})
+    route_handler.add(handle_any_http_route, '/{path}', {'GET', 'POST', 'PUT', 'DELETE'}, {'http', 'https'})
+    route_handler.add(handle_any_websocket_route, '/{path}', {'UPGRADE'}, {'ws', 'wss'})
 
     app = Application(route_handler)
     uvicorn.run(app, port=9009)
