@@ -27,8 +27,9 @@ Reply = Callable[[int, List[Header], AsyncGenerator[bytes, None]], Awaitable[Non
 
 class WebRequest:
 
-    def __init__(self, scope: Scope) -> None:
+    def __init__(self, scope: Scope, info: Info) -> None:
         self.scope = scope
+        self.info = info
 
 
 WebHandler = Callable[[WebRequest], Awaitable[None]]

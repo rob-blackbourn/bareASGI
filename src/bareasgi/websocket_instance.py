@@ -52,8 +52,8 @@ class WebSocket:
 
 class WebSocketRequest(WebRequest):
 
-    def __init__(self, scope: Scope, web_socket: WebSocket) -> None:
-        super().__init__(scope)
+    def __init__(self, scope: Scope, info: Info, web_socket: WebSocket) -> None:
+        super().__init__(scope, info)
         self.web_socket = web_socket
 
 
@@ -76,6 +76,7 @@ class WebSocketInstance:
             await self.request_handler(
                 WebSocketRequest(
                     self.scope,
+                    self.info,
                     WebSocket(receive, send)
                 )
             )

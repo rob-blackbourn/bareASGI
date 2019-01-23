@@ -42,8 +42,8 @@ async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[byte
 
 class HttpRequest(WebRequest):
 
-    def __init__(self, scope: Scope, matches: RouteMatches, content: Content, reply: Reply):
-        super().__init__(scope)
+    def __init__(self, scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply):
+        super().__init__(scope, info)
         self.matches = matches
         self.content = content
         self.reply = reply
@@ -105,6 +105,7 @@ class HttpInstance:
             await self.request_handler(
                 HttpRequest(
                     self.scope,
+                    self.info,
                     self.matches,
                     request_iter(request.get('body', b''), request.get('more_body', False)),
                     response
