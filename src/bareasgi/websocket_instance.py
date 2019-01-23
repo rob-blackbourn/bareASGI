@@ -5,11 +5,12 @@ from .types import (
     Context,
     Info,
     Send,
-    Receive
+    Receive,
+    WebRequest
 )
 
 
-class WebSocketInstance:
+class WebSocket:
 
     def __init__(self, scope: Scope, receive: Receive, send: Send):
         self.scope = scope
@@ -49,7 +50,14 @@ class WebSocketInstance:
         await self.send({'type': 'websocket.close', 'code': code})
 
 
-class WebSocketManager:
+class WebSocketRequest(WebRequest):
+
+    def __init__(self, scope: Scope, web_socket: WebSocket) -> None:
+        super().__init__(scope)
+        self.web_socket = web_socket
+
+
+class WebSocketInstance:
 
     def __init__(self, scope: Scope, context: Optional[Context] = None, info: Optional[Info] = None) -> None:
         self.scope = scope
@@ -64,6 +72,6 @@ class WebSocketManager:
         request = await receive()
 
         if request['type'] == 'websocket.connect':
-            await self.request_handler(WebSocketInstance(self.scope, receive, send))
+            await self.request_handler(WebSocket(self.scope, receive, send))
         elif request['type'] == 'http.disconnect':
             pass

@@ -26,3 +26,9 @@ Reply = Callable[[int, List[Header], AsyncGenerator[bytes, None]], Awaitable[Non
 
 WebHandler = Callable[[Scope, RouteMatches, Content, Reply], Awaitable[None]]
 RouteHandler = Callable[[Scope], Tuple[WebHandler, Mapping[str, Any]]]
+
+
+class WebRequest:
+
+    def __init__(self, scope: Scope) -> None:
+        self.scope = scope

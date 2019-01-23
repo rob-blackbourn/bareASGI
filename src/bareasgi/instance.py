@@ -9,14 +9,14 @@ from .types import (
 )
 from .lifespan_instance import LifespanInstance
 from .http_instance import HttpInstance
-from .websocket_instance import WebSocketManager
+from .websocket_instance import WebSocketInstance
 
 
 class Instance:
     INSTANCES_CLASSES: Mapping[str, Callable[[Scope, Context, Info], ASGIInstance]] = {
         'lifespan': LifespanInstance,
         'http': HttpInstance,
-        'websocket': WebSocketManager
+        'websocket': WebSocketInstance
     }
 
 

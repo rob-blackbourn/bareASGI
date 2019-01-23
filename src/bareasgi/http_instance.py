@@ -7,7 +7,10 @@ from .types import (
     Receive,
     Header,
     RouteHandler,
-    Content
+    Content,
+    WebRequest,
+    RouteMatches,
+    Reply
 )
 import codecs
 from .utils import anext
@@ -35,6 +38,15 @@ async def bytes_writer(buf: bytes) -> AsyncGenerator[bytes, None]:
 
 async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[bytes, None]:
     yield text.encode(encoding=encoding)
+
+
+class HttpRequest(WebRequest):
+
+    def __init__(self, scope: Scope, matches: RouteMatches, content: Content, reply: Reply):
+        super().__init__(scope)
+        self.matches = matches
+        self.content = content
+        self.reply = reply
 
 
 class HttpInstance:
@@ -91,10 +103,12 @@ class HttpInstance:
 
         if request['type'] == 'http.request':
             await self.request_handler(
-                self.scope,
-                self.matches,
-                request_iter(request.get('body', b''), request.get('more_body', False)),
-                response
+                HttpRequest(
+                    self.scope,
+                    self.matches,
+                    request_iter(request.get('body', b''), request.get('more_body', False)),
+                    response
+                )
             )
         elif request['type'] == 'http.disconnect':
             pass
