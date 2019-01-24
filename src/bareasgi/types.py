@@ -34,7 +34,7 @@ Reply = Callable[[int, List[Header], Optional[AsyncGenerator[bytes, None]]], Opt
 class WebSocket(metaclass=ABCMeta):
 
     @abstractmethod
-    async def accept(self, subprotocol: Optional[str]) -> None:
+    async def accept(self, subprotocol: Optional[str] = None) -> None:
         raise NotImplementedError
 
 

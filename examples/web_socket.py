@@ -1,6 +1,3 @@
-import json
-import pytz
-
 from bareasgi import (
     Application,
     Scope,
@@ -19,11 +16,6 @@ async def index(scope: Scope, info: Info, matches: RouteMatches, content: Conten
     await reply(303, [[b'Location', b'/time']])
 
 
-async def time_zones(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
-    time_zones = json.dumps(pytz.common_timezones)
-    await reply(200, [(b'content-type', b'application/json')], text_writer(time_zones))
-
-
 async def time_page(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
     page = """
     <!DOCTYPE html>
@@ -34,40 +26,71 @@ async def time_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
         <title>Time</title>
       </head>
       <body>
-        <h1>Time</h1>
-        <form>
-          Time Zone:<br>
-          <select id="timezones">
-          </select>
-        </form>
-        <script>
-          window.onload = function() {
-            console.log('loaded');
-            var select = document.getElementById('timezones');
-            fetch('/api/time_zones')
-              .then(function(response) {
-                return response.json();
-              })
-              .then(function(time_zones) {
-                for (var i = 0; i < time_zones.length; ++i) {
-                  var option = document.createElement('OPTION');
-                  option.value = time_zones[i];
-                  var text = document.createTextNode(time_zones[i]);
-                  option.appendChild(text);
-                  select.appendChild(option);
-                }
-              });
-          }
+        <script language="javascript" type="text/javascript">
+
+          var wsUri = "{web_socket_url}";
+          var output;
+
+          function init() {{
+            output = document.getElementById("output");
+            testWebSocket();
+          }}
+
+          function testWebSocket() {{
+            websocket = new WebSocket(wsUri);
+            websocket.onopen = function(evt) {{ onOpen(evt) }};
+            websocket.onclose = function(evt) {{ onClose(evt) }};
+            websocket.onmessage = function(evt) {{ onMessage(evt) }};
+            websocket.onerror = function(evt) {{ onError(evt) }};
+          }}
+
+          function onOpen(evt) {{
+            writeToScreen("CONNECTED");
+            doSend("WebSocket rocks");
+          }}
+
+          function onClose(evt) {{
+            writeToScreen("DISCONNECTED");
+          }}
+
+          function onMessage(evt) {{
+            writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+            websocket.close();
+          }}
+
+          function onError(evt) {{
+            writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+          }}
+
+          function doSend(message) {{
+            writeToScreen("SENT: " + message);
+            websocket.send(message);
+          }}
+
+          function writeToScreen(message) {{
+            var pre = document.createElement("p");
+            pre.style.wordWrap = "break-word";
+            pre.innerHTML = message;
+            output.appendChild(pre);
+          }}
+
+          window.addEventListener("load", init, false);
         </script>
+
+        <h2>WebSocket Test</h2>
+
+        <div id="output"></div>
       </body>
     </html>
-    """
+    """.format(web_socket_url=f"ws://{scope['server'][0]}:{scope['server'][1]}/time")
     await reply(200, [(b'content-type', b'text/html')], text_writer(page))
 
 
-async def web_socket_request_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
-    print('Start', scope, info, matches, web_socket)
-    print('End')
+async def time_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
+    await web_socket.accept()
+    text = await web_socket.receive()
+    await web_socket.send('You said: ' + text)
+    await web_socket.close()
 
 
 if __name__ == "__main__":
@@ -75,8 +98,8 @@ if __name__ == "__main__":
 
     app = Application()
     app.http_route_handler.add({'GET'}, '/', index)
-    app.http_route_handler.add({'GET'}, '/api/time_zones', time_zones)
     app.http_route_handler.add({'GET'}, '/time', time_page)
+    app.ws_route_handler.add('/time', time_callback)
 
     # app.ws_route_handler.add('/{path}', web_socket_request_callback)
 

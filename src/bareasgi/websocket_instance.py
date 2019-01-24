@@ -14,19 +14,19 @@ from .types import (
 class WebSocketImpl(WebSocket):
 
     def __init__(self, receive: Receive, send: Send):
-        self.receive = receive
-        self.send = send
+        self._receive = receive
+        self._send = send
 
 
-    async def accept(self, subprotocol: Optional[str]) -> None:
+    async def accept(self, subprotocol: Optional[str] = None) -> None:
         response = {'type': 'websocket.accept'}
         if subprotocol:
             response['subprotocol'] = subprotocol
-        await self.send(response)
+        await self._send(response)
 
 
     async def receive(self) -> Optional[Union[bytes, str]]:
-        request = await self.receive()
+        request = await self._receive()
 
         if request['type'] == 'websocket.receive':
             return request['bytes'] if 'bytes' in request and request['bytes'] else request['text']
@@ -43,11 +43,11 @@ class WebSocketImpl(WebSocket):
             response['text'] = content
         else:
             raise Exception('Content must be bytes or str')
-        await self.send(response)
+        await self._send(response)
 
 
     async def close(self, code: int = 1000) -> None:
-        await self.send({'type': 'websocket.close', 'code': code})
+        await self._send({'type': 'websocket.close', 'code': code})
 
 
 class WebSocketInstance:
@@ -67,6 +67,7 @@ class WebSocketInstance:
             await self.request_handler(
                 self.scope,
                 self.info,
+                self.matches,
                 WebSocketImpl(receive, send)
             )
         elif request['type'] == 'websocket.disconnect':
