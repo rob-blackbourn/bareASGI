@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Optional, Union
 from .types import (
     Scope,
-    Context,
     Info,
     Send,
     Receive,
