@@ -9,7 +9,7 @@ from .types import (
     Reply,
     WebSocket
 )
-from .http_instance import (
+from .streams import (
     text_reader,
     text_writer,
     bytes_reader,

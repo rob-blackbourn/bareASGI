@@ -1,39 +1,14 @@
-from typing import List, Optional, AsyncIterable, AsyncGenerator
+from typing import List, Optional, AsyncIterable
 from .types import (
     Scope,
     Info,
     Send,
     Receive,
     Header,
-    HttpRouteHandler,
-    Content
+    HttpRouteHandler
 )
-import codecs
+from .streams import text_writer
 from .utils import anext
-
-
-async def bytes_reader(content: Content) -> bytes:
-    buf = b''
-    async for b in content:
-        buf += b
-    return buf
-
-
-async def text_reader(content: Content, encoding: str = 'utf-8') -> str:
-    codec_info: codecs.CodecInfo = codecs.lookup(encoding)
-    decoder = codec_info.incrementaldecoder()
-    text = ''
-    async for b in content:
-        text += decoder.decode(b)
-    return text
-
-
-async def bytes_writer(buf: bytes) -> AsyncGenerator[bytes, None]:
-    yield buf
-
-
-async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[bytes, None]:
-    yield text.encode(encoding=encoding)
 
 
 class HttpInstance:
