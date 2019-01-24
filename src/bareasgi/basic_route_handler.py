@@ -58,7 +58,7 @@ class PathSegment:
                 converter = CONVERTERS[self.type]
                 value = converter(value, self.format) if self.type else value
                 return True, self.name, value
-            except:
+            except ValueError:
                 return False, None, None
         else:
             return value == self.name, None, None
