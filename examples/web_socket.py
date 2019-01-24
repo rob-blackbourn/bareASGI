@@ -24,62 +24,208 @@ async def time_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Time</title>
+        <style>
+*, *:before, *:after {{
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}}
+
+html {{
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 100%;
+  background: #333;
+}}
+
+#page-wrapper {{
+  width: 650px;
+  background: #FFF;
+  padding: 1em;
+  margin: 1em auto;
+  border-top: 5px solid #69c773;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.8);
+}}
+
+h1 {{
+	margin-top: 0;
+}}
+
+#status {{
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}}
+
+.open {{
+  color: green;
+}}
+
+.closed {{
+  color: red;
+}}
+
+
+ul {{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+}}
+
+ul li {{
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #EEE;
+}}
+
+ul li:first-child {{
+  border-top: 1px solid #EEE;
+}}
+
+ul li span {{
+  display: inline-block;
+  width: 90px;
+  font-weight: bold;
+  color: #999;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}}
+
+.sent {{
+  background-color: #F7F7F7;
+}}
+
+.received {{}}
+
+#message-form {{
+  margin-top: 1.5rem;
+}}
+
+textarea {{
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #D9D9D9;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+  min-height: 100px;
+  margin-bottom: 1rem;
+}}
+
+button {{
+  display: inline-block;
+  border-radius: 3px;
+  border: none;
+  font-size: 0.9rem;
+  padding: 0.6rem 1em;
+  color: white;
+  margin: 0 0.25rem;
+  text-align: center;
+  background: #BABABA;
+  border-bottom: 1px solid #999;
+}}
+
+button[type="submit"] {{
+  background: #86b32d;
+  border-bottom: 1px solid #5d7d1f;
+}}
+
+button:hover {{
+  opacity: 0.75;
+  cursor: pointer;
+}}        
+        </style>
       </head>
       <body>
+      
+        <div id="page-wrapper">
+          <h1>WebSockets Demo</h1>
+  
+          <div id="status">Connecting...</div>
+  
+          <ul id="messages"></ul>
+  
+          <form id="message-form" action="#" method="post">
+            <textarea id="message" placeholder="Write your message here..." required></textarea>
+            <button type="submit">Send Message</button>
+            <button type="button" id="close">Close Connection</button>
+          </form>
+        </div>
+        
         <script language="javascript" type="text/javascript">
 
-          var wsUri = "{web_socket_url}";
-          var output;
+window.onload = function() {{
 
-          function init() {{
-            output = document.getElementById("output");
-            testWebSocket();
-          }}
+  // Get references to elements on the page.
+  var form = document.getElementById('message-form');
+  var messageField = document.getElementById('message');
+  var messagesList = document.getElementById('messages');
+  var socketStatus = document.getElementById('status');
+  var closeBtn = document.getElementById('close');
 
-          function testWebSocket() {{
-            websocket = new WebSocket(wsUri);
-            websocket.onopen = function(evt) {{ onOpen(evt) }};
-            websocket.onclose = function(evt) {{ onClose(evt) }};
-            websocket.onmessage = function(evt) {{ onMessage(evt) }};
-            websocket.onerror = function(evt) {{ onError(evt) }};
-          }}
 
-          function onOpen(evt) {{
-            writeToScreen("CONNECTED");
-            doSend("WebSocket rocks");
-          }}
+  // Create a new WebSocket.
+  var socket = new WebSocket('{web_socket_url}');
 
-          function onClose(evt) {{
-            writeToScreen("DISCONNECTED");
-          }}
 
-          function onMessage(evt) {{
-            writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
-            websocket.close();
-          }}
+  // Handle any errors that occur.
+  socket.onerror = function(error) {{
+    console.log('WebSocket Error: ' + error);
+  }};
 
-          function onError(evt) {{
-            writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-          }}
 
-          function doSend(message) {{
-            writeToScreen("SENT: " + message);
-            websocket.send(message);
-          }}
+  // Show a connected message when the WebSocket is opened.
+  socket.onopen = function(event) {{
+    socketStatus.innerHTML = 'Connected to: ' + event.currentTarget.url;
+    socketStatus.className = 'open';
+  }};
 
-          function writeToScreen(message) {{
-            var pre = document.createElement("p");
-            pre.style.wordWrap = "break-word";
-            pre.innerHTML = message;
-            output.appendChild(pre);
-          }}
 
-          window.addEventListener("load", init, false);
+  // Handle messages sent by the server.
+  socket.onmessage = function(event) {{
+    var message = event.data;
+    messagesList.innerHTML += '<li class="received"><span>Received:</span>' + message + '</li>';
+  }};
+
+
+  // Show a disconnected message when the WebSocket is closed.
+  socket.onclose = function(event) {{
+    socketStatus.innerHTML = 'Disconnected from WebSocket.';
+    socketStatus.className = 'closed';
+  }};
+
+
+  // Send a message when the form is submitted.
+  form.onsubmit = function(e) {{
+    e.preventDefault();
+
+    // Retrieve the message from the textarea.
+    var message = messageField.value;
+
+    // Send the message through the WebSocket.
+    socket.send(message);
+
+    // Add the message to the messages list.
+    messagesList.innerHTML += '<li class="sent"><span>Sent:</span>' + message + '</li>';
+
+    // Clear out the message field.
+    messageField.value = '';
+
+    return false;
+  }};
+
+
+  // Close the WebSocket connection when the close button is clicked.
+  closeBtn.onclick = function(e) {{
+    e.preventDefault();
+
+    // Close the WebSocket.
+    socket.close();
+
+    return false;
+  }};
+
+}};
         </script>
-
-        <h2>WebSocket Test</h2>
-
-        <div id="output"></div>
       </body>
     </html>
     """.format(web_socket_url=f"ws://{scope['server'][0]}:{scope['server'][1]}/time")
@@ -88,8 +234,16 @@ async def time_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
 
 async def time_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
     await web_socket.accept()
-    text = await web_socket.receive()
-    await web_socket.send('You said: ' + text)
+
+    try:
+        while True:
+            text = await web_socket.receive()
+            if text is None:
+                break
+            await web_socket.send('You said: ' + text)
+    except Exception as error:
+        print(error)
+
     await web_socket.close()
 
 
