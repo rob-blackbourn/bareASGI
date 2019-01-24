@@ -5,7 +5,8 @@ from .types import (
     HttpRouter,
     WebSocketRouter,
     StartupHandler,
-    ShutdownHandler
+    ShutdownHandler,
+    HttpMiddlewareCallback
 )
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
@@ -28,7 +29,13 @@ class Application:
         text_writer
     )
 
-    async def http_request_callback(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
+    async def http_request_callback(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content,
+        reply: Reply
+    ) -> None:
         text = await text_reader(content)
         await reply(200, [(b'content-type', b'text/plain')], text_writer('This is not a test'))
 
@@ -41,9 +48,10 @@ class Application:
 
     """
 
-
     def __init__(
             self,
+            *,
+            middlewares: Optional[List[HttpMiddlewareCallback]] = None,
             http_router: Optional[HttpRouter] = None,
             web_socket_router: Optional[WebSocketRouter] = None,
             startup_handlers: Optional[List[StartupHandler]] = None,
@@ -52,6 +60,7 @@ class Application:
     ) -> None:
         """Construct the application
 
+        :param middlewares: Optional list of middleware callbacks.
         :param http_router: Optional router to for http routes.
         :param web_socket_router: Optional router for web routes.
         :param startup_handlers: Optional handlers to run at startup.
@@ -64,7 +73,10 @@ class Application:
                 'lifespan.startup': startup_handlers or [],
                 'lifespan.shutdown': shutdown_handlers or []
             },
-            'http': http_router or BasicHttpRouter(),
+            'http': {
+                'router': http_router or BasicHttpRouter(),
+                'middlewares': middlewares
+            },
             'websocket': web_socket_router or BasicWebSocketRouter()
         }
 
@@ -72,7 +84,7 @@ class Application:
     @property
     def http_router(self) -> HttpRouter:
         """Router for http routes"""
-        return self._context['http']
+        return self._context['http']['router']
 
 
     @property

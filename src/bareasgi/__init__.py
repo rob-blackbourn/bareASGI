@@ -7,7 +7,9 @@ from .types import (
     RouteMatches,
     Content,
     Reply,
-    WebSocket
+    WebSocket,
+    HttpRequestCallback,
+    HttpMiddlewareCallback
 )
 from .streams import (
     text_reader,
@@ -25,6 +27,7 @@ __all__ = [
     "Content",
     "Reply",
     "WebSocket",
+    "HttpRequestCallback",
 
     "text_writer",
     "text_reader",

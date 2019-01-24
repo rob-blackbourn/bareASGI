@@ -55,6 +55,7 @@ class WebSocket(metaclass=ABCMeta):
 
 HttpRequestCallback = Callable[[Scope, Info, RouteMatches, Content, Reply], Awaitable[None]]
 WebSocketRequestCallback = Callable[[Scope, Info, RouteMatches, WebSocket], Awaitable[None]]
+HttpMiddlewareCallback = Callable[[Scope, Info, RouteMatches, Content, Reply, HttpRequestCallback], Awaitable[None]]
 
 
 class HttpRouter(metaclass=ABCMeta):

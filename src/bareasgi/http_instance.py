@@ -5,18 +5,25 @@ from .types import (
     Send,
     Receive,
     Header,
-    HttpRouter
+    HttpRouter,
+    Context,
+    HttpMiddlewareCallback
 )
+from .middleware import mw
 from .streams import text_writer
 from .utils import anext
 
 
 class HttpInstance:
 
-    def __init__(self, scope: Scope, route_handler: HttpRouter, info: Optional[Info] = None) -> None:
+    def __init__(self, scope: Scope, context: Context, info: Optional[Info] = None) -> None:
         self.scope = scope
         self.info = info or {}
+        route_handler: HttpRouter = context['router']
         self.request_handler, self.matches = route_handler(scope)
+        middleware: Optional[List[HttpMiddlewareCallback]] = context['middlewares']
+        if middleware:
+            self.request_handler = mw(*middleware, self.request_handler)
 
 
     async def __call__(self, receive: Receive, send: Send) -> None:
