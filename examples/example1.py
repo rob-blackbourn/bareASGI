@@ -1,11 +1,13 @@
-from bareasgi import Application, text_reader, text_writer
-from bareasgi.types import (
+from bareasgi import (
+    Application,
     Scope,
     Info,
     RouteMatches,
     Content,
     Reply,
-    WebSocket
+    WebSocket,
+    text_reader,
+    text_writer
 )
 
 
