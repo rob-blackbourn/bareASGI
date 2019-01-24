@@ -5,7 +5,7 @@ from .types import (
     Send,
     Receive,
     WebSocket,
-    WebSocketRouteHandler
+    WebSocketRouter
 )
 
 
@@ -50,7 +50,7 @@ class WebSocketImpl(WebSocket):
 
 class WebSocketInstance:
 
-    def __init__(self, scope: Scope, route_handler: WebSocketRouteHandler, info: Optional[Info] = None) -> None:
+    def __init__(self, scope: Scope, route_handler: WebSocketRouter, info: Optional[Info] = None) -> None:
         self.scope = scope
         self.info = info or {}
         self.request_handler, self.matches = route_handler(scope)

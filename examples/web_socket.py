@@ -97,9 +97,9 @@ if __name__ == "__main__":
     import uvicorn
 
     app = Application()
-    app.http_route_handler.add({'GET'}, '/', index)
-    app.http_route_handler.add({'GET'}, '/time', time_page)
-    app.ws_route_handler.add('/time', time_callback)
+    app.http_router.add({'GET'}, '/', index)
+    app.http_router.add({'GET'}, '/time', time_page)
+    app.ws_router.add('/time', time_callback)
 
     # app.ws_route_handler.add('/{path}', web_socket_request_callback)
 

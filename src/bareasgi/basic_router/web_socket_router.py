@@ -1,10 +1,10 @@
 from typing import Optional, Tuple, List
-from ..types import WebSocketRouteHandler, RouteMatches, Scope
+from ..types import WebSocketRouter, RouteMatches, Scope
 from ..types import WebSocketRequestCallback
 from .path_definition import PathDefinition
 
 
-class BasicWebSocketRouteHandler(WebSocketRouteHandler):
+class BasicWebSocketRouter(WebSocketRouter):
 
     def __init__(self) -> None:
         self._routes: List[Tuple[PathDefinition, WebSocketRequestCallback]] = []

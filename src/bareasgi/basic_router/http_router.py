@@ -1,10 +1,10 @@
 from typing import AbstractSet, Optional, Tuple
-from ..types import HttpRouteHandler, RouteMatches, Scope
+from ..types import HttpRouter, RouteMatches, Scope
 from ..types import HttpRequestCallback
 from .path_definition import PathDefinition
 
 
-class BasicHttpRouteHandler(HttpRouteHandler):
+class BasicHttpRouter(HttpRouter):
 
     def __init__(self) -> None:
         self._routes = {}

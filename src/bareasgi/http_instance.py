@@ -5,7 +5,7 @@ from .types import (
     Send,
     Receive,
     Header,
-    HttpRouteHandler
+    HttpRouter
 )
 from .streams import text_writer
 from .utils import anext
@@ -13,7 +13,7 @@ from .utils import anext
 
 class HttpInstance:
 
-    def __init__(self, scope: Scope, route_handler: HttpRouteHandler, info: Optional[Info] = None) -> None:
+    def __init__(self, scope: Scope, route_handler: HttpRouter, info: Optional[Info] = None) -> None:
         self.scope = scope
         self.info = info or {}
         self.request_handler, self.matches = route_handler(scope)

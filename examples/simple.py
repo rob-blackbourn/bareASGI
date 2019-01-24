@@ -33,7 +33,7 @@ if __name__ == "__main__":
     import uvicorn
 
     app = Application()
-    app.http_route_handler.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
-    app.ws_route_handler.add('/{path}', web_socket_request_callback)
+    app.http_router.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
+    app.ws_router.add('/{path}', web_socket_request_callback)
 
     uvicorn.run(app, port=9009)

@@ -57,7 +57,7 @@ HttpRequestCallback = Callable[[Scope, Info, RouteMatches, Content, Reply], Awai
 WebSocketRequestCallback = Callable[[Scope, Info, RouteMatches, WebSocket], Awaitable[None]]
 
 
-class HttpRouteHandler(metaclass=ABCMeta):
+class HttpRouter(metaclass=ABCMeta):
 
     @abstractmethod
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
@@ -69,7 +69,7 @@ class HttpRouteHandler(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-class WebSocketRouteHandler(metaclass=ABCMeta):
+class WebSocketRouter(metaclass=ABCMeta):
 
     @abstractmethod
     def add(self, path: str, callback: WebSocketRequestCallback) -> None:
