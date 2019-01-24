@@ -1,27 +1,37 @@
 from bareasgi import Application, text_reader, text_writer
-from bareasgi.http_instance import HttpRequest
-from bareasgi.websocket_instance import WebSocketRequest
+from bareasgi.types import (
+    Scope,
+    Info,
+    RouteMatches,
+    Content,
+    Reply,
+    WebSocket
+)
 
 
-async def handle_any_http_route(request: HttpRequest) -> None:
-    print('Start', request.scope, request.matches)
-    text = await text_reader(request.content)
+async def http_request_callback(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content,
+        reply: Reply) -> None:
+    print('Start', scope, info, matches)
+    text = await text_reader(content)
     print(text)
-    await request.reply(200, [(b'content-type', b'text/plain')], text_writer('This is not a test'))
+    await reply(200, [(b'content-type', b'text/plain')], text_writer('This is not a test'))
     print('End')
 
 
-async def handle_any_websocket_route(request: WebSocketRequest) -> None:
+async def web_socket_request_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
+    print('Start', scope, info, matches, web_socket)
     print('End')
 
 
 if __name__ == "__main__":
     import uvicorn
-    from bareasgi import BasicRouteHandler
 
-    route_handler = BasicRouteHandler()
-    route_handler.add(handle_any_http_route, '/{path}', {'GET', 'POST', 'PUT', 'DELETE'}, {'http', 'https'})
-    route_handler.add(handle_any_websocket_route, '/{path}', {'UPGRADE'}, {'ws', 'wss'})
+    app = Application()
+    app.http_route_handler.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
+    app.ws_route_handler.add('/{path}', web_socket_request_callback)
 
-    app = Application(route_handler)
     uvicorn.run(app, port=9009)

@@ -6,12 +6,12 @@ from .types import (
     Info,
     Send,
     Receive,
-    WebRequest,
-    RouteHandler
+    WebSocket,
+    WebSocketRouteHandler
 )
 
 
-class WebSocket:
+class WebSocketImpl(WebSocket):
 
     def __init__(self, receive: Receive, send: Send):
         self.receive = receive
@@ -50,20 +50,11 @@ class WebSocket:
         await self.send({'type': 'websocket.close', 'code': code})
 
 
-class WebSocketRequest(WebRequest):
-
-    def __init__(self, scope: Scope, info: Info, web_socket: WebSocket) -> None:
-        super().__init__(scope, info)
-        self.web_socket = web_socket
-
-
 class WebSocketInstance:
 
-    def __init__(self, scope: Scope, context: Optional[Context] = None, info: Optional[Info] = None) -> None:
+    def __init__(self, scope: Scope, route_handler: WebSocketRouteHandler, info: Optional[Info] = None) -> None:
         self.scope = scope
-        self.context = context or {}
         self.info = info or {}
-        route_handler: RouteHandler = self.context['websocket.connect']
         self.request_handler, self.matches = route_handler(scope)
 
 
@@ -74,11 +65,9 @@ class WebSocketInstance:
 
         if request['type'] == 'websocket.connect':
             await self.request_handler(
-                WebSocketRequest(
-                    self.scope,
-                    self.info,
-                    WebSocket(receive, send)
-                )
+                self.scope,
+                self.info,
+                WebSocketImpl(receive, send)
             )
         elif request['type'] == 'websocket.disconnect':
             pass

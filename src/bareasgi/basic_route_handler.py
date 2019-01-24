@@ -1,9 +1,7 @@
-from typing import AbstractSet, Optional, Tuple, Any, Callable, Mapping
+from typing import AbstractSet, Optional, Tuple, Any, Callable, Mapping, List
 from datetime import datetime
-from .types import WebHandler, RouteMatches, Scope
-
-DEFAULT_SCHEMES = frozenset(['http', 'https'])
-DEFAULT_METHODS = frozenset(['GET'])
+from .types import HttpRouteHandler, WebSocketRouteHandler, RouteMatches, Scope, HttpRequestCallback, \
+    WebSocketRequestCallback
 
 
 # noinspection PyUnusedLocal
@@ -152,45 +150,41 @@ class PathDefinition:
         return True, matches
 
 
-class BasicRouteHandler:
+class BasicHttpRouteHandler(HttpRouteHandler):
 
     def __init__(self) -> None:
         self._routes = {}
 
 
-    def add(
-            self,
-            handler: WebHandler,
-            path: str,
-            methods: AbstractSet[str] = DEFAULT_METHODS,
-            schemes: AbstractSet[str] = DEFAULT_SCHEMES
-    ) -> None:
-        """Add a route"""
-        for scheme in schemes:
-            method_dict = self._routes.setdefault(scheme, {})
-            for method in methods:
-                path_definition_list = method_dict.setdefault(method, [])
-                path_definition_list.append((PathDefinition(path), handler))
+    def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
+        for method in methods:
+            path_definition_list = self._routes.setdefault(method, [])
+            path_definition_list.append((PathDefinition(path), callback))
 
 
-    def match(self, scheme: str, method: str, path: str) -> Tuple[Optional[WebHandler], Optional[RouteMatches]]:
-        """Find a match for the scheme, method, and path.
-
-        :param scheme: The schemes: e.g. 'http', 'https', 'ws', 'wss', etc.
-        :param method: The method: e.g. 'GET', 'POST', etc.
-        :param path: The path: e.g. '/foo/bar/{name:str}'.
-        :return: A tuple of handler:callable, matches:dict.
-        """
-        method_dict = self._routes.get(scheme)
-        if method_dict:
-            path_definition_list = method_dict.get(method)
-            if path_definition_list:
-                for path_definition, handler in path_definition_list:
-                    is_match, matches = path_definition.match(path)
-                    if is_match:
-                        return handler, matches
+    def __call__(self, scope: Scope) -> Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]:
+        path_definition_list = self._routes.get(scope['method'])
+        if path_definition_list:
+            for path_definition, handler in path_definition_list:
+                is_match, matches = path_definition.match(scope['path'])
+                if is_match:
+                    return handler, matches
         return None, None
 
 
-    def __call__(self, scope: Scope) -> Tuple[Optional[WebHandler], Optional[RouteMatches]]:
-        return self.match(scope['scheme'], scope['method'], scope['path'])
+class BasicWebSocketRouteHandler(WebSocketRouteHandler):
+
+    def __init__(self) -> None:
+        self._routes: List[Tuple[PathDefinition, WebSocketRequestCallback]] = []
+
+
+    def add(self, path: str, callback: WebSocketRequestCallback) -> None:
+        self._routes.append((PathDefinition(path), callback))
+
+
+    def __call__(self, scope: Scope) -> Tuple[Optional[WebSocketRequestCallback], Optional[RouteMatches]]:
+        for path_definition, handler in self._routes:
+            is_match, matches = path_definition.match(scope['path'])
+            if is_match:
+                return handler, matches
+        return None, None

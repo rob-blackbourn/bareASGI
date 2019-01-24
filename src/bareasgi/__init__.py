@@ -7,7 +7,7 @@ from .http_instance import (
     bytes_reader,
     bytes_writer
 )
-from .basic_route_handler import BasicRouteHandler
+from .basic_route_handler import BasicHttpRouteHandler, BasicWebSocketRouteHandler
 
 __all__ = [
     "Application",
@@ -15,5 +15,6 @@ __all__ = [
     "text_reader",
     "bytes_writer",
     "bytes_reader",
-    "BasicRouteHandler"
+    "BasicHttpRouteHandler",
+    "BasicWebSocketRouteHandler"
 ]

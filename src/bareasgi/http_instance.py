@@ -1,16 +1,12 @@
 from typing import List, Optional, AsyncIterable, AsyncGenerator
 from .types import (
     Scope,
-    Context,
     Info,
     Send,
     Receive,
     Header,
-    RouteHandler,
-    Content,
-    WebRequest,
-    RouteMatches,
-    Reply
+    HttpRouteHandler,
+    Content
 )
 import codecs
 from .utils import anext
@@ -40,22 +36,11 @@ async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[byte
     yield text.encode(encoding=encoding)
 
 
-class HttpRequest(WebRequest):
-
-    def __init__(self, scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply):
-        super().__init__(scope, info)
-        self.matches = matches
-        self.content = content
-        self.reply = reply
-
-
 class HttpInstance:
 
-    def __init__(self, scope: Scope, context: Optional[Context] = None, info: Optional[Info] = None) -> None:
+    def __init__(self, scope: Scope, route_handler: HttpRouteHandler, info: Optional[Info] = None) -> None:
         self.scope = scope
-        self.context = context or {}
         self.info = info or {}
-        route_handler: RouteHandler = self.context['http.request']
         self.request_handler, self.matches = route_handler(scope)
 
 
@@ -103,13 +88,11 @@ class HttpInstance:
 
         if request['type'] == 'http.request':
             await self.request_handler(
-                HttpRequest(
-                    self.scope,
-                    self.info,
-                    self.matches,
-                    request_iter(request.get('body', b''), request.get('more_body', False)),
-                    response
-                )
+                self.scope,
+                self.info,
+                self.matches,
+                request_iter(request.get('body', b''), request.get('more_body', False)),
+                response
             )
         elif request['type'] == 'http.disconnect':
             pass

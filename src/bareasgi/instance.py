@@ -1,4 +1,4 @@
-from typing import Mapping, Callable
+from typing import Mapping, Callable, Any
 from .types import (
     Scope,
     Context,
@@ -13,7 +13,7 @@ from .websocket_instance import WebSocketInstance
 
 
 class Instance:
-    INSTANCES_CLASSES: Mapping[str, Callable[[Scope, Context, Info], ASGIInstance]] = {
+    INSTANCES_CLASSES: Mapping[str, Callable[[Scope, Any, Info], ASGIInstance]] = {
         'lifespan': LifespanInstance,
         'http': HttpInstance,
         'websocket': WebSocketInstance

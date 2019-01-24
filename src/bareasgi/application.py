@@ -1,41 +1,45 @@
-from typing import Mapping, List, Any, Optional
+from typing import Mapping, List, Any, Optional, MutableMapping
 from .types import (
     Scope,
     ASGIInstance,
-    RouteHandler,
+    HttpRouteHandler,
+    WebSocketRouteHandler,
     StartupHandler,
     ShutdownHandler
 )
 from .instance import Instance
-from .basic_route_handler import BasicRouteHandler
+from .basic_route_handler import BasicHttpRouteHandler, BasicWebSocketRouteHandler
 
 
 class Application:
 
     def __init__(
             self,
-            route_handler: Optional[RouteHandler] = None,
+            http_route_handler: Optional[HttpRouteHandler] = None,
+            web_socket_route_handler: Optional[WebSocketRouteHandler] = None,
             startup_handlers: Optional[List[StartupHandler]] = None,
-            shutdown_handlers: Optional[List[ShutdownHandler]] = None
+            shutdown_handlers: Optional[List[ShutdownHandler]] = None,
+            info: Optional[MutableMapping[str, Any]] = None
     ) -> None:
         self._context: Mapping[str, Any] = {
-            'info': {},
+            'info': info or {},
             'lifespan': {
                 'lifespan.startup': startup_handlers or [],
                 'lifespan.shutdown': shutdown_handlers or []
             },
-            'http': {
-                'http.request': route_handler
-            },
-            'websocket': {
-                'websocket.connect': route_handler or BasicRouteHandler()
-            }
+            'http': http_route_handler or BasicHttpRouteHandler(),
+            'websocket': web_socket_route_handler or BasicWebSocketRouteHandler()
         }
 
 
     @property
-    def route_handler(self) -> RouteHandler:
-        return self._context['http']['http.request']
+    def http_route_handler(self) -> HttpRouteHandler:
+        return self._context['http']
+
+
+    @property
+    def ws_route_handler(self) -> WebSocketRouteHandler:
+        return self._context['websocket']
 
 
     @property
