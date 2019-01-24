@@ -1,4 +1,9 @@
 from collections.abc import AsyncIterable, AsyncIterator
+from typing import Optional, MutableMapping, Any, Pattern, Callable, Tuple
+from decimal import Decimal
+import json
+import re
+from datetime import datetime
 
 
 async def aiter(*args):
@@ -45,3 +50,42 @@ async def anext(*args):
         if lenargs == 1:
             raise
         return args[1]  # default
+
+
+DateTimeFormat = Tuple[str, Pattern, Optional[Callable[[str], str]]]
+
+DATETIME_FORMATS: Tuple[DateTimeFormat, ...] = (
+    ("%Y-%m-%dT%H:%M:%SZ", re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'), None),
+    ("%Y-%m-%dT%H:%M:%S.%fZ", re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z$'), None),
+    ("%Y-%m-%dT%H:%M:%S%z", re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$'),
+     lambda s: s[0:-3] + s[-2:]),
+    ("%Y-%m-%dT%H:%M:%S.%f%z", re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+[+-]\d{2}:\d{2}$'),
+     lambda s: s[0:-3] + s[-2:])
+)
+
+
+def parse_json_datetime(value: str) -> Optional[datetime]:
+    if isinstance(value, str):
+        for fmt, pattern, transform in DATETIME_FORMATS:
+            if pattern.match(value):
+                s = transform(value) if transform else value
+                return datetime.strptime(s, fmt)
+    return None
+
+
+def json_datetime_parser(dct: MutableMapping[str, Any]) -> MutableMapping[str, Any]:
+    for k, v in dct.items():
+        dt = parse_json_datetime(v)
+        if dt:
+            dct[k] = dt
+    return dct
+
+
+class JSONEncoderEx(json.JSONEncoder):
+    def default(self, obj):  # pylint: disable=method-hidden
+        if isinstance(obj, datetime):
+            return obj.isoformat() + ('Z' if not obj.tzinfo else '')
+        elif isinstance(obj, Decimal):
+            return float(str(obj.quantize(Decimal(1)) if obj == obj.to_integral() else obj.normalize()))
+        else:
+            return super(JSONEncoderEx, self).default(obj)

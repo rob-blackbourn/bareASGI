@@ -3,6 +3,11 @@ from typing import Mapping, AsyncIterable, AsyncGenerator, Union, AbstractSet
 from typing import Any, Callable, Optional, Tuple, List
 from typing import Awaitable
 
+
+class ParseError(Exception):
+    pass
+
+
 Scope = Mapping[str, Any]
 Message = Mapping[str, Any]
 Context = Optional[Mapping[str, Any]]
@@ -50,10 +55,6 @@ class WebSocket(metaclass=ABCMeta):
 
 HttpRequestCallback = Callable[[Scope, Info, RouteMatches, Content, Reply], Awaitable[None]]
 WebSocketRequestCallback = Callable[[Scope, Info, RouteMatches, WebSocket], Awaitable[None]]
-
-
-# HttpRouteHandler = Callable[[Scope], Tuple[HttpRequestCallback, RouteMatches]]
-# WebSocketRouteHandler = Callable[[Scope], Tuple[WebSocketRequestCallback, RouteMatches]]
 
 
 class HttpRouteHandler(metaclass=ABCMeta):

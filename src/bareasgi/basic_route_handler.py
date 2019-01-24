@@ -1,34 +1,17 @@
 from typing import AbstractSet, Optional, Tuple, Any, Callable, Mapping, List
 from datetime import datetime
-from .types import HttpRouteHandler, WebSocketRouteHandler, RouteMatches, Scope, HttpRequestCallback, \
-    WebSocketRequestCallback
-
-
-# noinspection PyUnusedLocal
-def segment_to_int(value: str, fmt: Optional[str]) -> int:
-    return int(value)
-
-
-# noinspection PyUnusedLocal
-def segment_to_float(value: str, fmt: Optional[str]) -> float:
-    return float(value)
-
-
-def segment_to_datetime(value: str, fmt: Optional[str]) -> datetime:
-    return datetime.strptime(value, fmt)
-
+from .types import HttpRouteHandler, WebSocketRouteHandler, RouteMatches, Scope
+from .types import HttpRequestCallback, WebSocketRequestCallback
+from .types import ParseError
+from .utils import parse_json_datetime
 
 CONVERTERS: Mapping[str, Callable[[Any, Optional[str]], Any]] = {
     'str': lambda value, fmt: value,
-    'int': lambda value, fmt: segment_to_int(value, fmt),
-    'float': lambda value, fmt: segment_to_float(value, fmt),
-    'datetime': lambda value, fmt: segment_to_datetime(value, fmt),
+    'int': lambda value, fmt: int(value),
+    'float': lambda value, fmt: float(value),
+    'datetime': lambda value, fmt: datetime.strptime(value, fmt) if fmt else parse_json_datetime(value),
     'path': lambda value, fmt: value,
 }
-
-
-class ParseError(Exception):
-    pass
 
 
 class PathSegment:
