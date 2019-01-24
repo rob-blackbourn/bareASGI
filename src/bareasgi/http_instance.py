@@ -23,7 +23,7 @@ class HttpInstance:
         self.request_handler, self.matches = route_handler(scope)
         middleware: Optional[List[HttpMiddlewareCallback]] = context['middlewares']
         if middleware:
-            self.request_handler = mw(*middleware, self.request_handler)
+            self.request_handler = mw(*middleware, handler=self.request_handler)
 
 
     async def __call__(self, receive: Receive, send: Send) -> None:
