@@ -87,12 +87,16 @@ class HttpInstance:
         request = await receive()
 
         if request['type'] == 'http.request':
-            await self.request_handler(
-                self.scope,
-                self.info,
-                self.matches,
-                request_iter(request.get('body', b''), request.get('more_body', False)),
-                response
-            )
+            if self.request_handler:
+                await self.request_handler(
+                    self.scope,
+                    self.info,
+                    self.matches,
+                    request_iter(request.get('body', b''), request.get('more_body', False)),
+                    response
+                )
+            else:
+                await response(404, [(b'content-type', b'text/plain')], text_writer('not Found'))
+
         elif request['type'] == 'http.disconnect':
             pass

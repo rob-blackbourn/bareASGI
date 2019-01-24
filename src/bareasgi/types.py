@@ -28,7 +28,7 @@ Headers = List[Header]
 
 RouteMatches = Mapping[str, Any]
 Content = AsyncIterable[bytes]
-Reply = Callable[[int, List[Header], AsyncGenerator[bytes, None]], Awaitable[None]]
+Reply = Callable[[int, List[Header], Optional[AsyncGenerator[bytes, None]]], Optional[Awaitable[None]]]
 
 
 class WebSocket(metaclass=ABCMeta):
