@@ -13,10 +13,10 @@ from bareasgi import (
 
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
     # await reply(303, [[b'Location', b'http://127.0.0.1:9009/time']])
-    await reply(303, [[b'Location', b'/time']])
+    await reply(303, [[b'Location', b'/test']])
 
 
-async def time_page(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
+async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
     page = """
     <!DOCTYPE html>
     <html>
@@ -228,11 +228,11 @@ window.onload = function() {{
         </script>
       </body>
     </html>
-    """.format(web_socket_url=f"ws://{scope['server'][0]}:{scope['server'][1]}/time")
+    """.format(web_socket_url=f"ws://{scope['server'][0]}:{scope['server'][1]}/test")
     await reply(200, [(b'content-type', b'text/html')], text_writer(page))
 
 
-async def time_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
+async def test_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
     await web_socket.accept()
 
     try:
@@ -252,8 +252,8 @@ if __name__ == "__main__":
 
     app = Application()
     app.http_router.add({'GET'}, '/', index)
-    app.http_router.add({'GET'}, '/time', time_page)
-    app.ws_router.add('/time', time_callback)
+    app.http_router.add({'GET'}, '/test', test_page)
+    app.ws_router.add('/test', test_callback)
 
     # app.ws_route_handler.add('/{path}', web_socket_request_callback)
 
