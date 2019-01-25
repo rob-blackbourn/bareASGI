@@ -4,17 +4,17 @@ from bareasgi import (
     Info,
     RouteMatches,
     Content,
-    Reply,
+    HttpResponse,
     WebSocket,
     text_writer
 )
 
 
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
-    await reply(303, [[b'Location', b'/test']])
+async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    return 303, [(b'Location', b'/test')], None
 
 
-async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
+async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     page = """
     <!DOCTYPE html>
     <html>
@@ -227,7 +227,7 @@ window.onload = function() {{
       </body>
     </html>
     """.format(web_socket_url=f"ws://{scope['server'][0]}:{scope['server'][1]}/test")
-    await reply(200, [(b'content-type', b'text/html')], text_writer(page))
+    return 200, [(b'content-type', b'text/html')], text_writer(page)
 
 
 async def test_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
