@@ -80,8 +80,7 @@ class Application:
                 'lifespan.shutdown': shutdown_handlers or []
             },
             'http': {
-                '404': not_found_response or DEFAULT_NOT_FOUND_RESPONSE,
-                'router': http_router or BasicHttpRouter(),
+                'router': http_router or BasicHttpRouter(not_found_response or DEFAULT_NOT_FOUND_RESPONSE),
                 'middlewares': middlewares
             },
             'websocket': web_socket_router or BasicWebSocketRouter()

@@ -7,7 +7,6 @@ from .types import (
     Header,
     HttpRouter,
     Context,
-    HttpResponse,
     HttpMiddlewareCallback
 )
 from .middleware import mw
@@ -57,11 +56,10 @@ class HttpInstance:
         self.scope = scope
         self.info = info or {}
         route_handler: HttpRouter = context['router']
-        self.request_handler, self.matches = route_handler(scope)
+        self.request_callback, self.matches = route_handler(scope)
         middleware: Optional[List[HttpMiddlewareCallback]] = context['middlewares']
         if middleware:
-            self.request_handler = mw(*middleware, handler=self.request_handler)
-        self.not_found_response: HttpResponse = context['404']
+            self.request_callback = mw(*middleware, handler=self.request_callback)
 
 
     async def __call__(self, receive: Receive, send: Send) -> None:
@@ -69,16 +67,14 @@ class HttpInstance:
         request = await receive()
 
         if request['type'] == 'http.request':
-            if self.request_handler:
-                response = await self.request_handler(
-                    self.scope,
-                    self.info,
-                    self.matches,
-                    _make_body_iterator(receive, request.get('body', b''), request.get('more_body', False)),
-                )
-                await _send_response(send, *response)
-            else:
-                await _send_response(send, *self.not_found_response)
+            response = await self.request_callback(
+                self.scope,
+                self.info,
+                self.matches,
+                _make_body_iterator(receive, request.get('body', b''), request.get('more_body', False)),
+            )
+            await _send_response(send, *response)
 
         elif request['type'] == 'http.disconnect':
+            # TODO: Turn the request callback into a task and cancel it.
             pass

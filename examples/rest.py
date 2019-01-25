@@ -13,7 +13,7 @@ from bareasgi import (
 
 async def get_info(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     text = json.dumps(info)
-    return 200, [(b'content-type', b'appplication/json')], text_writer(text)
+    return 200, [(b'content-type', b'application/json')], text_writer(text)
 
 
 async def set_info(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:

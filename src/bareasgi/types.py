@@ -61,6 +61,18 @@ HttpMiddlewareCallback = Callable[[Scope, Info, RouteMatches, Content, HttpReque
 
 class HttpRouter(metaclass=ABCMeta):
 
+    @property
+    @abstractmethod
+    def not_found_response(self):
+        raise NotImplementedError
+
+
+    @not_found_response.setter
+    @abstractmethod
+    def not_found_response(self, value: HttpResponse):
+        raise NotImplementedError
+
+
     @abstractmethod
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
         raise NotImplementedError
