@@ -6,10 +6,14 @@ from .types import (
     WebSocketRouter,
     StartupHandler,
     ShutdownHandler,
+    HttpResponse,
     HttpMiddlewareCallback
 )
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
+from .streams import text_writer
+
+DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (404, [(b'content-type', b'text/plain')], text_writer('Not Found'))
 
 
 class Application:
@@ -48,6 +52,7 @@ class Application:
 
     """
 
+
     def __init__(
             self,
             *,
@@ -56,6 +61,7 @@ class Application:
             web_socket_router: Optional[WebSocketRouter] = None,
             startup_handlers: Optional[List[StartupHandler]] = None,
             shutdown_handlers: Optional[List[ShutdownHandler]] = None,
+            not_found_response: Optional[HttpResponse] = None,
             info: Optional[MutableMapping[str, Any]] = None
     ) -> None:
         """Construct the application
@@ -74,6 +80,7 @@ class Application:
                 'lifespan.shutdown': shutdown_handlers or []
             },
             'http': {
+                '404': not_found_response or DEFAULT_NOT_FOUND_RESPONSE,
                 'router': http_router or BasicHttpRouter(),
                 'middlewares': middlewares
             },

@@ -53,8 +53,6 @@ async def _make_body_iterator(receive: Receive, body: bytes, more_body: bool) ->
 
 
 class HttpInstance:
-    NOT_FOUND: HttpResponse = (404, [(b'content-type', b'text/plain')], text_writer('Not Found'))
-
 
     def __init__(self, scope: Scope, context: Context, info: Optional[Info] = None) -> None:
         self.scope = scope
@@ -64,6 +62,7 @@ class HttpInstance:
         middleware: Optional[List[HttpMiddlewareCallback]] = context['middlewares']
         if middleware:
             self.request_handler = mw(*middleware, handler=self.request_handler)
+        self.not_found_response: HttpResponse = context['404']
 
 
     async def __call__(self, receive: Receive, send: Send) -> None:
@@ -80,7 +79,7 @@ class HttpInstance:
                 )
                 await _send_response(send, *response)
             else:
-                await _send_response(send, *self.NOT_FOUND)
+                await _send_response(send, *self.not_found_response)
 
         elif request['type'] == 'http.disconnect':
             pass
