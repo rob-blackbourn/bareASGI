@@ -17,6 +17,6 @@ if __name__ == "__main__":
     import uvicorn
 
     app = Application()
-    app.http_router.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
+    app.http_router.add({'GET'}, '/{path}', http_request_callback)
 
     uvicorn.run(app, port=9009)
