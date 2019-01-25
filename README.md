@@ -4,7 +4,8 @@ A lightweight ASGI framework
 
 ## Status
 
-Under development
+Work in progress.
+
 ## Overview
 
 This is a _bare_ web server framework for ASGI servers. The goal is to provide
@@ -208,6 +209,10 @@ async def http_request_callback(scope: Scope, info: Info, matches: RouteMatches,
 
 The response is a tuple of the staus code, a list of headers, and an async byyes generator for the response body.
 
+The `scope` is a dictionary which holds the request information, e.g. server, scheme, method, etc.
+
+The `content` is an sync iterator of bytes. The are some utility functions for extracting strings.
+
 ### HttpMiddlewareCallback
 
 The middleware callback adds an http request callback as the last argument.
@@ -245,3 +250,14 @@ class WebSocket:
 ```
 
 The first call must be to acccept the socket.
+
+## Utilities
+
+There are a number of utility functions for reading content and writing the body.
+
+```python
+async bytes_reader(content: Content) -> bytes
+async text_reader(content: Content, encoding: str = 'utf-8') -> str
+async bytes_writer(buf: bytes) -> AsyncGenerator[bytes, None]
+async text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[bytes, None]
+```
