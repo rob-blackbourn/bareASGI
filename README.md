@@ -10,7 +10,7 @@ Work in progress.
 
 This is a _bare_ ASGI web server framework. The goal is to provide
 a minimal implementation, with other facilities (serving static files, CORS, sessions, etc.)
-being implemented by optional packages. Hopefully this will keep the implementation
+being implemented by optional packages. The goal is to keep the implementation
 clear and lightweight.
 
 ## Functionality
