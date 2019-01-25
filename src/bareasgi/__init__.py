@@ -18,6 +18,10 @@ from .streaming import (
     bytes_reader,
     bytes_writer
 )
+from .cookies import (
+    make_cookie,
+    make_expired_cookie
+)
 
 __all__ = [
     "Application",
@@ -34,5 +38,8 @@ __all__ = [
     "text_writer",
     "text_reader",
     "bytes_writer",
-    "bytes_reader"
+    "bytes_reader",
+
+    "make_cookie",
+    "make_expired_cookie"
 ]
