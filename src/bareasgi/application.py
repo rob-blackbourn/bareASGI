@@ -81,15 +81,20 @@ class Application:
             },
             'http': {
                 'router': http_router or BasicHttpRouter(not_found_response or DEFAULT_NOT_FOUND_RESPONSE),
-                'middlewares': middlewares
+                'middlewares': middlewares or []
             },
             'websocket': web_socket_router or BasicWebSocketRouter()
         }
 
 
     @property
-    def info(self):
+    def info(self) -> MutableMapping[str, Any]:
         return self._context['info']
+
+
+    @property
+    def middlewares(self) -> List[HttpMiddlewareCallback]:
+        return self._context['http']['middlewares']
 
 
     @property
