@@ -4,7 +4,6 @@ from bareasgi import (
     Info,
     RouteMatches,
     Content,
-    text_reader,
     text_writer,
     HttpResponse,
     HttpRequestCallback

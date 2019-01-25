@@ -6,13 +6,11 @@ from bareasgi import (
     Content,
     Reply,
     WebSocket,
-    text_reader,
     text_writer
 )
 
 
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
-    # await reply(303, [[b'Location', b'http://127.0.0.1:9009/time']])
     await reply(303, [[b'Location', b'/test']])
 
 
