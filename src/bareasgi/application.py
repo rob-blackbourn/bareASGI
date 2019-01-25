@@ -88,6 +88,11 @@ class Application:
 
 
     @property
+    def info(self):
+        return self._context['info']
+
+
+    @property
     def http_router(self) -> HttpRouter:
         """Router for http routes"""
         return self._context['http']['router']

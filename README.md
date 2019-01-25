@@ -142,6 +142,7 @@ The `info` argument provides a place for application specific data.
 The application provides some properties that ccan be used for configuration:
 
 ```python
+Application.info -> MutableMapping[str, Any]
 Application.http_router -> HttpRouter
 Application.ws_router-> WebSocketRouter
 Application.startup_handlers -> List[StartupHandler]
