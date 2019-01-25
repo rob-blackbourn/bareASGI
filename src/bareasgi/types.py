@@ -8,6 +8,14 @@ class ParseError(Exception):
     pass
 
 
+class HttpInternalError(Exception):
+    pass
+
+
+class HttpDisconnectError(Exception):
+    pass
+
+
 Scope = Mapping[str, Any]
 Message = Mapping[str, Any]
 Context = Optional[Mapping[str, Any]]

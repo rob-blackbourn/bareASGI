@@ -1,5 +1,7 @@
 from typing import List, Optional, AsyncIterable
 from .types import (
+    HttpInternalError,
+    HttpDisconnectError,
     Scope,
     Info,
     Send,
@@ -19,18 +21,22 @@ async def _send_response(
         headers: Optional[List[Header]] = None,
         body: Optional[AsyncIterable[bytes]] = None
 ) -> None:
+    # Create and send the start response.
     response_start = {'type': 'http.response.start', 'status': status}
     if headers:
         response_start['headers'] = headers
     await send(response_start)
 
+    # Create and send the response body.
     response_body = {'type': 'http.response.body'}
 
+    # If we don't get a body, just send the basic response.
     buf = await anext(body) if body else None
     if not buf:
         await send(response_body)
         return
 
+    # Continue to get and send the body until exhausted.
     while buf:
         response_body['body'] = buf
         try:
@@ -42,12 +48,18 @@ async def _send_response(
         await send(response_body)
 
 
-async def _make_body_iterator(receive: Receive, body: bytes, more_body: bool) -> AsyncIterable[bytes]:
+async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> AsyncIterable[bytes]:
     yield body
     while more_body:
         message = await receive()
-        body, more_body = message.get('body', b''), message.get('more_body', False)
-        yield body
+        if message['type'] == 'http.request':
+            body, more_body = message.get('body', b''), message.get('more_body', False)
+            yield body
+        elif message['type'] == 'http.disconnect':
+            raise HttpDisconnectError
+        else:
+            # TODO: What to do here?
+            raise HttpInternalError
 
 
 class HttpInstance:
@@ -55,8 +67,10 @@ class HttpInstance:
     def __init__(self, scope: Scope, context: Context, info: Optional[Info] = None) -> None:
         self.scope = scope
         self.info = info or {}
+        # Find the route.
         route_handler: HttpRouter = context['router']
         self.request_callback, self.matches = route_handler(scope)
+        # Apply middleware.
         middleware: Optional[List[HttpMiddlewareCallback]] = context['middlewares']
         if middleware:
             self.request_callback = mw(*middleware, handler=self.request_callback)
@@ -71,10 +85,10 @@ class HttpInstance:
                 self.scope,
                 self.info,
                 self.matches,
-                _make_body_iterator(receive, request.get('body', b''), request.get('more_body', False)),
+                _body_iterator(receive, request.get('body', b''), request.get('more_body', False)),
             )
             await _send_response(send, *response)
 
         elif request['type'] == 'http.disconnect':
-            # TODO: Turn the request callback into a task and cancel it.
-            pass
+            # TODO: What to do here?
+            raise HttpDisconnectError
