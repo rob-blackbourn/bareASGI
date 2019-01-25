@@ -39,6 +39,7 @@ setup(
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries'
     ],
+    license='Apache 2',
     keywords='ASGI framework',
     package_dir={'': 'src'},
     packages=find_packages(where='src', exclude=['tests', 'examples']),
