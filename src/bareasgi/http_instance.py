@@ -11,7 +11,6 @@ from .types import (
     HttpMiddlewareCallback
 )
 from .middleware import mw
-from .streams import text_writer
 from .utils import anext
 
 

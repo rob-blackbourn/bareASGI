@@ -12,7 +12,7 @@ from .types import (
     HttpRequestCallback,
     HttpMiddlewareCallback
 )
-from .streams import (
+from .streaming import (
     text_reader,
     text_writer,
     bytes_reader,

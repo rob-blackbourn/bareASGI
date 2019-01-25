@@ -11,7 +11,7 @@ from .types import (
 )
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
-from .streams import text_writer
+from .streaming import text_writer
 
 DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (404, [(b'content-type', b'text/plain')], text_writer('Not Found'))
 
