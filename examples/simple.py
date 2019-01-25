@@ -4,7 +4,7 @@ from bareasgi import (
     Info,
     RouteMatches,
     Content,
-    Reply,
+    HttpResponse,
     WebSocket,
     text_reader,
     text_writer
@@ -15,13 +15,11 @@ async def http_request_callback(
         scope: Scope,
         info: Info,
         matches: RouteMatches,
-        content: Content,
-        reply: Reply) -> None:
-    print('Start', scope, info, matches)
+        content: Content) -> HttpResponse:
+    print(scope, info, matches)
     text = await text_reader(content)
     print(text)
-    await reply(200, [(b'content-type', b'text/plain')], text_writer('This is not a test'))
-    print('End')
+    return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
 
 
 async def web_socket_request_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:

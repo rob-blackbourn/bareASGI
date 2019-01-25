@@ -8,6 +8,7 @@ from .types import (
     Content,
     Reply,
     WebSocket,
+    HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback
 )
@@ -27,6 +28,7 @@ __all__ = [
     "Content",
     "Reply",
     "WebSocket",
+    "HttpResponse",
     "HttpRequestCallback",
 
     "text_writer",

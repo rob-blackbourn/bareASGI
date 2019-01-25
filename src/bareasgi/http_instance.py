@@ -29,7 +29,7 @@ class HttpInstance:
     async def __call__(self, receive: Receive, send: Send) -> None:
 
         # A closure to capture 'receive'.
-        async def response(
+        async def handle_response(
                 status: int,
                 headers: Optional[List[Header]] = None,
                 body: Optional[AsyncIterable[bytes]] = None
@@ -70,15 +70,15 @@ class HttpInstance:
 
         if request['type'] == 'http.request':
             if self.request_handler:
-                await self.request_handler(
+                response = await self.request_handler(
                     self.scope,
                     self.info,
                     self.matches,
                     request_iter(request.get('body', b''), request.get('more_body', False)),
-                    response
                 )
+                await handle_response(*response)
             else:
-                await response(404, [(b'content-type', b'text/plain')], text_writer('not Found'))
+                await handle_response(404, [(b'content-type', b'text/plain')], text_writer('not Found'))
 
         elif request['type'] == 'http.disconnect':
             pass

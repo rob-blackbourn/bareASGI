@@ -53,9 +53,10 @@ class WebSocket(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-HttpRequestCallback = Callable[[Scope, Info, RouteMatches, Content, Reply], Awaitable[None]]
+HttpResponse = Tuple[int, List[Header], AsyncGenerator[bytes, None]]
+HttpRequestCallback = Callable[[Scope, Info, RouteMatches, Content], Awaitable[HttpResponse]]
 WebSocketRequestCallback = Callable[[Scope, Info, RouteMatches, WebSocket], Awaitable[None]]
-HttpMiddlewareCallback = Callable[[Scope, Info, RouteMatches, Content, Reply, HttpRequestCallback], Awaitable[None]]
+HttpMiddlewareCallback = Callable[[Scope, Info, RouteMatches, Content, HttpRequestCallback], Awaitable[HttpResponse]]
 
 
 class HttpRouter(metaclass=ABCMeta):
