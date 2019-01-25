@@ -7,6 +7,7 @@ from .types import (
     Header,
     HttpRouter,
     Context,
+    HttpResponse,
     HttpMiddlewareCallback
 )
 from .middleware import mw
@@ -14,7 +15,46 @@ from .streams import text_writer
 from .utils import anext
 
 
+async def _send_response(
+        send: Send,
+        status: int,
+        headers: Optional[List[Header]] = None,
+        body: Optional[AsyncIterable[bytes]] = None
+) -> None:
+    response_start = {'type': 'http.response.start', 'status': status}
+    if headers:
+        response_start['headers'] = headers
+    await send(response_start)
+
+    response_body = {'type': 'http.response.body'}
+
+    buf = await anext(body) if body else None
+    if not buf:
+        await send(response_body)
+        return
+
+    while buf:
+        response_body['body'] = buf
+        try:
+            buf = await anext(body)
+            response_body['more_body'] = True
+        except StopAsyncIteration:
+            buf = None
+            response_body['more_body'] = False
+        await send(response_body)
+
+
+async def _make_body_iterator(receive: Receive, body: bytes, more_body: bool) -> AsyncIterable[bytes]:
+    yield body
+    while more_body:
+        message = await receive()
+        body, more_body = message.get('body', b''), message.get('more_body', False)
+        yield body
+
+
 class HttpInstance:
+    NOT_FOUND: HttpResponse = (404, [(b'content-type', b'text/plain')], text_writer('Not Found'))
+
 
     def __init__(self, scope: Scope, context: Context, info: Optional[Info] = None) -> None:
         self.scope = scope
@@ -28,44 +68,6 @@ class HttpInstance:
 
     async def __call__(self, receive: Receive, send: Send) -> None:
 
-        # A closure to capture 'receive'.
-        async def handle_response(
-                status: int,
-                headers: Optional[List[Header]] = None,
-                body: Optional[AsyncIterable[bytes]] = None
-        ) -> None:
-            response_start = {'type': 'http.response.start', 'status': status}
-            if headers:
-                response_start['headers'] = headers
-            await send(response_start)
-
-            response_body = {'type': 'http.response.body'}
-
-            buf = await anext(body) if body else None
-            if not buf:
-                await send(response_body)
-                return
-
-            while buf:
-                response_body['body'] = buf
-                try:
-                    buf = await anext(body)
-                    response_body['more_body'] = True
-                except StopAsyncIteration:
-                    buf = None
-                    response_body['more_body'] = False
-                await send(response_body)
-
-
-        async def request_iter(body: bytes, more_body: bool) -> AsyncIterable[bytes]:
-            yield body
-            while more_body:
-                message = await receive()
-                body, more_body = message.get('body', b''), message.get('more_body', False)
-                yield body
-
-
-        # Fetch the http message
         request = await receive()
 
         if request['type'] == 'http.request':
@@ -74,11 +76,11 @@ class HttpInstance:
                     self.scope,
                     self.info,
                     self.matches,
-                    request_iter(request.get('body', b''), request.get('more_body', False)),
+                    _make_body_iterator(receive, request.get('body', b''), request.get('more_body', False)),
                 )
-                await handle_response(*response)
+                await _send_response(send, *response)
             else:
-                await handle_response(404, [(b'content-type', b'text/plain')], text_writer('not Found'))
+                await _send_response(send, *self.NOT_FOUND)
 
         elif request['type'] == 'http.disconnect':
             pass
