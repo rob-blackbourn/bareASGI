@@ -35,7 +35,7 @@ class PathDefinition:
             raise Exception('Paths must be absolute')
 
         # Handle trailing slash
-        if path[1:].endswith('/'):
+        if path[1:].endswith('/') and self.segments[-1].type != 'path':
             if not self.ends_with_slash:
                 return self.NO_MATCH
             path = path[:-1]

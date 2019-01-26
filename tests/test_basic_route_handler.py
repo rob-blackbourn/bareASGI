@@ -65,10 +65,11 @@ def test_path_type():
     basic_route_handler.add({'GET'}, '/ui/{rest:path}', ok_handler)
 
     handler, matches = basic_route_handler({'method': 'GET', 'path': '/ui/index.html'})
-    assert handler is not None
+    assert handler is ok_handler
     assert 'rest' in matches
     assert matches['rest'] == 'index.html'
 
     handler, matches = basic_route_handler({'method': 'GET', 'path': '/ui/'})
-    assert handler is not None
-    assert 'rest' not in matches
+    assert handler is ok_handler
+    assert 'rest' in matches
+    assert matches['rest'] == ''
