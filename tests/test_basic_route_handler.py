@@ -73,3 +73,8 @@ def test_path_type():
     assert handler is ok_handler
     assert 'rest' in matches
     assert matches['rest'] == ''
+
+    handler, matches = basic_route_handler({'method': 'GET', 'path': '/ui/folder/other.html'})
+    assert handler is ok_handler
+    assert 'rest' in matches
+    assert matches['rest'] == 'folder/other.html'

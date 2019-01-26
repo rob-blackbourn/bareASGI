@@ -56,8 +56,9 @@ class PathDefinition:
             last_segment = self.segments[-1]
             if last_segment.type != 'path':
                 return self.NO_MATCH
-            matches[last_segment.name] = parts[len(self.segments):]
-            parts = parts[:len(self.segments)]
+            index = len(self.segments) - 1
+            matches[last_segment.name] = '/'.join(parts[index:])
+            parts = parts[:index]
 
         # Now the path parts and segments are the same length we can check them.
         for part, segment in zip(parts, self.segments):
