@@ -10,29 +10,27 @@ from ..types import (
 )
 from .path_definition import PathDefinition
 
-
 class BasicHttpRouter(HttpRouter):
 
     def __init__(self, not_found_response: HttpResponse) -> None:
         self._routes = {}
         self._not_found_response = not_found_response
 
-
     @property
     def not_found_response(self):
         return self._not_found_response
 
-
     @not_found_response.setter
     def not_found_response(self, value: HttpResponse):
         self._not_found_response = value
-
 
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
         for method in methods:
             path_definition_list = self._routes.setdefault(method, [])
             path_definition_list.append((PathDefinition(path), callback))
 
+    async def _not_found(self, scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+        return self._not_found_response
 
     def __call__(self, scope: Scope) -> Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]:
         path_definition_list = self._routes.get(scope['method'])
@@ -42,9 +40,4 @@ class BasicHttpRouter(HttpRouter):
                 if is_match:
                     return handler, matches
 
-
-        async def not_found(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-            return self._not_found_response
-
-
-        return not_found, {}
+        return self._not_found, {}
