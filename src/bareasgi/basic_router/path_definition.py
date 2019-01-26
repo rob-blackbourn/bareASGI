@@ -6,7 +6,6 @@ from .path_segment import PathSegment
 class PathDefinition:
     NO_MATCH: Tuple[bool, Optional[RouteMatches]] = (False, None)
 
-
     def __init__(self, path: str) -> None:
         """Create a path definition."""
         if not path.startswith('/'):
@@ -25,7 +24,6 @@ class PathDefinition:
         self.segments = []
         for segment in path.split('/'):
             self.segments.append(PathSegment(segment))
-
 
     def match(self, path: str) -> Tuple[bool, Optional[RouteMatches]]:
         """Try to match the given path with this path definition
@@ -70,3 +68,8 @@ class PathDefinition:
                 matches[name] = value
 
         return True, matches
+
+    def __str__(self):
+        return f'<PathDefinition: segments={self.segments}, ends_with_slash={self.ends_with_slash}>'
+
+    __repr__ = __str__

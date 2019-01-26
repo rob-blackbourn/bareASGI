@@ -1,31 +1,39 @@
 from datetime import datetime
-from bareasgi.basic_route_handler import BasicHttpRouter
-from bareasgi.types import Scope, Info, RouteMatches, Content, Reply
+from bareasgi import (
+    Scope,
+    Info,
+    RouteMatches,
+    Content,
+    Reply,
+    HttpResponse
+)
+from bareasgi.application import DEFAULT_NOT_FOUND_RESPONSE
+from bareasgi.basic_router import BasicHttpRouter
 
 
-async def dummy_http_handler(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> None:
-    pass
+async def ok_handler(scope: Scope, info: Info, matches: RouteMatches, content: Content, reply: Reply) -> HttpResponse:
+    return 200, None, None
 
 
 def test_literal_paths():
-    basic_route_handler = BasicHttpRouter()
-    basic_route_handler.add({'GET'}, '/foo/bar/grum', dummy_http_handler)
+    basic_route_handler = BasicHttpRouter(DEFAULT_NOT_FOUND_RESPONSE)
+    basic_route_handler.add({'GET'}, '/foo/bar/grum', ok_handler)
 
     handler, matches = basic_route_handler({'method': 'GET', 'path': '/foo/bar/grum'})
     assert handler is not None
 
 
 def test_literal_path_with_trailing_slash():
-    basic_route_handler = BasicHttpRouter()
-    basic_route_handler.add({'GET'}, '/foo/bar/grum/', dummy_http_handler)
+    basic_route_handler = BasicHttpRouter(DEFAULT_NOT_FOUND_RESPONSE)
+    basic_route_handler.add({'GET'}, '/foo/bar/grum/', ok_handler)
 
     handler, matches = basic_route_handler({'method': 'GET', 'path': '/foo/bar/grum/'})
     assert handler is not None
 
 
 def test_variable_paths():
-    basic_route_handler = BasicHttpRouter()
-    basic_route_handler.add({'GET'}, '/foo/{name}/grum', dummy_http_handler)
+    basic_route_handler = BasicHttpRouter(DEFAULT_NOT_FOUND_RESPONSE)
+    basic_route_handler.add({'GET'}, '/foo/{name}/grum', ok_handler)
 
     handler, matches = basic_route_handler({'method': 'GET', 'path': '/foo/bar/grum'})
     assert handler is not None
@@ -34,8 +42,8 @@ def test_variable_paths():
 
 
 def test_variable_path_with_type():
-    basic_route_handler = BasicHttpRouter()
-    basic_route_handler.add({'GET'}, '/foo/{id:int}/grum', dummy_http_handler)
+    basic_route_handler = BasicHttpRouter(DEFAULT_NOT_FOUND_RESPONSE)
+    basic_route_handler.add({'GET'}, '/foo/{id:int}/grum', ok_handler)
 
     handler, matches = basic_route_handler({'method': 'GET', 'path': '/foo/123/grum'})
     assert handler is not None
@@ -44,10 +52,23 @@ def test_variable_path_with_type():
 
 
 def test_variable_path_with_type_and_format():
-    basic_route_handler = BasicHttpRouter()
-    basic_route_handler.add({'GET'}, '/foo/{date_of_birth:datetime:%Y-%m-%d}/grum', dummy_http_handler)
+    basic_route_handler = BasicHttpRouter(DEFAULT_NOT_FOUND_RESPONSE)
+    basic_route_handler.add({'GET'}, '/foo/{date_of_birth:datetime:%Y-%m-%d}/grum', ok_handler)
 
     handler, matches = basic_route_handler({'method': 'GET', 'path': '/foo/2001-12-31/grum'})
     assert handler is not None
     assert 'date_of_birth' in matches
     assert matches['date_of_birth'] == datetime(2001, 12, 31)
+
+def test_path_type():
+    basic_route_handler = BasicHttpRouter(DEFAULT_NOT_FOUND_RESPONSE)
+    basic_route_handler.add({'GET'}, '/ui/{rest:path}', ok_handler)
+
+    handler, matches = basic_route_handler({'method': 'GET', 'path': '/ui/index.html'})
+    assert handler is not None
+    assert 'rest' in matches
+    assert matches['rest'] == 'index.html'
+
+    handler, matches = basic_route_handler({'method': 'GET', 'path': '/ui/'})
+    assert handler is not None
+    assert 'rest' not in matches

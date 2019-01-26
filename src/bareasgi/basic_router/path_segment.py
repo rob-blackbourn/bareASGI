@@ -45,7 +45,6 @@ class PathSegment:
             self.type = None
             self.format = None
 
-
     def match(self, value: str) -> Tuple[bool, Optional[str], Optional[Any]]:
         """Try to match a segment.
 
@@ -62,3 +61,10 @@ class PathSegment:
                 return False, None, None
         else:
             return value == self.name, None, None
+
+    def __str__(self):
+        return '<PathSegment: ' \
+                f'name="{self.name}", is_variable={self.is_variable}, type="{self.type}", format="{self.format}"' \
+                '>'
+
+    __repr__ = __str__
