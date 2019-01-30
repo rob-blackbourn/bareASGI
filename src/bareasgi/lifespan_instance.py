@@ -1,4 +1,5 @@
 from typing import List, Optional
+import logging
 from bareasgi.types import (
     Context,
     Info,
@@ -7,6 +8,8 @@ from bareasgi.types import (
     Receive,
     LifespanHandler
 )
+
+logger = logging.getLogger(__name__)
 
 
 class LifespanInstance:
@@ -19,15 +22,18 @@ class LifespanInstance:
 
     async def __call__(self, receive: Receive, send: Send) -> None:
         # The lifespan scope exists for the duration of the event loop, and only exits on 'lifespan.shutdown'.
-        request = None
-        while request and request['type'] != 'lifespan.shutdown':
+        request = self.scope
+        while request['type'] != 'lifespan.shutdown':
             # Fetch the lifespan request
             request = await receive()
+            request_type = request['type']
+
+            logger.debug(f'Handling request for "{request_type}"', extra=request)
 
             # Run the handlers for this action.
-            handlers: List[LifespanHandler] = self.context.get(request['type'], [])
+            handlers: List[LifespanHandler] = self.context.get(request_type, [])
             for handler in handlers:
                 await handler(self.scope, self.info, request)
 
             # Send the response
-            await send({'type': f'{request["type"]}.complete'})
+            await send({'type': f'{request_type}.complete'})

@@ -1,3 +1,4 @@
+import logging
 from bareasgi import (
     Application,
     Scope,
@@ -8,6 +9,8 @@ from bareasgi import (
     HttpResponse,
     HttpRequestCallback
 )
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 async def first_middleware(

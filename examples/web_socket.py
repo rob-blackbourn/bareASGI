@@ -1,3 +1,4 @@
+import logging
 from bareasgi import (
     Application,
     Scope,
@@ -8,6 +9,8 @@ from bareasgi import (
     WebSocket,
     text_writer
 )
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
@@ -21,7 +24,7 @@ async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Time</title>
+        <title>WebSocket Example</title>
         <style>
 *, *:before, *:after {{
   -moz-box-sizing: border-box;

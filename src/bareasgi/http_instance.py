@@ -1,4 +1,5 @@
 from typing import List, Optional, AsyncIterable
+import logging
 from .types import (
     HttpInternalError,
     HttpDisconnectError,
@@ -14,6 +15,8 @@ from .types import (
 from .middleware import mw
 from .utils import anext
 
+logger = logging.getLogger(__name__)
+
 
 async def _send_response(
         send: Send,
@@ -25,14 +28,19 @@ async def _send_response(
     response_start = {'type': 'http.response.start', 'status': status}
     if headers:
         response_start['headers'] = headers
+    logger.debug(f'Sending "http.response.start" with status {status}', extra=response_start)
     await send(response_start)
 
     # Create and send the response body.
     response_body = {'type': 'http.response.body'}
 
     # If we don't get a body, just send the basic response.
-    buf = await anext(body) if body else None
+    try:
+        buf = await anext(body) if body else None
+    except StopAsyncIteration:
+        buf = None
     if not buf:
+        logger.debug(f'Sending "http.response.body" with empty body', extra=response_body)
         await send(response_body)
         return
 
@@ -45,20 +53,24 @@ async def _send_response(
         except StopAsyncIteration:
             buf = None
             response_body['more_body'] = False
+        logger.debug(f'Sending "http.response.body" with more_body="{response_body["more_body"]}', extra=response_body)
         await send(response_body)
 
 
 async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> AsyncIterable[bytes]:
     yield body
     while more_body:
-        message = await receive()
-        if message['type'] == 'http.request':
-            body, more_body = message.get('body', b''), message.get('more_body', False)
+        request = await receive()
+        request_type = request['type']
+        logger.debug(f'Received {request_type}', extra=request)
+
+        if request_type == 'http.request':
+            body, more_body = request.get('body', b''), request.get('more_body', False)
             yield body
-        elif message['type'] == 'http.disconnect':
+        elif request_type == 'http.disconnect':
             raise HttpDisconnectError
         else:
-            # TODO: What to do here?
+            logger.error(f'Failed to understand request type "{request_type}', extra=request)
             raise HttpInternalError
 
 
@@ -79,8 +91,10 @@ class HttpInstance:
     async def __call__(self, receive: Receive, send: Send) -> None:
 
         request = await receive()
+        request_type = request['type']
+        logger.debug(f'Received request {request_type}', extra=request)
 
-        if request['type'] == 'http.request':
+        if request_type == 'http.request':
             response = await self.request_callback(
                 self.scope,
                 self.info,
@@ -89,6 +103,6 @@ class HttpInstance:
             )
             await _send_response(send, *response)
 
-        elif request['type'] == 'http.disconnect':
+        elif request_type == 'http.disconnect':
             # TODO: What to do here?
             raise HttpDisconnectError

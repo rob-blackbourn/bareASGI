@@ -1,4 +1,5 @@
 import json
+import logging
 from bareasgi import (
     Application,
     Scope,
@@ -9,6 +10,8 @@ from bareasgi import (
     text_reader,
     text_writer
 )
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 async def get_info(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:

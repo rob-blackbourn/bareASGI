@@ -1,4 +1,5 @@
 from typing import Mapping, List, Any, Optional, MutableMapping
+import logging
 from .types import (
     Scope,
     ASGIInstance,
@@ -14,6 +15,8 @@ from .basic_router import BasicHttpRouter, BasicWebSocketRouter
 from .streaming import text_writer
 
 DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (404, [(b'content-type', b'text/plain')], text_writer('Not Found'))
+
+logger = logging.getLogger(__name__)
 
 
 class Application:
@@ -122,4 +125,5 @@ class Application:
 
 
     def __call__(self, scope: Scope) -> ASGIInstance:
+        logger.debug('Creating instance', extra=scope)
         return Instance(self._context, scope)
