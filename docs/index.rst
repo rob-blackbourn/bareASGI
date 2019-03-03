@@ -61,6 +61,7 @@ This is a Python3.7 and later package with no dependencies.
     io
     application
     middleware
+    api
 
 Indices and tables
 ==================

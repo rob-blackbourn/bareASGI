@@ -19,7 +19,10 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../src/'))
+
+src = os.path.abspath('../src/')
+sys.path.insert(0, src)
+
 
 # -- General configuration ------------------------------------------------
 
@@ -32,6 +35,7 @@ sys.path.insert(0, os.path.abspath('../../src/'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx_autodoc_typehints',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
