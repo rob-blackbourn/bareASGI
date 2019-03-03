@@ -24,35 +24,36 @@ class Application:
 
     For example:
 
-    from bareasgi import (
-        Application,
-        Scope,
-        Info,
-        RouteMatches,
-        Content,
-        Reply,
-        WebSocket,
-        text_reader,
-        text_writer
-    )
+    .. code-block:: python
 
-    async def http_request_callback(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content,
-        reply: Reply
-    ) -> None:
-        text = await text_reader(content)
-        await reply(200, [(b'content-type', b'text/plain')], text_writer('This is not a test'))
+        from bareasgi import (
+            Application,
+            Scope,
+            Info,
+            RouteMatches,
+            Content,
+            Reply,
+            WebSocket,
+            text_reader,
+            text_writer
+        )
 
-    import uvicorn
+        async def http_request_callback(
+            scope: Scope,
+            info: Info,
+            matches: RouteMatches,
+            content: Content,
+            reply: Reply
+        ) -> None:
+            text = await text_reader(content)
+            await reply(200, [(b'content-type', b'text/plain')], text_writer('This is not a test'))
 
-    app = Application()
-    app.http_router.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
+        import uvicorn
 
-    uvicorn.run(app, port=9009)
+        app = Application()
+        app.http_router.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
 
+        uvicorn.run(app, port=9009)
     """
 
 
@@ -92,17 +93,28 @@ class Application:
 
     @property
     def info(self) -> MutableMapping[str, Any]:
+        """A place to sto application specific data.
+
+        :return: A dictionary.
+        """
         return self._context['info']
 
 
     @property
     def middlewares(self) -> List[HttpMiddlewareCallback]:
+        """The middlewares.
+
+        :return: A list of the middleware to apply to every route.
+        """
         return self._context['http']['middlewares']
 
 
     @property
     def http_router(self) -> HttpRouter:
-        """Router for http routes"""
+        """Router for http routes
+
+        :return: The configured router.
+        """
         return self._context['http']['router']
 
 

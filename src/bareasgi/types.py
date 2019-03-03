@@ -44,24 +44,44 @@ Reply = Callable[[int, List[Header], Optional[AsyncGenerator[bytes, None]]], Opt
 
 
 class WebSocket(metaclass=ABCMeta):
+    """A server side WebSocket.
+    """
 
     @abstractmethod
     async def accept(self, subprotocol: Optional[str] = None) -> None:
+        """Accept the socket.
+
+        This must be done before any other action is taken.
+
+        :param subprotocol: An optional subprotocol sent by the client.
+        """
         raise NotImplementedError
 
 
     @abstractmethod
     async def receive(self) -> Optional[Union[bytes, str]]:
+        """Receive data from the WebSocket.
+
+        :return: Either bytes of a string depending on the client.
+        """
         raise NotImplementedError
 
 
     @abstractmethod
     async def send(self, content: Union[bytes, str]) -> None:
+        """Send data to the client.
+
+        :param content: Either bytes or a strng.
+        """
         raise NotImplementedError
 
 
     @abstractmethod
     async def close(self, code: int = 1000) -> None:
+        """Closes the WebSocket.
+
+        :param code: The reason code (defaults to 1000).
+        """
         raise NotImplementedError
 
 

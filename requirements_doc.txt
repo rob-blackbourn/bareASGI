@@ -1,0 +1,4 @@
+Sphinx~=1.8
+sphinx-autodoc-typehints~=1.6
+sphinxcontrib-websupport~=1.1
+uvicorn~=0.3
