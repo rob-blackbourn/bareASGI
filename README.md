@@ -1,6 +1,6 @@
 # bareasgi
 
-A lightweight ASGI framework (read the [documentaion](https://bareasgi.readthedocs.io/en/latest/))
+A lightweight ASGI framework (read the [documentation](https://bareasgi.readthedocs.io/en/latest/))
 
 ## Status
 
