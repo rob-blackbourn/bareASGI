@@ -1,7 +1,7 @@
-bareASGI
-========
+Lightweight ASGI Web Framework
+==============================
 
-This is a web framework for `ASGI <https://asgi.readthedocs.io/en/latest>`_ servers in Python 3.7.
+This is a web framework for :doc:`ASGI </asgi>` servers in Python 3.7.
 
 The goal is to provide a minimal implementation, with other facilities (serving static files, CORS, sessions, etc.)
 being implemented by optional packages in an attempt to keep the implementation clear and lightweight.
@@ -9,7 +9,8 @@ being implemented by optional packages in an attempt to keep the implementation 
 Usage
 -----
 
-The following trival example uses the `uvicorn <https://www.uvicorn.org/>`_ server.
+The following trival example uses the `uvicorn <https://www.uvicorn.org/>`_ server. See :doc:`here </examples>`
+for more.
 
 .. code-block:: python
 
@@ -56,7 +57,8 @@ This is a Python3.7 and later package with no dependencies.
     :maxdepth: 2
     :caption: Contents:
 
-    handlers
+    asgi
+    examples
     routing
     io
     application

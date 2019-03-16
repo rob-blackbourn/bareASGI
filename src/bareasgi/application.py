@@ -71,11 +71,17 @@ class Application:
         """Construct the application
 
         :param middlewares: Optional list of middleware callbacks.
+        :type middlewares: Optional[List[HttpMiddlewareCallback]]
         :param http_router: Optional router to for http routes.
+        :type http_router: Optional[HttpRouter]
         :param web_socket_router: Optional router for web routes.
+        :type web_socket_router: Optional[WebSocketRouter]
         :param startup_handlers: Optional handlers to run at startup.
+        :type startup_handlers: Optional[List[StartupHandler]]
         :param shutdown_handlers: Optional handlers to run at shutdown.
+        :type shutdown_handlers: Optional[List[ShutdownHandler]]
         :param info: Optional dictionary for user data.
+        :type info: Optional[MutableMapping[str, Any]]
         """
         self._context: Mapping[str, Any] = {
             'info': info or {},
