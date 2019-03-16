@@ -53,6 +53,17 @@ The package can be installed with pip.
 
 This is a Python3.7 and later package with no dependencies.
 
+Optional Packages
+-----------------
+
+The following packages provide additional functionality:
+
+* `bareASGI-cors <https://github.com/rob-blackbourn/bareasgi-cors>`_ for CORS suuport.
+* `bareASGI-static <https://github.com/rob-blackbourn/bareasgi-static>`_ for serving static files.
+* `bareASGI-jinja2 <https://github.com/rob-blackbourn/bareasgi-jinja2>`_ for templating with jinja2.
+* `bareASGI-graphql-next <https://github.com/rob-blackbourn/bareasgi-graphql-next>`_ for GraphQL suuport.
+
+
 .. toctree::
     :maxdepth: 2
     :caption: Contents:
