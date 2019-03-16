@@ -77,3 +77,12 @@ WebSocket
 .. autoclass:: bareasgi.WebSocket
     :members:
     :undoc-members:
+
+Responses
+---------
+
+.. authfunction:: bareasgi.bytes_response
+
+.. authfunction:: bareasgi.text_response
+
+.. authfunction:: bareasgi.json_response
