@@ -58,10 +58,10 @@ Optional Packages
 
 The following packages provide additional functionality:
 
-* `bareASGI-cors <https://github.com/rob-blackbourn/bareasgi-cors>`_ for CORS suuport.
-* `bareASGI-static <https://github.com/rob-blackbourn/bareasgi-static>`_ for serving static files.
-* `bareASGI-jinja2 <https://github.com/rob-blackbourn/bareasgi-jinja2>`_ for templating with jinja2.
-* `bareASGI-graphql-next <https://github.com/rob-blackbourn/bareasgi-graphql-next>`_ for GraphQL suuport.
+* `bareASGI-cors <https://bareasgi-cors.readthedocs.io/en/latest/>`_ for CORS support.
+* `bareASGI-static <https://bareasgi-static.readthedocs.io/en/latest/>`_ for serving static files.
+* `bareASGI-jinja2 <https://bareasgi-jinja2.readthedocs.io/en/latest/>`_ for templating with jinja2.
+* `bareASGI-graphql-next <https://bareasgi-graphql-next.readthedocs.io/en/latest/>`_ for GraphQL support.
 
 
 .. toctree::
