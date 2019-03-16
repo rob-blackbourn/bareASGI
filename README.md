@@ -1,4 +1,4 @@
-# bareasgi
+# bareASGI
 
 A lightweight ASGI framework (read the [documentation](https://bareasgi.readthedocs.io/en/latest/))
 
