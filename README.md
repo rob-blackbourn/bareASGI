@@ -10,8 +10,10 @@ Work in progress.
 
 This is a _bare_ ASGI web server framework. The goal is to provide
 a minimal implementation, with other facilities (serving static files, CORS, sessions, etc.)
-being implemented by optional packages. The goal is to keep the implementation
-clear and lightweight.
+being implemented by optional packages.
+
+Many of the features provided by web frameworks are not required for a given app, or when required conflict with the
+version or varient required for a given solution. 
 
 See also:
 * [basreASGI-cors](https://github.com/rob-blackbourn/bareasgi-cors) for cross origin resource sharing
