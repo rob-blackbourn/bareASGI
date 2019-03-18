@@ -16,10 +16,10 @@ Some of the features provided by web frameworks are not required for a given app
 version or varient required for a given solution. 
 
 See also:
-* [basreASGI-cors](https://github.com/rob-blackbourn/bareasgi-cors) for cross origin resource sharing
-* [basreASGI-static](https://github.com/rob-blackbourn/bareasgi-static) for static file serving
-* [basreASGI-jinja2](https://github.com/rob-blackbourn/bareasgi-jinja2) for Jinja2 template rendering
-* [basreASGI-graphql-next](https://github.com/rob-blackbourn/bareasgi-graphql-next) for GraphQL
+* [bareASGI-cors](https://github.com/rob-blackbourn/bareasgi-cors) for cross origin resource sharing
+* [bareASGI-static](https://github.com/rob-blackbourn/bareasgi-static) for static file serving
+* [bareASGI-jinja2](https://github.com/rob-blackbourn/bareasgi-jinja2) for Jinja2 template rendering
+* [bareASGI-graphql-next](https://github.com/rob-blackbourn/bareasgi-graphql-next) for GraphQL
 
 ## Functionality
 
