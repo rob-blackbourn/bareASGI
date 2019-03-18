@@ -13,6 +13,12 @@ a minimal implementation, with other facilities (serving static files, CORS, ses
 being implemented by optional packages. The goal is to keep the implementation
 clear and lightweight.
 
+See also:
+* [basreASGI-cors](https://github.com/rob-blackbourn/bareasgi-cors) for cross origin resource sharing
+* [basreASGI-static](https://github.com/rob-blackbourn/bareasgi-static) for static file serving
+* [basreASGI-jinja2](https://github.com/rob-blackbourn/bareasgi-jinja2) for Jinja2 template rendering
+* [basreASGI-graphql-next](https://github.com/rob-blackbourn/bareasgi-graphql-next) for GraphQL
+
 ## Functionality
 
 The framework supports:
