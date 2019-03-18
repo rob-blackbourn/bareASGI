@@ -81,8 +81,8 @@ WebSocket
 Responses
 ---------
 
-.. authfunction:: bareasgi.bytes_response
+.. autofunction:: bareasgi.bytes_response
 
-.. authfunction:: bareasgi.text_response
+.. autofunction:: bareasgi.text_response
 
-.. authfunction:: bareasgi.json_response
+.. autofunction:: bareasgi.json_response

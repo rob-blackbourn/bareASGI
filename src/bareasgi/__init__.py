@@ -3,6 +3,7 @@ __version__ = '0.3.0'
 from .application import Application
 from .types import (
     Scope,
+    Header,
     Info,
     RouteMatches,
     Content,
@@ -18,6 +19,11 @@ from .streaming import (
     bytes_reader,
     bytes_writer
 )
+from .responses import (
+    bytes_response,
+    text_response,
+    json_response
+)
 from .cookies import (
     make_cookie,
     make_expired_cookie
@@ -27,6 +33,7 @@ __all__ = [
     "Application",
 
     "Scope",
+    "Header",
     "Info",
     "RouteMatches",
     "Content",
@@ -39,6 +46,10 @@ __all__ = [
     "text_reader",
     "bytes_writer",
     "bytes_reader",
+
+    "bytes_response",
+    "text_response",
+    "json_response",
 
     "make_cookie",
     "make_expired_cookie"
