@@ -23,7 +23,6 @@ import sys
 src = os.path.abspath('../src/')
 sys.path.insert(0, src)
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -84,7 +83,6 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -97,6 +95,7 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {
+    'logo': 'peach.png',
     'description': 'A lightweight ASGI framework',
     'github_user': 'rob-blackbourn',
     'github_repo': 'bareasgi',
@@ -124,12 +123,10 @@ html_sidebars = {
     ]
 }
 
-
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'bareASGIdoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -159,7 +156,6 @@ latex_documents = [
      'Rob Blackbourn', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -168,7 +164,6 @@ man_pages = [
     (master_doc, 'bareasgi', 'bareASGI Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -180,9 +175,6 @@ texinfo_documents = [
      author, 'bareASGI', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
