@@ -23,7 +23,7 @@ conformed to the specification could choose from a selection of servers
 which supported the spec.
 
 The ASGI specification is an asynchronous version of WSGI, which supports
-the async/awit functionlity of Python 3. This allows us to right a responsive
+the async/awit functionlity of Python 3. This allows us to write a responsive
 web service without the necessity of creating multiple processes, although
 this may still be desirable for more performance.
 
