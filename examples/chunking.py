@@ -43,6 +43,20 @@ async def with_content_length(scope: Scope, info: Info, matches: RouteMatches, c
     ]
     return 200, headers, non_chunking_writer(info['text'])
 
+async def with_content_length_and_chunking(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    headers = [
+        (b'content-type', b'text/plain'),
+        (b'content-length', str(len(info['text'])).encode('ascii')),
+    ]
+    return 200, headers, chunking_writer(info['text'])
+
+async def invalid_content_length_and_chunking(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    headers = [
+        (b'content-type', b'text/plain'),
+        (b'content-length', str(int(len(info['text'])/2)).encode('ascii')),
+    ]
+    return 200, headers, chunking_writer(info['text'])
+
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     html = """
 <!DOCTYPE html>
@@ -52,6 +66,8 @@ async def index(scope: Scope, info: Info, matches: RouteMatches, content: Conten
       <li><a href='/with_chunking'>with chunking</a></li>
       <li><a href='/without_chunking'>without chunking</a></li>
       <li><a href='/with_content_length'>with content_length</a></li>
+      <li><a href='/with_content_length_and_chunking'>with content_length and chunking</a></li>
+      <li><a href='/invalid_content_length_and_chunking'>invalid content_length and chunking</a></li>
     </ul>
   </body>
 </html>
@@ -73,5 +89,7 @@ if __name__ == "__main__":
     app.http_router.add({'GET'}, '/with_chunking', with_chunking)
     app.http_router.add({'GET'}, '/without_chunking', without_chunking)
     app.http_router.add({'GET'}, '/with_content_length', with_content_length)
+    app.http_router.add({'GET'}, '/with_content_length_and_chunking', with_content_length_and_chunking)
+    app.http_router.add({'GET'}, '/invalid_content_length_and_chunking', invalid_content_length_and_chunking)
 
     uvicorn.run(app, port=9009)
