@@ -39,13 +39,13 @@ async def _send_response(
         buf = await anext(body) if body else None
     except StopAsyncIteration:
         buf = None
-    if not buf:
+    if buf is None:
         logger.debug(f'Sending "http.response.body" with empty body', extra=response_body)
         await send(response_body)
         return
 
     # Continue to get and send the body until exhausted.
-    while buf:
+    while buf is not None:
         response_body['body'] = buf
         try:
             buf = await anext(body)
@@ -54,7 +54,8 @@ async def _send_response(
             buf = None
             response_body['more_body'] = False
         logger.debug(f'Sending "http.response.body" with more_body="{response_body["more_body"]}', extra=response_body)
-        await send(response_body)
+        if len(response_body['body']) > 0:
+            await send(response_body)
 
 
 async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> AsyncIterable[bytes]:
