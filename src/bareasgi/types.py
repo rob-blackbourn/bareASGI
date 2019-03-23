@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Mapping, AsyncIterable, AsyncGenerator, Union, AbstractSet
+from typing import Mapping, MutableMapping, AsyncIterable, AsyncGenerator, Union, AbstractSet
 from typing import Any, Callable, Optional, Tuple, List
 from typing import Awaitable
 
@@ -23,7 +23,7 @@ class WebSocketInternalError(Exception):
 Scope = Mapping[str, Any]
 Message = Mapping[str, Any]
 Context = Optional[Mapping[str, Any]]
-Info = Optional[Mapping[str, Any]]
+Info = Optional[MutableMapping[str, Any]]
 
 Receive = Callable[[], Awaitable[Message]]
 Send = Callable[[Message], Awaitable[None]]
