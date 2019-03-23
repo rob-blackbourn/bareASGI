@@ -1,5 +1,6 @@
 from typing import AsyncGenerator
 import codecs
+import zlib
 from .types import Content
 
 
@@ -30,13 +31,21 @@ async def text_reader(content: Content, encoding: str = 'utf-8') -> str:
     return text
 
 
-async def bytes_writer(buf: bytes) -> AsyncGenerator[bytes, None]:
+async def bytes_writer(buf: bytes, chunk_size: int = -1) -> AsyncGenerator[bytes, None]:
     """Creates an asynchronous generator from the supplied response body.
 
     :param buf: The response body to return.
+    :param chunk_size: The size of each chunk to send or -1 to send as a single chunk.
     :return: An asynchronous generator of bytes.
     """
-    yield buf
+
+    if chunk_size == -1:
+        yield buf
+    else:
+        start, end = 0, chunk_size
+        while start < len(buf):
+            yield buf[start:end]
+            start, end = end, end + chunk_size
 
 
 async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[bytes, None]:
@@ -47,3 +56,32 @@ async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[byte
     :return: An asynchronous generator of bytes.
     """
     yield text.encode(encoding=encoding)
+
+
+def make_gzip_compressobj():
+    return zlib.compressobj(9, zlib.DEFLATED, zlib.MAX_WBITS | 16)
+
+
+def make_deflate_compressobj():
+    return zlib.compressobj(9, zlib.DEFLATED, -zlib.MAX_WBITS)
+
+
+def make_compress_compressobj():
+    return zlib.compressobj(9, zlib.DEFLATED, zlib.MAX_WBITS)
+
+
+async def compression_writer_adapter(
+        writer: AsyncGenerator[bytes, None],
+        compressobj
+) -> AsyncGenerator[bytes, None]:
+    async for buf in writer:
+        yield compressobj.compress(buf)
+    yield compressobj.flush()
+
+
+def compression_writer(
+        buf: bytes,
+        compressobj,
+        chunk_size: int = -1
+) -> AsyncGenerator[bytes, None]:
+    return compression_writer_adapter(bytes_writer(buf, chunk_size), compressobj)

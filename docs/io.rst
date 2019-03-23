@@ -54,12 +54,12 @@ Chunking
 --------
 
 If content is sent without any headers an ASGI server will add the header
-:doc:`transfer-encoding <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding>`
+`transfer-encoding <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding>`_
 set to ``chunking``. In this mode the server will send out each part of the
 body in **length prefixed** "chunks".
 
 If the content length is known and a
-:doc: `content-length <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Length>`
+`content-length <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Length>`_
 header is set, the ASGI server will not add the chunked transfer encoding, but you can still send
 the data in multiple parts.
 
