@@ -32,7 +32,7 @@ class BasicHttpRouter(HttpRouter):
 
 
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
-        logger.debug(f'Adding route for {{{methods}}} on "{path}"')
+        logger.debug(f'Adding route for {methods} on "{path}"')
         for method in methods:
             path_definition_list = self._routes.setdefault(method, [])
             path_definition_list.append((PathDefinition(path), callback))
