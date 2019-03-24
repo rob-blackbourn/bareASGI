@@ -9,7 +9,7 @@ from bareasgi import (
     text_writer
 )
 
-from bareasgi.streaming import (
+from bareasgi.compression import (
     compression_writer,
     make_compress_compressobj,
     make_deflate_compressobj,

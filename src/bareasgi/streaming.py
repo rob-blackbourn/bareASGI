@@ -1,6 +1,5 @@
 from typing import AsyncGenerator
 import codecs
-import zlib
 from .types import Content
 
 
@@ -56,32 +55,3 @@ async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[byte
     :return: An asynchronous generator of bytes.
     """
     yield text.encode(encoding=encoding)
-
-
-def make_gzip_compressobj():
-    return zlib.compressobj(9, zlib.DEFLATED, zlib.MAX_WBITS | 16)
-
-
-def make_deflate_compressobj():
-    return zlib.compressobj(9, zlib.DEFLATED, -zlib.MAX_WBITS)
-
-
-def make_compress_compressobj():
-    return zlib.compressobj(9, zlib.DEFLATED, zlib.MAX_WBITS)
-
-
-async def compression_writer_adapter(
-        writer: AsyncGenerator[bytes, None],
-        compressobj
-) -> AsyncGenerator[bytes, None]:
-    async for buf in writer:
-        yield compressobj.compress(buf)
-    yield compressobj.flush()
-
-
-def compression_writer(
-        buf: bytes,
-        compressobj,
-        chunk_size: int = -1
-) -> AsyncGenerator[bytes, None]:
-    return compression_writer_adapter(bytes_writer(buf, chunk_size), compressobj)
