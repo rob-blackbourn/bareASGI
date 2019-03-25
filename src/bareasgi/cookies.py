@@ -1,4 +1,3 @@
-from .types import Header
 import http.cookies
 
 
@@ -11,7 +10,7 @@ def make_cookie(
         domain: str = None,
         secure: bool = False,
         httponly: bool = False,
-) -> Header:
+) -> bytes:
     cookie = http.cookies.SimpleCookie()
     cookie[key] = value
     if max_age is not None:
@@ -27,8 +26,8 @@ def make_cookie(
     if httponly:
         cookie[key]["httponly"] = True  # type: ignore
     cookie_val = cookie.output(header="").strip()
-    return b"set-cookie", cookie_val.encode()
+    return cookie_val.encode('ascii')
 
 
-def make_expired_cookie(key: str, path: str = "/", domain: str = None) -> Header:
+def make_expired_cookie(key: str, path: str = "/", domain: str = None) -> bytes:
     return make_cookie(key, expires=0, max_age=0, path=path, domain=domain)
