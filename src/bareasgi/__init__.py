@@ -1,5 +1,3 @@
-__version__ = '0.3.0'
-
 from .application import Application
 from .types import (
     Scope,
