@@ -1,4 +1,5 @@
 import collections
+from datetime import datetime
 from typing import List, Optional, Mapping, MutableMapping
 from .types import Header
 
@@ -156,3 +157,22 @@ def vary(headers: List[Header]) -> Optional[List[bytes]]:
     """
     value = find(b'vary', headers)
     return value.split(b', ') if value is not None else None
+
+
+def find_date(name: bytes, headers: List[Header]) -> Optional[datetime]:
+    """Find a header containing a date.
+
+    :param name: The name of the header.
+    :param headers: The headers.
+    :return: The date if found, otherwise None.
+    """
+    value = find(name, headers)
+    return datetime.strptime(value.decode(), '%a, %d %b %Y %H:%M:%S %Z') if value else None
+
+
+def if_modified_since(headers: List[Header]) -> Optional[datetime]:
+    return find_date(b'if-modified-since', headers)
+
+
+def last_modified(headers: List[Header]) -> Optional[datetime]:
+    return find_date(b'if-modified-since', headers)

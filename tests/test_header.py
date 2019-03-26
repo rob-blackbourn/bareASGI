@@ -1,3 +1,4 @@
+from datetime import datetime
 import bareasgi.header as header
 
 
@@ -74,3 +75,10 @@ def test_to_dict():
         b'vary': [b'accept-encoding, user-agent'],
         b'cookie': [b'one=first; two=second; three=third;', b'four=fourth; ']
     }
+
+
+def test_if_modified_since():
+    headers = [
+        (b'if-modified-since', b'Wed, 21 Oct 2015 07:28:00 GMT')
+    ]
+    assert header.if_modified_since(headers) == datetime(2015, 10, 21, 7, 28, 0)
