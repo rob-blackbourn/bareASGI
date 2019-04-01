@@ -8,7 +8,7 @@ def bytes_response(
         status: int,
         headers: List[Header],
         buf: bytes,
-        content_type: bytes,
+        content_type: bytes = b'application/octet-stream',
         chunk_size: int = -1
 ) -> HttpResponse:
     """
@@ -17,7 +17,7 @@ def bytes_response(
     :param status: The HTTP status code.
     :param headers: The HTTP headers.
     :param buf: The date to send.
-    :param content_type: The content type of the data.
+    :param content_type: The content type of the data (defaults to application/octet-stream).
     :param chunk_size: The size of each chunk to send or -1 to send as a single chunk.
     :return: The HTTP response.
     """
