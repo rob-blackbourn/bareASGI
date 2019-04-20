@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Mapping, MutableMapping, AsyncIterable, AsyncGenerator, Union, AbstractSet
+from typing import Mapping, MutableMapping, AsyncIterable, AsyncIterator, Union, AbstractSet
 from typing import Any, Callable, Optional, Tuple, List
 from typing import Awaitable
 
@@ -40,7 +40,7 @@ Headers = List[Header]
 
 RouteMatches = Mapping[str, Any]
 Content = AsyncIterable[bytes]
-Reply = Callable[[int, List[Header], Optional[AsyncGenerator[bytes, None]]], Optional[Awaitable[None]]]
+Reply = Callable[[int, List[Header], Optional[AsyncIterator[bytes]]], Optional[Awaitable[None]]]
 
 
 class WebSocket(metaclass=ABCMeta):
@@ -57,7 +57,6 @@ class WebSocket(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-
     @abstractmethod
     async def receive(self) -> Optional[Union[bytes, str]]:
         """Receive data from the WebSocket.
@@ -66,7 +65,6 @@ class WebSocket(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-
     @abstractmethod
     async def send(self, content: Union[bytes, str]) -> None:
         """Send data to the client.
@@ -74,7 +72,6 @@ class WebSocket(metaclass=ABCMeta):
         :param content: Either bytes or a strng.
         """
         raise NotImplementedError
-
 
     @abstractmethod
     async def close(self, code: int = 1000) -> None:
@@ -85,7 +82,7 @@ class WebSocket(metaclass=ABCMeta):
         raise NotImplementedError
 
 
-HttpResponse = Tuple[int, Optional[List[Header]], Optional[AsyncGenerator[bytes, None]]]
+HttpResponse = Tuple[int, Optional[List[Header]], Optional[AsyncIterator[bytes]]]
 HttpRequestCallback = Callable[[Scope, Info, RouteMatches, Content], Awaitable[HttpResponse]]
 WebSocketRequestCallback = Callable[[Scope, Info, RouteMatches, WebSocket], Awaitable[None]]
 HttpMiddlewareCallback = Callable[[Scope, Info, RouteMatches, Content, HttpRequestCallback], Awaitable[HttpResponse]]
@@ -98,17 +95,14 @@ class HttpRouter(metaclass=ABCMeta):
     def not_found_response(self):
         raise NotImplementedError
 
-
     @not_found_response.setter
     @abstractmethod
     def not_found_response(self, value: HttpResponse):
         raise NotImplementedError
 
-
     @abstractmethod
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
         raise NotImplementedError
-
 
     @abstractmethod
     def __call__(self, scope: Scope) -> Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]:
@@ -120,7 +114,6 @@ class WebSocketRouter(metaclass=ABCMeta):
     @abstractmethod
     def add(self, path: str, callback: WebSocketRequestCallback) -> None:
         raise NotImplementedError
-
 
     @abstractmethod
     def __call__(self, scope: Scope) -> Tuple[Optional[WebSocketRequestCallback], Optional[RouteMatches]]:

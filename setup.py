@@ -17,6 +17,7 @@ setup(
     version=__version__,
     description='A lightweight ASGI framework',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/rob-blackbourn/bareasgi',
     author='Rob Blackbourn',
     author_email='rob.blackbourn@googlemail.com',

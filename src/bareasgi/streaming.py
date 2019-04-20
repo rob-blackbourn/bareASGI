@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import AsyncIterator
 import codecs
 from .types import Content
 
@@ -30,7 +30,7 @@ async def text_reader(content: Content, encoding: str = 'utf-8') -> str:
     return text
 
 
-async def bytes_writer(buf: bytes, chunk_size: int = -1) -> AsyncGenerator[bytes, None]:
+async def bytes_writer(buf: bytes, chunk_size: int = -1) -> AsyncIterator[bytes]:
     """Creates an asynchronous generator from the supplied response body.
 
     :param buf: The response body to return.
@@ -47,11 +47,20 @@ async def bytes_writer(buf: bytes, chunk_size: int = -1) -> AsyncGenerator[bytes
             start, end = end, end + chunk_size
 
 
-async def text_writer(text: str, encoding: str = 'utf-8') -> AsyncGenerator[bytes, None]:
+async def text_writer(text: str, encoding: str = 'utf-8', chunk_size: int = -1) -> AsyncIterator[bytes]:
     """Creates an asynchronous generator from the supplied response body.
 
     :param text: The response body.
     :param encoding:  The encoding to apply when transforming the text into bytes (defaults to 'utf-8').
+    :param chunk_size: The size of each chunk to send or -1 to send as a single chunk.
     :return: An asynchronous generator of bytes.
     """
     yield text.encode(encoding=encoding)
+
+    if chunk_size == -1:
+        yield text
+    else:
+        start, end = 0, chunk_size
+        while start < len(text):
+            yield text[start:end]
+            start, end = end, end + chunk_size
