@@ -62,6 +62,7 @@ The following packages provide additional functionality:
 * `bareASGI-static <https://bareasgi-static.readthedocs.io/en/latest/>`_ for serving static files.
 * `bareASGI-jinja2 <https://bareasgi-jinja2.readthedocs.io/en/latest/>`_ for templating with jinja2.
 * `bareASGI-graphql-next <https://bareasgi-graphql-next.readthedocs.io/en/latest/>`_ for GraphQL support.
+* `bareClient <https://bareclient.readthedocs.io/en/latest/>`_ a lightweight HTTP client.
 
 
 .. toctree::
