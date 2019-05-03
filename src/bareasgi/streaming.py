@@ -55,12 +55,11 @@ async def text_writer(text: str, encoding: str = 'utf-8', chunk_size: int = -1) 
     :param chunk_size: The size of each chunk to send or -1 to send as a single chunk.
     :return: An asynchronous generator of bytes.
     """
-    yield text.encode(encoding=encoding)
 
     if chunk_size == -1:
-        yield text
+        yield text.encode(encoding=encoding)
     else:
         start, end = 0, chunk_size
         while start < len(text):
-            yield text[start:end]
+            yield text[start:end].encode(encoding=encoding)
             start, end = end, end + chunk_size
