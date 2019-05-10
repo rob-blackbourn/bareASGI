@@ -76,6 +76,8 @@ The following packages provide additional functionality:
     application
     middleware
     api
+    background_tasks
+    server_sent_events
 
 Indices and tables
 ==================
