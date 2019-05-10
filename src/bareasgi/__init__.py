@@ -9,7 +9,8 @@ from .types import (
     WebSocket,
     HttpResponse,
     HttpRequestCallback,
-    HttpMiddlewareCallback
+    HttpMiddlewareCallback,
+    Message
 )
 from .streaming import (
     text_reader,
@@ -39,6 +40,7 @@ __all__ = [
     "WebSocket",
     "HttpResponse",
     "HttpRequestCallback",
+    "Message",
 
     "text_writer",
     "text_reader",

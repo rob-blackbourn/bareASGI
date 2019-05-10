@@ -84,7 +84,7 @@ class Application:
         :type info: Optional[MutableMapping[str, Any]]
         """
         self._context: Mapping[str, Any] = {
-            'info': info or {},
+            'info': dict() if info is None else info,
             'lifespan': {
                 'lifespan.startup': startup_handlers or [],
                 'lifespan.shutdown': shutdown_handlers or []

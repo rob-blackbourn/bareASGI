@@ -1,3 +1,4 @@
+import asyncio
 from typing import List, Optional, AsyncIterable
 import logging
 from .types import (
@@ -77,9 +78,9 @@ async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> Asyn
 
 class HttpInstance:
 
-    def __init__(self, scope: Scope, context: Context, info: Optional[Info] = None) -> None:
+    def __init__(self, scope: Scope, context: Context, info: Info) -> None:
         self.scope = scope
-        self.info = info or {}
+        self.info = info
         # Find the route.
         route_handler: HttpRouter = context['router']
         self.request_callback, self.matches = route_handler(scope)
@@ -91,19 +92,43 @@ class HttpInstance:
 
     async def __call__(self, receive: Receive, send: Send) -> None:
 
-        request = await receive()
-        request_type = request['type']
-        logger.debug(f'Received request {request_type}', extra=request)
+        logger.debug('start handling request')
 
-        if request_type == 'http.request':
+        try:
+            request = await receive()
+            if request['type'] != 'http.request':
+                raise HttpInternalError('Expected http.request')
+
             response = await self.request_callback(
                 self.scope,
                 self.info,
                 self.matches,
                 _body_iterator(receive, request.get('body', b''), request.get('more_body', False)),
             )
-            await _send_response(send, *response)
 
-        elif request_type == 'http.disconnect':
-            # TODO: What to do here?
-            raise HttpDisconnectError
+            send_task = asyncio.create_task(_send_response(send, *response))
+            receive_task = asyncio.create_task(receive())
+            tasks = [send_task, receive_task]
+
+            is_connected = True
+
+            while is_connected:
+
+                done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+                tasks = pending
+
+                if receive_task in done:
+                    request = receive_task.result()
+                    if request['type'] != 'http.disconnect':
+                        raise HttpInternalError('Expected http.disconnect')
+
+                    logger.debug('diconnecting')
+
+                    for task in pending:
+                        task.cancel()
+
+                    is_connected = False
+
+            logger.debug('finish handling request')
+        except:
+            logger.exception('Failed to process http request')

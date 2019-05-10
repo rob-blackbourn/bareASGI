@@ -14,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 class LifespanInstance:
 
-    def __init__(self, scope: Scope, context: Optional[Context] = None, info: Optional[Info] = None) -> None:
+    def __init__(self, scope: Scope, context: Context, info: Info) -> None:
         self.scope = scope
-        self.context = context or {}
-        self.info = info or {}
+        self.context = context
+        self.info = info
 
 
     async def __call__(self, receive: Receive, send: Send) -> None:
