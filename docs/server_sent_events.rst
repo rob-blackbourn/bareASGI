@@ -70,4 +70,6 @@ events end
     app.http_router.add({'GET'}, '/test', test_page)
     app.http_router.add({'GET'}, '/events', test_events)
 
-    uvicorn.run(app, port=9009)
+    uvicorn.run(app, host='localhost', port=9009)
+
+Note that we set the host to "localhost" to avaoid CORS errors.
