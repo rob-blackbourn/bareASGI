@@ -78,4 +78,4 @@ if __name__ == "__main__":
     app.http_router.add({'GET'}, '/test', test_page)
     app.http_router.add({'GET'}, '/events', test_events)
 
-    uvicorn.run(app, port=9009)
+    uvicorn.run(app, host='localhost', port=9009)
