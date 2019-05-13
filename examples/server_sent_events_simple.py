@@ -53,7 +53,7 @@ async def test_events(scope: Scope, info: Info, matches: RouteMatches, content: 
         while not is_cancelled:
             try:
                 log.debug('Sending event')
-                yield f'data: {datetime.now()}\nretry: 5000\n\n\n'.encode('utf-8')
+                yield f'data: {datetime.now()}\n\n\n'.encode('utf-8')
                 await asyncio.sleep(1)
             except asyncio.CancelledError:
                 log.debug('Cancelled')
