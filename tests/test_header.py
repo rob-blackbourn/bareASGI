@@ -16,19 +16,21 @@ def test_cookie():
         (b'content-type', b'application/json'),
         (b'cookie', b'foo=bar'),
         (b'cookie', b'one=first; two=second; three=third;'),
-        (b'cookie', b'four=fourth; ')
+        (b'cookie', b'four=fourth; '),
+        (b'cookie', b'four=fourth again; ')
     ]
 
     cookies = header.cookie(headers)
     assert len(cookies) == 5
     assert b'one' in cookies
-    assert cookies[b'one'] == b'first'
+    assert cookies[b'one'][0] == b'first'
     assert b'two' in cookies
-    assert cookies[b'two'] == b'second'
+    assert cookies[b'two'][0] == b'second'
     assert b'three' in cookies
-    assert cookies[b'three'] == b'third'
+    assert cookies[b'three'][0] == b'third'
     assert b'four' in cookies
-    assert cookies[b'four'] == b'fourth'
+    assert cookies[b'four'][0] == b'fourth'
+    assert cookies[b'four'][0] == b'fourth again'
 
 
 def test_vary():

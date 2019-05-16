@@ -133,19 +133,20 @@ def content_length(headers: List[Header]) -> Optional[int]:
     return int(value)
 
 
-def cookie(headers: List[Header]) -> Mapping[bytes, bytes]:
+def cookie(headers: List[Header]) -> Mapping[bytes, List[bytes]]:
     """Returns the cookies as a name-value mapping.
 
     :param headers: The headers.
     :return: The cookies as a name-value mapping.
     """
-    cookies: MutableMapping[bytes, bytes] = dict()
+    cookies: MutableMapping[bytes, List[bytes]] = dict()
     for header in find_all(b'cookie', headers):
         for item in header.split(b'; '):
             first, sep, rest = item.partition(b'=')
             if first == b'':
                 continue
-            cookies[first] = rest[:-1] if rest.endswith(b';') else rest
+            cookie = rest[:-1] if rest.endswith(b';') else rest
+            cookies.setdefault(first, []).append(cookie)
     return cookies
 
 

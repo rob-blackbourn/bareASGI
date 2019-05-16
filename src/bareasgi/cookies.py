@@ -1,33 +1,48 @@
-import http.cookies
+from datetime import datetime, timedelta, timezone
+from typing import Optional, Union
+
+_GMT = timezone(timedelta(), 'GMT')
 
 
 def make_cookie(
-        key: str,
-        value: str = "",
-        max_age: int = None,
-        expires: int = None,
-        path: str = "/",
-        domain: str = None,
+        key: bytes,
+        value: bytes,
+        *,
+        expires: Optional[Union[datetime, timedelta]] = None,
+        path: Optional[bytes] = None,
+        domain: Optional[bytes] = None,
         secure: bool = False,
-        httponly: bool = False,
+        http_only: bool = False,
+        same_site: Optional[bool] = None
 ) -> bytes:
-    cookie = http.cookies.SimpleCookie()
-    cookie[key] = value
-    if max_age is not None:
-        cookie[key]["max-age"] = max_age  # type: ignore
+    if key.startswith(b'__Secure-') or key.startswith(b'__Host-') and not secure:
+        raise RuntimeError('Keys starting __Secure- or __Host- require the secure directive')
+
+    cookie = key + b'=' + value
+
     if expires is not None:
-        cookie[key]["expires"] = expires  # type: ignore
-    if path is not None:
-        cookie[key]["path"] = path
+        if isinstance(expires, datetime):
+            cookie += b'; Expires=' + expires.astimezone(_GMT).strftime('%a, %d %b %Y %H:%M:%S %Z').encode()
+        else:
+            cookie += b'; Max-Age=' + str(int(expires.total_seconds())).encode()
+
     if domain is not None:
-        cookie[key]["domain"] = domain
+        cookie += b'; Domain=' + domain
+
+    if path is not None:
+        cookie += b'; Path=' + path
+
     if secure:
-        cookie[key]["secure"] = True  # type: ignore
-    if httponly:
-        cookie[key]["httponly"] = True  # type: ignore
-    cookie_val = cookie.output(header="").strip()
-    return cookie_val.encode('ascii')
+        cookie += b'; Secure'
+
+    if http_only:
+        cookie += b'; HttpOnly'
+
+    if same_site is not None:
+        cookie += b'; SameSite=' + b'Strict' if same_site else b'Lax'
+
+    return cookie
 
 
-def make_expired_cookie(key: str, path: str = "/", domain: str = None) -> bytes:
-    return make_cookie(key, expires=0, max_age=0, path=path, domain=domain)
+def make_expired_cookie(key: str, path: bytes = b'/') -> bytes:
+    return make_cookie(key, b'', expires=timedelta(seconds=0), path=path)
