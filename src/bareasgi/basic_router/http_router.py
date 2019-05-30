@@ -1,6 +1,6 @@
 from typing import AbstractSet, Optional, Tuple
 import logging
-from ..types import (
+from baretypes import (
     HttpRouter,
     RouteMatches,
     Scope,
@@ -38,6 +38,7 @@ class BasicHttpRouter(HttpRouter):
             path_definition_list.append((PathDefinition(path), callback))
 
 
+    # noinspection PyUnusedLocal
     async def _not_found(self, scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
         return self._not_found_response
 

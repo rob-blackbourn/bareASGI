@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List
 import logging
-from bareasgi.types import (
+from baretypes import (
     Context,
     Info,
     Scope,

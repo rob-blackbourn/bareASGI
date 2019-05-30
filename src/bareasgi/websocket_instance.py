@@ -1,6 +1,6 @@
 from typing import Optional, Union
 import logging
-from .types import (
+from baretypes import (
     Scope,
     Info,
     Send,

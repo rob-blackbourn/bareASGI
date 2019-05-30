@@ -1,7 +1,7 @@
 import asyncio
 from typing import List, Optional, AsyncIterable
 import logging
-from .types import (
+from baretypes import (
     HttpInternalError,
     HttpDisconnectError,
     Scope,

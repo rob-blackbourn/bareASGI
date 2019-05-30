@@ -9,7 +9,7 @@ from bareasgi import (
     text_writer
 )
 
-from bareasgi.compression import (
+from bareutils import (
     compression_writer,
     make_compress_compressobj,
     make_deflate_compressobj,
@@ -42,7 +42,6 @@ async def deflate_compression(scope: Scope, info: Info, matches: RouteMatches, c
 
 
 async def compress_compression(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-
     with open(__file__, 'rb') as fp:
         buf = fp.read()
     headers = [

@@ -1,7 +1,6 @@
 from typing import Optional, Tuple, List
 import logging
-from ..types import WebSocketRouter, RouteMatches, Scope
-from ..types import WebSocketRequestCallback
+from baretypes import WebSocketRouter, RouteMatches, Scope, WebSocketRequestCallback
 from .path_definition import PathDefinition
 
 logger = logging.getLogger(__name__)

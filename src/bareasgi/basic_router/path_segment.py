@@ -1,6 +1,6 @@
 from typing import Optional, Tuple, Any, Callable, Mapping
 from datetime import datetime
-from ..types import ParseError
+from baretypes import ParseError
 from ..utils import parse_json_datetime
 
 Converter = Callable[[Any, Optional[str]], Any]
@@ -45,6 +45,7 @@ class PathSegment:
             self.type = None
             self.format = None
 
+
     def match(self, value: str) -> Tuple[bool, Optional[str], Optional[Any]]:
         """Try to match a segment.
 
@@ -62,9 +63,11 @@ class PathSegment:
         else:
             return value == self.name, None, None
 
+
     def __str__(self):
         return '<PathSegment: ' \
-                f'name="{self.name}", is_variable={self.is_variable}, type="{self.type}", format="{self.format}"' \
-                '>'
+            f'name="{self.name}", is_variable={self.is_variable}, type="{self.type}", format="{self.format}"' \
+               '>'
+
 
     __repr__ = __str__

@@ -1,6 +1,6 @@
 from typing import Mapping, Callable, Any
 import logging
-from .types import (
+from baretypes import (
     Scope,
     Context,
     Info,

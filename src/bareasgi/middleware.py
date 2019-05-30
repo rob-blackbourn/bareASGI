@@ -1,5 +1,5 @@
 from functools import partial
-from .types import HttpRequestCallback, HttpMiddlewareCallback
+from baretypes import HttpRequestCallback, HttpMiddlewareCallback
 
 
 def mw(

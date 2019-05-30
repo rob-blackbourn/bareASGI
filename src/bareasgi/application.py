@@ -1,6 +1,6 @@
 from typing import Mapping, List, Any, Optional, MutableMapping
 import logging
-from .types import (
+from baretypes import (
     Scope,
     ASGIInstance,
     HttpRouter,
@@ -12,7 +12,7 @@ from .types import (
 )
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
-from .streaming import text_writer
+from bareutils.streaming import text_writer
 
 DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (404, [(b'content-type', b'text/plain')], text_writer('Not Found'))
 

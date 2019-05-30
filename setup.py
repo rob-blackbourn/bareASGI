@@ -10,6 +10,10 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+# Load the requirements from the text file.
+with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
+    requirements = [x.strip() for x in f.readlines() if x.strip()]
+
 __version__ = '1.4.0'
 
 setup(
@@ -38,6 +42,6 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages(where='src', exclude=['tests', 'examples']),
     setup_requires=['pytest-runner'],
-    install_requires=[],
+    install_requires=requirements,
     tests_require=['pytest']
 )

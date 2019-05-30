@@ -1,5 +1,5 @@
 from .application import Application
-from .types import (
+from baretypes import (
     Scope,
     Header,
     Info,
@@ -12,20 +12,22 @@ from .types import (
     HttpMiddlewareCallback,
     Message
 )
-from .streaming import (
+from bareutils.streaming import (
     text_reader,
     text_writer,
     bytes_reader,
     bytes_writer
 )
-from .responses import (
+from bareutils.responses import (
     bytes_response,
     text_response,
     json_response
 )
-from .cookies import (
-    make_cookie,
-    make_expired_cookie
+from bareutils.cookies import (
+    encode_set_cookie,
+    decode_set_cookie,
+    encode_cookies,
+    decode_cookies
 )
 
 __all__ = [
@@ -40,6 +42,7 @@ __all__ = [
     "WebSocket",
     "HttpResponse",
     "HttpRequestCallback",
+    "HttpMiddlewareCallback",
     "Message",
 
     "text_writer",
@@ -51,6 +54,8 @@ __all__ = [
     "text_response",
     "json_response",
 
-    "make_cookie",
-    "make_expired_cookie"
+    "encode_set_cookie",
+    "decode_set_cookie",
+    "encode_cookies",
+    "decode_cookies"
 ]

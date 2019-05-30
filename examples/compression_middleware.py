@@ -8,7 +8,7 @@ from bareasgi import (
     HttpResponse,
     bytes_writer
 )
-from bareasgi.compression.middleware import make_default_compression_middleware
+from bareasgi_compression.middleware import make_default_compression_middleware
 
 logging.basicConfig(level=logging.DEBUG)
 
