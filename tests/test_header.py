@@ -30,7 +30,7 @@ def test_cookie():
     assert cookies[b'three'][0] == b'third'
     assert b'four' in cookies
     assert cookies[b'four'][0] == b'fourth'
-    assert cookies[b'four'][0] == b'fourth again'
+    assert cookies[b'four'][1] == b'fourth again'
 
 
 def test_vary():
@@ -84,3 +84,15 @@ def test_if_modified_since():
         (b'if-modified-since', b'Wed, 21 Oct 2015 07:28:00 GMT')
     ]
     assert header.if_modified_since(headers) == datetime(2015, 10, 21, 7, 28, 0)
+
+
+def test_set_cookie():
+    headers = [
+        (b'set-cookie', b'foo=abcde; Expires=Fri, 30 Aug 2019 00:00:00 GMT; Domain=example.com; Path=/'),
+        (b'set-cookie', b'foo=fghij; Expires=Fri, 30 Aug 2019 00:00:00 GMT; Domain=example.com; Path=/foo'),
+        (b'set-cookie', b'foo=klmno; Expires=Fri, 30 Aug 2019 00:00:00 GMT; Domain=other.com; Path=/'),
+        (b'set-cookie', b'bar=12345; Expires=Fri, 30 Aug 2019 00:00:00 GMT; Domain=other.com; Path=/'),
+    ]
+    unpacked = header.set_cookie(headers)
+    assert b'foo' in unpacked and b'bar' in unpacked
+    assert len(unpacked[b'foo']) == 3 and len(unpacked[b'bar']) == 1

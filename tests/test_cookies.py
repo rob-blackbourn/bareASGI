@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta, timezone
-from bareasgi.cookies import make_cookie
+from datetime import datetime, timezone
+from bareasgi.cookies import make_cookie, encode_set_cookie, decode_set_cookie, encode_cookies, decode_cookies
 
 
 def test_make_cookie():
@@ -17,3 +17,23 @@ def test_make_cookie():
         path=b'/',
         expires=datetime(2019, 8, 30, 0, 0, 0, tzinfo=timezone.utc)
     ) == b'qwerty=219ffwef9w0f; Expires=Fri, 30 Aug 2019 00:00:00 GMT; Domain=somecompany.co.uk; Path=/'
+
+
+def test_set_cookie():
+    orig = b'qwerty=219ffwef9w0f; Expires=Fri, 30 Aug 2019 00:00:00 GMT; Domain=somecompany.co.uk; Path=/'
+    unpacked = decode_set_cookie(orig)
+    cookie = encode_set_cookie(**unpacked)
+    assert orig == cookie
+    print(unpacked)
+
+
+def test_cookies():
+    orig = b'PHPSESSID=298zf09hf012fh2; csrftoken=u32t4o3tb3gg43; _gat=1'
+    result = decode_cookies(orig)
+    roundtrip = encode_cookies(result)
+    assert orig == roundtrip
+
+    trailing_semi = b'PHPSESSID=298zf09hf012fh2; csrftoken=u32t4o3tb3gg43; _gat=1;'
+    result = decode_cookies(trailing_semi)
+    roundtrip = encode_cookies(result)
+    assert trailing_semi[:-1] == roundtrip

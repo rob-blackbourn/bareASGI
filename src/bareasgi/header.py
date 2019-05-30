@@ -1,7 +1,8 @@
 import collections
 from datetime import datetime
-from typing import List, Optional, Mapping, MutableMapping
+from typing import List, Optional, Mapping, MutableMapping, Any
 from .types import Header
+from .cookies import decode_cookies, decode_set_cookie
 
 
 def index(name: bytes, headers: List[Header]) -> int:
@@ -141,13 +142,22 @@ def cookie(headers: List[Header]) -> Mapping[bytes, List[bytes]]:
     """
     cookies: MutableMapping[bytes, List[bytes]] = dict()
     for header in find_all(b'cookie', headers):
-        for item in header.split(b'; '):
-            first, sep, rest = item.partition(b'=')
-            if first == b'':
-                continue
-            cookie = rest[:-1] if rest.endswith(b';') else rest
-            cookies.setdefault(first, []).append(cookie)
+        for name, value in decode_cookies(header).items():
+            cookies.setdefault(name, []).extend(value)
     return cookies
+
+
+def set_cookie(headers: List[Header]) -> Mapping[bytes, List[Mapping[str, Any]]]:
+    """Returns the cookies as a name-value mapping.
+
+    :param headers: The headers.
+    :return: The cookies as a name-value mapping.
+    """
+    set_cookies: MutableMapping[bytes, List[Mapping[str, Any]]] = dict()
+    for header in find_all(b'set-cookie', headers):
+        decoded = decode_set_cookie(header)
+        set_cookies.setdefault(decoded['name'], []).append(decoded)
+    return set_cookies
 
 
 def vary(headers: List[Header]) -> Optional[List[bytes]]:
