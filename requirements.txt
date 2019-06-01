@@ -1,1 +1,2 @@
 baretypes>2.0<3
+bareutils>=2.2<3
