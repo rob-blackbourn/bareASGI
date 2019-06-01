@@ -51,7 +51,7 @@ The package can be installed with pip.
 
     pip install bareasgi
 
-This is a Python3.7 and later package with no dependencies.
+This is a Python3.7 and later package.
 
 Optional Packages
 -----------------
