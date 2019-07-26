@@ -37,10 +37,12 @@ FORM = """
 """
 
 
+# noinspection PyUnusedLocal
 async def get_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     return 200, [(b'content-type', b'text/html')], text_writer(FORM)
 
 
+# noinspection PyUnusedLocal
 async def post_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     text = await text_reader(content)
     data = urllib.parse.parse_qs(text)

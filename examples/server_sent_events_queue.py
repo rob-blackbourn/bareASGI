@@ -26,7 +26,6 @@ class TimeTicker:
         self.shutdown_event = Event()
         self.listeners: List[Queue] = []
 
-
     async def start(self) -> None:
         while not self.shutdown_event.is_set():
             now = datetime.now()
@@ -39,10 +38,8 @@ class TimeTicker:
             except:
                 log.exception('Cancelled')
 
-
     def stop(self):
         self.shutdown_event.set()
-
 
     def add_listener(self) -> Queue:
         log.debug('Adding a listener')
@@ -50,17 +47,18 @@ class TimeTicker:
         self.listeners.append(listener)
         return listener
 
-
     def remove_listener(self, listener: Queue) -> None:
         self.listeners.remove(listener)
 
 
+# noinspection PyUnusedLocal
 async def start_time_ticker(scope: Scope, info: Info, request: Message) -> None:
     time_ticker = TimeTicker()
     info['time_ticker'] = time_ticker
     info['time_ticker_task'] = asyncio.create_task(time_ticker.start())
 
 
+# noinspection PyUnusedLocal
 async def stop_time_ticker(scope: Scope, info: Info, request: Message) -> None:
     time_ticker: TimeTicker = info['time_ticker']
     log.debug('Stopping time_ticker')
@@ -71,10 +69,12 @@ async def stop_time_ticker(scope: Scope, info: Info, request: Message) -> None:
     log.debug('time_ticker shutdown')
 
 
+# noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     return 303, [(b'Location', b'/test')], None
 
 
+# noinspection PyUnusedLocal
 async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     html = """
 <!DOCTYPE html>
@@ -103,10 +103,10 @@ async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
+# noinspection PyUnusedLocal
 async def test_event(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     time_ticker: TimeTicker = info['time_ticker']
     listener = time_ticker.add_listener()
-
 
     async def listen():
         is_cancelled = False
@@ -117,7 +117,6 @@ async def test_event(scope: Scope, info: Info, matches: RouteMatches, content: C
             except asyncio.CancelledError:
                 is_cancelled = True
         log.debug('Done')
-
 
     headers = [
         (b'cache-control', b'no-cache'),

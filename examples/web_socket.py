@@ -1,4 +1,7 @@
+import asyncio
 import logging
+import os
+import socket
 from bareasgi import (
     Application,
     Scope,
@@ -9,15 +12,23 @@ from bareasgi import (
     WebSocket,
     text_writer
 )
+import bareutils.header as header
 
 logging.basicConfig(level=logging.DEBUG)
 
 
+# noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     return 303, [(b'Location', b'/test')], None
 
 
+# noinspection PyUnusedLocal
 async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    scheme = 'wss' if scope['scheme'] == 'https' else 'ws'
+    host, port = scope['server']
+    if scope['http_version'] == '2':
+        host = header.find(b':authority', scope['headers'])
+
     page = """
     <!DOCTYPE html>
     <html>
@@ -229,10 +240,11 @@ window.onload = function() {{
         </script>
       </body>
     </html>
-    """.format(web_socket_url=f"ws://{scope['server'][0]}:{scope['server'][1]}/test")
+    """.format(web_socket_url=f"{scheme}://{host}:{port}/test")
     return 200, [(b'content-type', b'text/html')], text_writer(page)
 
 
+# noinspection PyUnusedLocal
 async def test_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
     await web_socket.accept()
 
@@ -248,14 +260,45 @@ async def test_callback(scope: Scope, info: Info, matches: RouteMatches, web_soc
     await web_socket.close()
 
 
+# noinspection PyUnusedLocal
+async def test_page1(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    html = """
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Example 1</title>
+  </head>
+  <body>
+    <h1>Example 1</h1>
+
+    <p>This is simple<p>
+  </body>
+</html>
+
+"""
+    return 200, [(b'content-type', b'text/html')], text_writer(html)
+
+
 if __name__ == "__main__":
-    import uvicorn
 
     app = Application()
     app.http_router.add({'GET'}, '/', index)
+    app.http_router.add({'GET'}, '/example1', test_page1)
     app.http_router.add({'GET'}, '/test', test_page)
     app.ws_router.add('/test', test_callback)
 
-    # app.ws_route_handler.add('/{path}', web_socket_request_callback)
+    import uvicorn
+    from hypercorn.asyncio import serve
+    from hypercorn.config import Config
 
-    uvicorn.run(app, port=9009)
+    USE_UVICORN = False
+
+    if USE_UVICORN:
+        uvicorn.run(app, port=9009)
+    else:
+        config = Config()
+        config.bind = [f"{socket.getfqdn()}:9009"]
+        config.certfile = os.path.expanduser("~/.keys/ugsb-rbla01.crt")
+        config.keyfile = os.path.expanduser("~/.keys/ugsb-rbla01.key")
+        asyncio.run(serve(app, config))

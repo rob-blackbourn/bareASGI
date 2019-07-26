@@ -16,10 +16,12 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('server_sent_events')
 
 
+# noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     return 303, [(b'Location', b'/test')], None
 
 
+# noinspection PyUnusedLocal
 async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     html = """
 <!DOCTYPE html>
@@ -47,6 +49,7 @@ async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
+# noinspection PyUnusedLocal
 async def test_events(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     async def send_events():
         is_cancelled = False
@@ -58,7 +61,6 @@ async def test_events(scope: Scope, info: Info, matches: RouteMatches, content: 
             except asyncio.CancelledError:
                 log.debug('Cancelled')
                 is_cancelled = True
-
 
     headers = [
         (b'cache-control', b'no-cache'),

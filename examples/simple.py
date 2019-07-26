@@ -12,6 +12,7 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
+# noinspection PyUnusedLocal
 async def http_request_callback(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
 

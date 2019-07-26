@@ -19,14 +19,12 @@ class WebSocketImpl(WebSocket):
         self._receive = receive
         self._send = send
 
-
     async def accept(self, subprotocol: Optional[str] = None) -> None:
         response = {'type': 'websocket.accept'}
         if subprotocol:
             response['subprotocol'] = subprotocol
         logger.debug('Accepting', extra=response)
         await self._send(response)
-
 
     async def receive(self) -> Optional[Union[bytes, str]]:
         request = await self._receive()
@@ -41,7 +39,6 @@ class WebSocketImpl(WebSocket):
         logger.error(f'Failed to understand request type "{request_type}', extra=request)
         raise WebSocketInternalError(f'Unknown type: "{request_type}"')
 
-
     async def send(self, content: Union[bytes, str]) -> None:
         response = {'type': 'websocket.send'}
 
@@ -55,7 +52,6 @@ class WebSocketImpl(WebSocket):
         logger.debug(f'Sending {response["type"]}', extra=response)
         await self._send(response)
 
-
     async def close(self, code: int = 1000) -> None:
         response = {'type': 'websocket.close', 'code': code}
         logger.debug(f'Closing with code {code}', extra=response)
@@ -64,11 +60,10 @@ class WebSocketImpl(WebSocket):
 
 class WebSocketInstance:
 
-    def __init__(self, scope: Scope, route_handler: WebSocketRouter, info: Info) -> None:
+    def __init__(self, scope: Scope, web_socker_router: WebSocketRouter, info: Info) -> None:
         self.scope = scope
         self.info = info
-        self.request_handler, self.matches = route_handler(scope)
-
+        self.request_handler, self.matches = web_socker_router.resolve(scope['path'])
 
     async def __call__(self, receive: Receive, send: Send):
 

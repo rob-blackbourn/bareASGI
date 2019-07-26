@@ -19,7 +19,6 @@ class LifespanInstance:
         self.context = context
         self.info = info
 
-
     async def __call__(self, receive: Receive, send: Send) -> None:
         # The lifespan scope exists for the duration of the event loop, and only exits on 'lifespan.shutdown'.
         request = self.scope

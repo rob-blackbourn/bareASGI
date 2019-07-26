@@ -19,6 +19,7 @@ from bareutils import (
 logging.basicConfig(level=logging.DEBUG)
 
 
+# noinspection PyUnusedLocal
 async def gzip_compression(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     with open(__file__, 'rb') as fp:
         buf = fp.read()
@@ -30,6 +31,7 @@ async def gzip_compression(scope: Scope, info: Info, matches: RouteMatches, cont
     return 200, headers, compression_writer(buf, make_gzip_compressobj(), 512)
 
 
+# noinspection PyUnusedLocal
 async def deflate_compression(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     with open(__file__, 'rb') as fp:
         buf = fp.read()
@@ -41,6 +43,7 @@ async def deflate_compression(scope: Scope, info: Info, matches: RouteMatches, c
     return 200, headers, compression_writer(buf, make_deflate_compressobj(), 512)
 
 
+# noinspection PyUnusedLocal
 async def compress_compression(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     with open(__file__, 'rb') as fp:
         buf = fp.read()
@@ -52,6 +55,7 @@ async def compress_compression(scope: Scope, info: Info, matches: RouteMatches, 
     return 200, headers, compression_writer(buf, make_compress_compressobj(), 512)
 
 
+# noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     html = """
 <!DOCTYPE html>

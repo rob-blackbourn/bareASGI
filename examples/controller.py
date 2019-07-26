@@ -20,12 +20,12 @@ class InfoController:
         app.http_router.add({'GET'}, '/info', self.get_info)
         app.http_router.add({'POST'}, '/info', self.set_info)
 
-
+    # noinspection PyUnusedLocal
     async def get_info(self, scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
         text = json.dumps(info)
         return 200, [(b'content-type', b'application/json')], text_writer(text)
 
-
+    # noinspection PyUnusedLocal
     async def set_info(self, scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
         text = await text_reader(content)
         data = json.loads(text)
@@ -36,9 +36,9 @@ class InfoController:
 if __name__ == "__main__":
     import uvicorn
 
-    app = Application(info={'name': 'Michael Caine'})
+    application = Application(info={'name': 'Michael Caine'})
 
     info_controller = InfoController()
-    info_controller.add_routes(app)
+    info_controller.add_routes(application)
 
-    uvicorn.run(app, port=9009)
+    uvicorn.run(application, port=9009)

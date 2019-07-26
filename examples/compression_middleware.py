@@ -13,6 +13,7 @@ from bareasgi_compression.middleware import make_default_compression_middleware
 logging.basicConfig(level=logging.DEBUG)
 
 
+# noinspection PyUnusedLocal
 async def http_request_callback(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     with open(__file__, 'rb') as fp:
         buf = fp.read()

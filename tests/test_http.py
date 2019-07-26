@@ -13,9 +13,9 @@ from .mock_io import MockIO
 
 @pytest.mark.asyncio
 async def test_get_text_plain():
+    # noinspection PyUnusedLocal
     async def http_request_callback(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-        return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
-
+        return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test'), None
 
     app = Application()
     app.http_router.add({'GET'}, '/{path}', http_request_callback)
@@ -49,4 +49,4 @@ async def test_get_text_plain():
     body_response = await io.read()
     assert body_response['type'] == 'http.response.body'
     assert body_response['body'].decode() == "This is not a test"
-    assert body_response['more_body'] == False
+    assert not body_response['more_body']

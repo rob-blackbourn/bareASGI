@@ -22,7 +22,6 @@ class Instance:
         'websocket': WebSocketInstance
     }
 
-
     def __init__(self, context: Context, scope: Scope) -> None:
         scope_type = scope['type']
         klass = self.INSTANCES_CLASSES[scope_type]
@@ -30,7 +29,6 @@ class Instance:
         info: Info = context['info']
         logger.debug(f'Creating instance for "{scope_type}"', extra={'scope': scope, 'context': context, 'info': info})
         self.manager = klass(scope, klass_context, info)
-
 
     async def __call__(self, receive: Receive, send: Send) -> None:
         await self.manager(receive, send)

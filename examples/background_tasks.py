@@ -43,6 +43,7 @@ async def time_ticker(shutdown_event: Event) -> None:
     log.debug('The time ticker has stopped')
 
 
+# noinspection PyUnusedLocal
 async def time_ticker_startup_handler(scope: Scope, info: Info, request: Message) -> None:
     """
     This handles starting the time ticker.
@@ -63,6 +64,7 @@ async def time_ticker_startup_handler(scope: Scope, info: Info, request: Message
     info['time_ticker_task'] = asyncio.create_task(time_ticker(shutdown_event))
 
 
+# noinspection PyUnusedLocal
 async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Message) -> None:
     """
     This handles shutting down the time ticker.
@@ -84,6 +86,7 @@ async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Messag
     log.debug('time_ticker shutdown')
 
 
+# noinspection PyUnusedLocal
 async def http_request_callback(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     """
     A Simple endpoint to demonstrate that requests can still be serviced when a background task is running.

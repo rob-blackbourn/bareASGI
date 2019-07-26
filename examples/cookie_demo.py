@@ -6,10 +6,9 @@ from bareasgi import (
     RouteMatches,
     Content,
     HttpResponse,
-    text_reader,
     text_writer
 )
-import bareasgi.header as header
+import bareutils.header as header
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -50,6 +49,7 @@ COOKIES = """
 """
 
 
+# noinspection PyUnusedLocal
 async def get_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     headers = [
         (b'content-type', b'text/html'),
@@ -59,6 +59,7 @@ async def get_form(scope: Scope, info: Info, matches: RouteMatches, content: Con
     return 200, headers, text_writer(FORM)
 
 
+# noinspection PyUnusedLocal
 async def post_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     cookies = header.cookie(scope['headers'])
     html_list = '<dl>'

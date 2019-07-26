@@ -1,5 +1,5 @@
 import asyncio
-from typing import List, Optional, AsyncIterable
+from typing import Optional, AsyncIterable, Tuple, Sequence
 import logging
 from baretypes import (
     HttpInternalError,
@@ -8,7 +8,7 @@ from baretypes import (
     Info,
     Send,
     Receive,
-    Header,
+    Headers,
     HttpRouter,
     Context,
     HttpMiddlewareCallback
@@ -17,46 +17,6 @@ from .middleware import mw
 from .utils import anext
 
 logger = logging.getLogger(__name__)
-
-
-async def _send_response(
-        send: Send,
-        status: int,
-        headers: Optional[List[Header]] = None,
-        body: Optional[AsyncIterable[bytes]] = None
-) -> None:
-    # Create and send the start response.
-    response_start = {'type': 'http.response.start', 'status': status}
-    if headers:
-        response_start['headers'] = headers
-    logger.debug(f'Sending "http.response.start" with status {status}', extra=response_start)
-    await send(response_start)
-
-    # Create and send the response body.
-    response_body = {'type': 'http.response.body'}
-
-    # If we don't get a body, just send the basic response.
-    try:
-        buf = await anext(body) if body else None
-    except StopAsyncIteration:
-        buf = None
-    if buf is None:
-        logger.debug(f'Sending "http.response.body" with empty body', extra=response_body)
-        await send(response_body)
-        return
-
-    # Continue to get and send the body until exhausted.
-    while buf is not None:
-        response_body['body'] = buf
-        try:
-            buf = await anext(body)
-            response_body['more_body'] = True
-        except StopAsyncIteration:
-            buf = None
-            response_body['more_body'] = False
-        logger.debug(f'Sending "http.response.body" with more_body="{response_body["more_body"]}', extra=response_body)
-        if len(response_body['body']) > 0:
-            await send(response_body)
 
 
 async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> AsyncIterable[bytes]:
@@ -82,13 +42,67 @@ class HttpInstance:
         self.scope = scope
         self.info = info
         # Find the route.
-        route_handler: HttpRouter = context['router']
-        self.request_callback, self.matches = route_handler(scope)
+        http_router: HttpRouter = context['router']
+        self.request_callback, self.matches = http_router.resolve(scope['method'], scope['path'])
         # Apply middleware.
-        middleware: Optional[List[HttpMiddlewareCallback]] = context['middlewares']
+        middleware: Optional[Sequence[HttpMiddlewareCallback]] = context['middlewares']
         if middleware:
             self.request_callback = mw(*middleware, handler=self.request_callback)
 
+    @property
+    def _is_http_push_supported(self) -> bool:
+        return self.scope['http_version'] == '2' and 'http.response.push' in self.scope.get('extensions', {})
+
+    async def _send_response(
+            self,
+            send: Send,
+            status: int,
+            headers: Optional[Headers] = None,
+            body: Optional[AsyncIterable[bytes]] = None,
+            pushes: Optional[Sequence[Tuple[str, Headers]]] = None
+    ) -> None:
+        # Create and send the start response.
+        response_start = {'type': 'http.response.start', 'status': status}
+        if headers:
+            response_start['headers'] = headers
+        logger.debug(f'Sending "http.response.start" with status {status}', extra=response_start)
+        await send(response_start)
+
+        if pushes is not None and self._is_http_push_supported:
+            for push_path, push_headers in pushes:
+                logger.debug(f'sending "http.response.push" for path "{push_path}')
+                await send({
+                    'type': 'http.response.push',
+                    'path': push_path,
+                    'headers': push_headers
+                })
+
+        # Create and send the response body.
+        response_body = {'type': 'http.response.body'}
+
+        # If we don't get a body, just send the basic response.
+        try:
+            buf = await anext(body) if body else None
+        except StopAsyncIteration:
+            buf = None
+        if buf is None:
+            logger.debug(f'Sending "http.response.body" with empty body', extra=response_body)
+            await send(response_body)
+            return
+
+        # Continue to get and send the body until exhausted.
+        while buf is not None:
+            response_body['body'] = buf
+            try:
+                buf = await anext(body)
+                response_body['more_body'] = True
+            except StopAsyncIteration:
+                buf = None
+                response_body['more_body'] = False
+            logger.debug(f'Sending "http.response.body" with more_body="{response_body["more_body"]}',
+                         extra=response_body)
+            if len(response_body['body']) > 0:
+                await send(response_body)
 
     async def __call__(self, receive: Receive, send: Send) -> None:
 
@@ -103,10 +117,10 @@ class HttpInstance:
                 self.scope,
                 self.info,
                 self.matches,
-                _body_iterator(receive, request.get('body', b''), request.get('more_body', False)),
+                _body_iterator(receive, request.get('body', b''), request.get('more_body', False))
             )
 
-            send_task = asyncio.create_task(_send_response(send, *response))
+            send_task = asyncio.create_task(self._send_response(send, *response))
             receive_task = asyncio.create_task(receive())
             tasks = [send_task, receive_task]
 
