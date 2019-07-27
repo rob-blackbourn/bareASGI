@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import socket
 from bareasgi import (
     Application,
     Scope,
@@ -18,7 +19,7 @@ log = logging.getLogger('server_sent_events')
 
 # noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    return 303, [(b'Location', b'/example1')], None
+    return 303, [(b'Location', b'/example1')]
 
 
 # noinspection PyUnusedLocal
@@ -58,7 +59,12 @@ async def test_page2(scope: Scope, info: Info, matches: RouteMatches, content: C
 </html>
 
 """
-    return 200, [(b'content-type', b'text/html')], text_writer(html), None
+    return 200, [(b'content-type', b'text/html')], text_writer(html)
+
+
+# noinspection PyUnusedLocal
+async def test_empty(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    return 204
 
 
 if __name__ == "__main__":
@@ -67,18 +73,20 @@ if __name__ == "__main__":
     app.http_router.add({'GET'}, '/', index)
     app.http_router.add({'GET'}, '/example1', test_page1)
     app.http_router.add({'GET'}, '/example2', test_page2)
+    app.http_router.add({'GET'}, '/empty', test_empty)
 
     import uvicorn
     from hypercorn.asyncio import serve
     from hypercorn.config import Config
 
     USE_UVICORN = False
+    host = socket.getfqdn()
 
     if USE_UVICORN:
         uvicorn.run(app, port=9009)
     else:
         config = Config()
-        config.bind = ["ugsb-rbla01.bhdgsystematic.com:9009"]
-        config.certfile = os.path.expanduser("~/.keys/ugsb-rbla01.crt")
-        config.keyfile = os.path.expanduser("~/.keys/ugsb-rbla01.key")
+        config.bind = [f"{host}:9009"]
+        config.certfile = os.path.expanduser(f"~/.keys/{host}.crt")
+        config.keyfile = os.path.expanduser(f"~/.keys/{host}.key")
         asyncio.run(serve(app, config))

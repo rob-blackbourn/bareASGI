@@ -19,15 +19,19 @@ logging.basicConfig(level=logging.DEBUG)
 
 # noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    return 303, [(b'Location', b'/test')], None
+    return 303, [(b'Location', b'/test')]
 
 
 # noinspection PyUnusedLocal
 async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     scheme = 'wss' if scope['scheme'] == 'https' else 'ws'
-    host, port = scope['server']
-    if scope['http_version'] == '2':
-        host = header.find(b':authority', scope['headers'])
+    if scope['http_version'] in ('2', '2.0'):
+        authority = header.find(b':authority', scope['headers']).decode('ascii')
+    else:
+        host, port = scope['server']
+        authority = f'{host}:{port}'
+    web_socket_url = f"{scheme}://{authority}/test"
+    print(web_socket_url)
 
     page = """
     <!DOCTYPE html>
@@ -240,7 +244,7 @@ window.onload = function() {{
         </script>
       </body>
     </html>
-    """.format(web_socket_url=f"{scheme}://{host}:{port}/test")
+    """.format(web_socket_url=web_socket_url)
     return 200, [(b'content-type', b'text/html')], text_writer(page)
 
 
@@ -293,12 +297,13 @@ if __name__ == "__main__":
     from hypercorn.config import Config
 
     USE_UVICORN = False
+    host = socket.getfqdn()
 
     if USE_UVICORN:
         uvicorn.run(app, port=9009)
     else:
         config = Config()
-        config.bind = [f"{socket.getfqdn()}:9009"]
-        config.certfile = os.path.expanduser("~/.keys/ugsb-rbla01.crt")
-        config.keyfile = os.path.expanduser("~/.keys/ugsb-rbla01.key")
+        config.bind = [f"{host}:9009"]
+        config.certfile = os.path.expanduser(f"~/.keys/{host}.crt")
+        config.keyfile = os.path.expanduser(f"~/.keys/{host}.key")
         asyncio.run(serve(app, config))

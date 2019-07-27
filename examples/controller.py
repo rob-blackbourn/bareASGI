@@ -30,7 +30,7 @@ class InfoController:
         text = await text_reader(content)
         data = json.loads(text)
         info.update(data)
-        return 204, None, None
+        return 204
 
 
 if __name__ == "__main__":

@@ -50,8 +50,12 @@ class HttpInstance:
             self.request_callback = mw(*middleware, handler=self.request_callback)
 
     @property
+    def _is_http_2(self) -> bool:
+        return self.scope['http_version'] in ('2', '2.0')
+
+    @property
     def _is_http_push_supported(self) -> bool:
-        return self.scope['http_version'] == '2' and 'http.response.push' in self.scope.get('extensions', {})
+        return self._is_http_2 and 'http.response.push' in self.scope.get('extensions', {})
 
     async def _send_response(
             self,
@@ -65,6 +69,10 @@ class HttpInstance:
         response_start = {'type': 'http.response.start', 'status': status}
         if headers:
             response_start['headers'] = headers
+        else:
+            # Needed for Hypercorn 0.7.1
+            response_start['headers'] = []
+
         logger.debug(f'Sending "http.response.start" with status {status}', extra=response_start)
         await send(response_start)
 
@@ -119,6 +127,9 @@ class HttpInstance:
                 self.matches,
                 _body_iterator(receive, request.get('body', b''), request.get('more_body', False))
             )
+
+            if isinstance(response, int):
+                response = (response,)
 
             send_task = asyncio.create_task(self._send_response(send, *response))
             receive_task = asyncio.create_task(receive())

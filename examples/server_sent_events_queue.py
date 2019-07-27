@@ -71,7 +71,7 @@ async def stop_time_ticker(scope: Scope, info: Info, request: Message) -> None:
 
 # noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    return 303, [(b'Location', b'/test')], None
+    return 303, [(b'Location', b'/test')]
 
 
 # noinspection PyUnusedLocal

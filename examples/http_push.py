@@ -17,7 +17,7 @@ log = logging.getLogger('server_sent_events')
 
 # noinspection PyUnusedLocal
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    return 303, [(b'Location', b'/index.html')], None, None
+    return 303, [(b'Location', b'/index.html')]
 
 
 # noinspection PyUnusedLocal
