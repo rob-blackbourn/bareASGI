@@ -13,6 +13,10 @@ Uvicorn
 
 .. code-block:: python
 
+    import uvicorn
+
+    ...
+
     uvicorn.run(
         app,
         host='127.0.0.1',
@@ -25,6 +29,11 @@ Hypercorn
 ---------
 
 .. code-block:: python
+
+    from hypercorn.asyncio import serve
+    from hypercorn.config import Config
+
+    ...
 
     config = hypercorn.Config()
     config.bind = [ '0.0.0.0:8008' ]
