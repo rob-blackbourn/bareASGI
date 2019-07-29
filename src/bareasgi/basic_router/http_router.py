@@ -1,3 +1,7 @@
+"""
+Http Routing
+"""
+
 from typing import AbstractSet, Optional, Tuple
 import logging
 from baretypes import (
@@ -15,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class BasicHttpRouter(HttpRouter):
+    """A basic http routing implementation"""
 
     def __init__(self, not_found_response: HttpResponse) -> None:
         self._routes = {}
@@ -29,25 +34,45 @@ class BasicHttpRouter(HttpRouter):
         self._not_found_response = value
 
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
-        logger.debug(f'Adding route for {methods} on "{path}"')
+        logger.debug('Adding route for %s on "%s"', methods, path)
         for method in methods:
             path_definition_list = self._routes.setdefault(method, [])
             path_definition_list.append((PathDefinition(path), callback))
 
-    # noinspection PyUnusedLocal
-    async def _not_found(self, scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    # pylint: disable=unused-argument
+    async def _not_found(
+            self,
+            scope: Scope,
+            info: Info,
+            matches: RouteMatches,
+            content: Content
+    ) -> HttpResponse:
         return self._not_found_response
 
-    def resolve(self, method: str, path: str) -> Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]:
+    def resolve(
+            self,
+            method: str,
+            path: str
+    ) -> Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]:
         path_definition_list = self._routes.get(method)
         if path_definition_list:
             for path_definition, handler in path_definition_list:
                 is_match, matches = path_definition.match(path)
                 if is_match:
                     logger.debug(
-                        f'Matched {method} on "{path}" for {path_definition} matching {matches}',
-                        extra={'method': method, 'path': path})
+                        'Matched %s on "%s" for %s matching %s',
+                        method,
+                        path,
+                        path_definition,
+                        matches,
+                        extra={'method': method, 'path': path}
+                    )
                     return handler, matches
 
-        logger.warning(f'Failed to find a match for {method} on "{path}"', extra={'method': method, 'path': path})
+        logger.warning(
+            'Failed to find a match for %s on "%s"',
+            method,
+            path,
+            extra={'method': method, 'path': path}
+        )
         return self._not_found, {}

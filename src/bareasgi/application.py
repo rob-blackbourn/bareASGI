@@ -1,3 +1,7 @@
+"""
+ASGI Application
+"""
+
 from typing import Mapping, Any, Optional, MutableMapping, Sequence
 import logging
 from baretypes import (
@@ -9,9 +13,9 @@ from baretypes import (
     HttpResponse,
     HttpMiddlewareCallback
 )
+from bareutils.streaming import text_writer
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
-from bareutils.streaming import text_writer
 
 DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (
     404,
@@ -91,7 +95,9 @@ class Application:
                 'lifespan.shutdown': shutdown_handlers or []
             },
             'http': {
-                'router': http_router or BasicHttpRouter(not_found_response or DEFAULT_NOT_FOUND_RESPONSE),
+                'router': http_router or BasicHttpRouter(
+                    not_found_response or DEFAULT_NOT_FOUND_RESPONSE
+                ),
                 'middlewares': middlewares or []
             },
             'websocket': web_socket_router or BasicWebSocketRouter()

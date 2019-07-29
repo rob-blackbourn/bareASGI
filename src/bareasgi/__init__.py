@@ -1,4 +1,6 @@
-from .application import Application
+"""bareASGI exports
+"""
+
 from baretypes import (
     Scope,
     Header,
@@ -31,6 +33,7 @@ from bareutils.cookies import (
     encode_cookies,
     decode_cookies
 )
+from .application import Application
 
 __all__ = [
     "Application",

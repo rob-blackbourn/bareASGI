@@ -1,3 +1,7 @@
+"""
+A handler of lifecycle event requests
+"""
+
 from typing import List
 import logging
 from baretypes import (
@@ -12,7 +16,9 @@ from baretypes import (
 logger = logging.getLogger(__name__)
 
 
+# pylint: disable=too-few-public-methods
 class LifespanInstance:
+    """An instance factor for lifespan event requests"""
 
     def __init__(self, scope: Scope, context: Context, info: Info) -> None:
         self.scope = scope
@@ -20,14 +26,15 @@ class LifespanInstance:
         self.info = info
 
     async def __call__(self, receive: Receive, send: Send) -> None:
-        # The lifespan scope exists for the duration of the event loop, and only exits on 'lifespan.shutdown'.
+        # The lifespan scope exists for the duration of the event loop, and
+        # only exits on 'lifespan.shutdown'.
         request = self.scope
         while request['type'] != 'lifespan.shutdown':
             # Fetch the lifespan request
             request = await receive()
             request_type = request['type']
 
-            logger.debug(f'Handling request for "{request_type}"', extra=request)
+            logger.debug('Handling request for "%s"', request_type, extra=request)
 
             # Run the handlers for this action.
             handlers: List[LifespanHandler] = self.context.get(request_type, [])

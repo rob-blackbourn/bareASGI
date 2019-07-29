@@ -1,3 +1,7 @@
+"""
+An example of HTTP/2 server push.
+"""
+
 import asyncio
 import logging
 from bareasgi import (
@@ -12,16 +16,29 @@ from bareasgi import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-log = logging.getLogger('server_sent_events')
+logger = logging.getLogger('server_sent_events')
 
 
-# noinspection PyUnusedLocal
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def index(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which redirects to an index file"""
     return 303, [(b'Location', b'/index.html')]
 
 
-# noinspection PyUnusedLocal
-async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_page(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which returns an HTML document with secondary content"""
+
     html = """
 <!DOCTYPE html>
 <html>
@@ -47,14 +64,20 @@ async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
     return 200, [(b'content-type', b'text/html')], text_writer(html), pushes
 
 
-# noinspection PyUnusedLocal
-async def test_asset(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    js = """
+# pylint: disable=unused-argument
+async def test_asset(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request hadler which provides an asset required by the html."""
+    js_content = """
 function handleClick(id) {
   document.getElementById(id).innerHTML = Date()
 }
 """
-    return 200, [(b'content-type', b'text/javascript')], text_writer(js)
+    return 200, [(b'content-type', b'text/javascript')], text_writer(js_content)
 
 
 if __name__ == "__main__":

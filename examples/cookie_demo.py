@@ -1,4 +1,8 @@
+"""An example of sending andd receiving cookies.
+"""
+
 import logging
+import bareutils.header as header
 from bareasgi import (
     Application,
     Scope,
@@ -8,7 +12,6 @@ from bareasgi import (
     HttpResponse,
     text_writer
 )
-import bareutils.header as header
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -49,8 +52,14 @@ COOKIES = """
 """
 
 
-# noinspection PyUnusedLocal
-async def get_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def get_form(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A response handler which returns a form and sets some cookies"""
     headers = [
         (b'content-type', b'text/html'),
         (b'set-cookie', b'first=first cookie'),
@@ -59,8 +68,14 @@ async def get_form(scope: Scope, info: Info, matches: RouteMatches, content: Con
     return 200, headers, text_writer(FORM)
 
 
-# noinspection PyUnusedLocal
-async def post_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def post_form(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A response handler that reads the cookies from a posted form."""
     cookies = header.cookie(scope['headers'])
     html_list = '<dl>'
     for name, values in cookies.items():

@@ -1,3 +1,7 @@
+"""
+HTTP Instance
+"""
+
 import asyncio
 from typing import Optional, AsyncIterable, Tuple, Sequence
 import logging
@@ -24,7 +28,7 @@ async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> Asyn
     while more_body:
         request = await receive()
         request_type = request['type']
-        logger.debug(f'Received {request_type}', extra=request)
+        logger.debug('Received "%s"', request_type, extra=request)
 
         if request_type == 'http.request':
             body, more_body = request.get('body', b''), request.get('more_body', False)
@@ -32,11 +36,14 @@ async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> Asyn
         elif request_type == 'http.disconnect':
             raise HttpDisconnectError
         else:
-            logger.error(f'Failed to understand request type "{request_type}', extra=request)
+            logger.error('Failed to understand request type "%s"', request_type, extra=request)
             raise HttpInternalError
 
 
+# pylint: disable=too-few-public-methods
 class HttpInstance:
+    """An HTTP instance services an HTTP request.
+    """
 
     def __init__(self, scope: Scope, context: Context, info: Info) -> None:
         self.scope = scope
@@ -57,6 +64,7 @@ class HttpInstance:
     def _is_http_push_supported(self) -> bool:
         return self._is_http_2 and 'http.response.push' in self.scope.get('extensions', {})
 
+    # pylint: disable=too-many-arguments
     async def _send_response(
             self,
             send: Send,
@@ -73,12 +81,12 @@ class HttpInstance:
             # Needed for Hypercorn 0.7.1
             response_start['headers'] = []
 
-        logger.debug(f'Sending "http.response.start" with status {status}', extra=response_start)
+        logger.debug('Sending "http.response.start" with status %s', status, extra=response_start)
         await send(response_start)
 
         if pushes is not None and self._is_http_push_supported:
             for push_path, push_headers in pushes:
-                logger.debug(f'sending "http.response.push" for path "{push_path}')
+                logger.debug('sending "http.response.push" for path "%s"', push_path)
                 await send({
                     'type': 'http.response.push',
                     'path': push_path,
@@ -94,7 +102,7 @@ class HttpInstance:
         except StopAsyncIteration:
             buf = None
         if buf is None:
-            logger.debug(f'Sending "http.response.body" with empty body', extra=response_body)
+            logger.debug('Sending "http.response.body" with empty body', extra=response_body)
             await send(response_body)
             return
 
@@ -107,9 +115,12 @@ class HttpInstance:
             except StopAsyncIteration:
                 buf = None
                 response_body['more_body'] = False
-            logger.debug(f'Sending "http.response.body" with more_body="{response_body["more_body"]}',
-                         extra=response_body)
-            if len(response_body['body']) > 0:
+            logger.debug(
+                'Sending "http.response.body" with more_body="%s',
+                response_body["more_body"],
+                extra=response_body
+            )
+            if response_body['body']:
                 await send(response_body)
 
     async def __call__(self, receive: Receive, send: Send) -> None:
@@ -155,5 +166,5 @@ class HttpInstance:
                     is_connected = False
 
             logger.debug('finish handling request')
-        except:
+        except:  # pylint: disable=bare-except
             logger.exception('Failed to process http request')

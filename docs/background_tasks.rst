@@ -5,6 +5,11 @@ It is a common requirement to run background tasks while the server is processin
 requests. For example incomming data might have to be processed before being used
 in subsequent responses.
 
+An important implementation details is that any code which uses the asyncio event
+loop (e.g. asyncio.Event(), asyncio.Queue(), etc.) *must* be done in the context
+of the ASGI server. Failure to do this will lead to errors complaining that the
+object is owned by a different event loop.
+
 This can be achieved by passing the application startup and shutdown handlers:
 
 .. code-block:: python

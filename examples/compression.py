@@ -1,4 +1,14 @@
+"""
+Compression examples
+"""
+
 import logging
+from bareutils import (
+    compression_writer,
+    make_compress_compressobj,
+    make_deflate_compressobj,
+    make_gzip_compressobj
+)
 from bareasgi import (
     Application,
     Scope,
@@ -9,20 +19,19 @@ from bareasgi import (
     text_writer
 )
 
-from bareutils import (
-    compression_writer,
-    make_compress_compressobj,
-    make_deflate_compressobj,
-    make_gzip_compressobj
-)
-
 logging.basicConfig(level=logging.DEBUG)
 
 
-# noinspection PyUnusedLocal
-async def gzip_compression(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    with open(__file__, 'rb') as fp:
-        buf = fp.read()
+# pylint: disable=unused-argument
+async def gzip_compression(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler that returns it's content compressed with gzip"""
+    with open(__file__, 'rb') as file_pointer:
+        buf = file_pointer.read()
     headers = [
         (b'content-type', b'text/plain'),
         (b'content-encoding', b'gzip')
@@ -31,10 +40,16 @@ async def gzip_compression(scope: Scope, info: Info, matches: RouteMatches, cont
     return 200, headers, compression_writer(buf, make_gzip_compressobj(), 512)
 
 
-# noinspection PyUnusedLocal
-async def deflate_compression(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    with open(__file__, 'rb') as fp:
-        buf = fp.read()
+# pylint: disable=unused-argument
+async def deflate_compression(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which compresses it's content using the deflate method"""
+    with open(__file__, 'rb') as file_pointer:
+        buf = file_pointer.read()
     headers = [
         (b'content-type', b'text/plain'),
         (b'content-encoding', b'deflate')
@@ -43,10 +58,16 @@ async def deflate_compression(scope: Scope, info: Info, matches: RouteMatches, c
     return 200, headers, compression_writer(buf, make_deflate_compressobj(), 512)
 
 
-# noinspection PyUnusedLocal
-async def compress_compression(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
-    with open(__file__, 'rb') as fp:
-        buf = fp.read()
+# pylint: disable=unused-argument
+async def compress_compression(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which compresses it's content using the compress method"""
+    with open(__file__, 'rb') as file_pointer:
+        buf = file_pointer.read()
     headers = [
         (b'content-type', b'text/plain'),
         (b'content-encoding', b'compress')
@@ -55,8 +76,9 @@ async def compress_compression(scope: Scope, info: Info, matches: RouteMatches, 
     return 200, headers, compression_writer(buf, make_compress_compressobj(), 512)
 
 
-# noinspection PyUnusedLocal
+# pylint: disable=unused-argument
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    """A request handler which provides an index of the compression methods"""
     html = """
 <!DOCTYPE html>
 <html>

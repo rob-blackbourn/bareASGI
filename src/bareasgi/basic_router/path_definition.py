@@ -1,9 +1,15 @@
+"""
+Path definitions used by the routers.
+"""
+
 from typing import Optional, Tuple
 from baretypes import RouteMatches
 from .path_segment import PathSegment
 
 
 class PathDefinition:
+    """A class capturing a matchable path"""
+
     NO_MATCH: Tuple[bool, Optional[RouteMatches]] = (False, None)
 
     def __init__(self, path: str) -> None:

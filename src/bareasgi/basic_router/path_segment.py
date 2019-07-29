@@ -1,3 +1,7 @@
+"""
+A segment of a path.
+"""
+
 from typing import Optional, Tuple, Any, Callable, Mapping
 from datetime import datetime
 from baretypes import ParseError
@@ -5,24 +9,32 @@ from ..utils import parse_json_datetime
 
 Converter = Callable[[Any, Optional[str]], Any]
 
+
+def _parse_datetime(value, fmt) -> datetime:
+    return datetime.strptime(value, fmt) if fmt else parse_json_datetime(value)
+
+
 CONVERTERS: Mapping[str, Converter] = {
     'str': lambda value, fmt: value,
     'int': lambda value, fmt: int(value),
     'float': lambda value, fmt: float(value),
-    'datetime': lambda value, fmt: datetime.strptime(value, fmt) if fmt else parse_json_datetime(value),
+    'datetime': _parse_datetime,
     'path': lambda value, fmt: value,
 }
 
 
 class PathSegment:
+    """A class representing the segment of a path"""
 
     def __init__(self, segment: str) -> None:
         """Create a path segment
-        A path segment can be an absolute name "foo", a variable "{foo}", a variable and type "{foo:int}" or a
-        variable, type, and format "{foo:datetime:Y-m-dTH:M:S}".
+        A path segment can be an absolute name "foo", a variable "{foo}", a
+        variable and type "{foo:int}" or a variable, type, and
+        format "{foo:datetime:Y-m-dTH:M:S}".
 
         Valid types are: int, float, str, datetime, path.
-        The 'path' type catches all following segments, so '/foo/{rest:path}' would match '/foo/bar/grum'.
+        The 'path' type catches all following segments, so '/foo/{rest:path}'
+        would match '/foo/bar/grum'.
         """
         if segment.startswith('{') and segment.endswith('}'):
             self.name, *type_and_format = segment[1:-1].split(':', maxsplit=3)
@@ -64,7 +76,10 @@ class PathSegment:
 
     def __str__(self):
         return '<PathSegment: ' \
-            f'name="{self.name}", is_variable={self.is_variable}, type="{self.type}", format="{self.format}"' \
+            f'name="{self.name}"' \
+            f', is_variable={self.is_variable}' \
+            f', type="{self.type}"' \
+            f', format="{self.format}"' \
                '>'
 
     __repr__ = __str__

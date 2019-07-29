@@ -1,3 +1,7 @@
+"""
+An example using forms.
+"""
+
 import logging
 import urllib.parse
 from bareasgi import (
@@ -37,15 +41,28 @@ FORM = """
 """
 
 
-# noinspection PyUnusedLocal
-async def get_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def get_form(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which returns a form"""
     return 200, [(b'content-type', b'text/html')], text_writer(FORM)
 
 
-# noinspection PyUnusedLocal
-async def post_form(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def post_form(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler for the form POST"""
     text = await text_reader(content)
     data = urllib.parse.parse_qs(text)
+    print(data)
     return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
 
 

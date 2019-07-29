@@ -1,2 +1,2 @@
 baretypes>=3.0.5<4
-bareutils>=3.0.1<4
+bareutils>=3.1<4
