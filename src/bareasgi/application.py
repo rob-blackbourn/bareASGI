@@ -13,7 +13,12 @@ from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
 from bareutils.streaming import text_writer
 
-DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (404, [(b'content-type', b'text/plain')], text_writer('Not Found'), None)
+DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (
+    404,
+    [(b'content-type', b'text/plain')],
+    text_writer('Not Found'),
+    None
+)
 
 logger = logging.getLogger(__name__)
 

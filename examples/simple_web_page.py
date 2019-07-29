@@ -79,7 +79,7 @@ if __name__ == "__main__":
     from hypercorn.asyncio import serve
     from hypercorn.config import Config
 
-    USE_UVICORN = False
+    USE_UVICORN = True
     host = socket.getfqdn()
 
     if USE_UVICORN:
