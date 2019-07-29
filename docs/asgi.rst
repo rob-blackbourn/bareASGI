@@ -30,5 +30,8 @@ this may still be desirable for more performance.
 Servers
 -------
 
-A number of servers have been written that support the specification. I have been using
-the `uvicorn <https://www.uvicorn.org/>`_ server.
+A number of servers have been written that support the specification. I have been using:
+
+* `uvicorn <https://www.uvicorn.org/>`_
+* `hypercorn <https://pgjones.gitlab.io/hypercorn/>`_
+

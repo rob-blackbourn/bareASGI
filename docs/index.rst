@@ -78,6 +78,7 @@ The following packages provide additional functionality:
     api
     background_tasks
     server_sent_events
+    ssl
 
 Indices and tables
 ==================
