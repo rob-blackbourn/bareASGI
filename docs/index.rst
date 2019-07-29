@@ -26,7 +26,7 @@ for more.
         text = await text_reader(content)
         data = json.loads(text)
         info.update(data)
-        return 204, None, None
+        return 204
 
     app = Application(info={'name': 'Michael Caine'})
     app.http_router.add({'GET'}, '/info', get_info)

@@ -77,7 +77,7 @@ the contents of the body converted from json.
         text = await text_reader(content)
         data = json.loads(text)
         info.update(data)
-        return 204, None, None
+        return 204
 
     app = Application(info={'name': 'Michael Caine'})
     app.http_router.add({'GET'}, '/info', get_info)
@@ -87,7 +87,7 @@ the contents of the body converted from json.
 
 This example demonstrates how the content can be retrieved from the request on line 10.
 
-Note how lightweight the response (on line 13) is, which simply the 204 (success not content) returned.
+Note how lightweight the response (on line 13) is, with simply the 204 (success not content) returned.
 
 Websocket Handler
 -----------------

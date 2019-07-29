@@ -172,7 +172,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'bareASGI', 'bareASGI Documentation',
-     author, 'bareASGI', 'One line description of project.',
+     author, 'bareASGI', 'A lightweight ASGI web framework.',
      'Miscellaneous'),
 ]
 
