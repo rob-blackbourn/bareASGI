@@ -65,24 +65,9 @@ Middleware
 .. automodule:: bareasgi.middleware
     :members:
 
-Streaming
----------
-
-.. automodule:: bareasgi.streaming
-    :members:
-
 WebSocket
 ---------
 
 .. autoclass:: bareasgi.WebSocket
     :members:
     :undoc-members:
-
-Responses
----------
-
-.. autofunction:: bareasgi.bytes_response
-
-.. autofunction:: bareasgi.text_response
-
-.. autofunction:: bareasgi.json_response
