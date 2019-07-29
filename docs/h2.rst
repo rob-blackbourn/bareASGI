@@ -12,7 +12,7 @@ Upgrading to HTTP/2 is largely transparent. It requires:
 HTTP Push
 ---------
 
-There is a feature called `HTTP/2 server push<https://en.wikipedia.org/wiki/HTTP/2_Server_Push>_` which allows the server to notify the client of urls
+There is a feature called `HTTP/2 server push<https://en.wikipedia.org/wiki/HTTP/2_Server_Push>`_ which allows the server to notify the client of urls
 required by the document being served before the client has received the document.
 
 This can be implemented in the following manner:
