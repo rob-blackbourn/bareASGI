@@ -1,0 +1,45 @@
+HTTP/2
+======
+
+Overview
+--------
+
+Upgrading to HTTP/2 is largely transparent. It requires:
+
+* an ASGI server which supports is (e.g. `Hypercorn <https://pgjones.gitlab.io/hypercorn/>`_)
+* :doc:`TLS incryption </ssl>`
+
+HTTP Push
+---------
+
+There is a feature called `HTTP/2 server push<https://en.wikipedia.org/wiki/HTTP/2_Server_Push>_` which allows the server to notify the client of urls
+required by the document being served before the client has received the document.
+
+This can be implemented in the following manner:
+
+.. code-block:: python
+
+    async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+        html = """
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Example 1</title>
+        <script src="/clickHandler.js"></script>
+      </head>
+      <body>
+        <h1>Example 1</h1>
+        <button type="button" onclick="handleClick('here')">
+            Click me
+        </button>
+        <p id="here" />
+        <script
+      </body>
+    </html>
+
+    """
+        pushes = [
+            ('/clickhandler.js', [(b'accept', b'text/javascript')])
+        ]
+        return 200, [(b'content-type', b'text/html')], text_writer(html), pushes

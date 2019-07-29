@@ -79,6 +79,7 @@ The following packages provide additional functionality:
     background_tasks
     server_sent_events
     ssl
+    h2
 
 Indices and tables
 ==================
