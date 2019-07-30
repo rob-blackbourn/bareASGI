@@ -78,7 +78,6 @@ async def test_page2(
     <p>This is simple<p>
   </body>
 </html>
-
 """
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
