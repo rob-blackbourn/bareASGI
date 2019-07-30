@@ -1,3 +1,7 @@
+"""
+A simple example of server sent events.
+"""
+
 import asyncio
 from datetime import datetime
 import logging
@@ -13,16 +17,23 @@ from bareasgi import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-log = logging.getLogger('server_sent_events')
+logger = logging.getLogger('server_sent_events')
 
 
-# noinspection PyUnusedLocal
+# pylint: disable=unused-argument
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+    """Redirect to the index page"""
     return 303, [(b'Location', b'/test')], None
 
 
-# noinspection PyUnusedLocal
-async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_page(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which provides the page to respond to server sent events"""
     html = """
 <!DOCTYPE html>
 <html>
@@ -49,17 +60,24 @@ async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Co
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
-# noinspection PyUnusedLocal
-async def test_events(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_events(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which provides server sent events"""
+
     async def send_events():
         is_cancelled = False
         while not is_cancelled:
             try:
-                log.debug('Sending event')
+                logger.debug('Sending event')
                 yield f'data: {datetime.now()}\n\n\n'.encode('utf-8')
                 await asyncio.sleep(1)
             except asyncio.CancelledError:
-                log.debug('Cancelled')
+                logger.debug('Cancelled')
                 is_cancelled = True
 
     headers = [

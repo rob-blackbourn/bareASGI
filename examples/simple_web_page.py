@@ -1,3 +1,6 @@
+"""
+A simple web page example
+"""
 import asyncio
 import logging
 import os
@@ -14,16 +17,28 @@ from bareasgi import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-log = logging.getLogger('server_sent_events')
+logger = logging.getLogger('server_sent_events')
 
 
-# noinspection PyUnusedLocal
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def index(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """Redirect to the example"""
     return 303, [(b'Location', b'/example1')]
 
 
-# noinspection PyUnusedLocal
-async def test_page1(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_page1(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which returns some html"""
     html = """
 <!DOCTYPE html>
 <html>
@@ -42,8 +57,14 @@ async def test_page1(scope: Scope, info: Info, matches: RouteMatches, content: C
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
-# noinspection PyUnusedLocal
-async def test_page2(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_page2(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which returns HTML"""
     html = """
 <!DOCTYPE html>
 <html>
@@ -62,8 +83,14 @@ async def test_page2(scope: Scope, info: Info, matches: RouteMatches, content: C
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
-# noinspection PyUnusedLocal
-async def test_empty(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_empty(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which only returns a valid "no content" status"""
     return 204
 
 

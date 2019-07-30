@@ -1,7 +1,12 @@
+"""
+A Websocket example.
+"""
+
 import asyncio
 import logging
 import os
 import socket
+import bareutils.header as header
 from bareasgi import (
     Application,
     Scope,
@@ -12,18 +17,29 @@ from bareasgi import (
     WebSocket,
     text_writer
 )
-import bareutils.header as header
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-# noinspection PyUnusedLocal
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def index(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """Redirect to the test page"""
     return 303, [(b'Location', b'/test')]
 
 
-# noinspection PyUnusedLocal
-async def test_page(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_page(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """Send the page with the example web socket"""
     scheme = 'wss' if scope['scheme'] == 'https' else 'ws'
     if scope['http_version'] in ('2', '2.0'):
         authority = header.find(b':authority', scope['headers']).decode('ascii')
@@ -248,8 +264,14 @@ window.onload = function() {{
     return 200, [(b'content-type', b'text/html')], text_writer(page)
 
 
-# noinspection PyUnusedLocal
-async def test_callback(scope: Scope, info: Info, matches: RouteMatches, web_socket: WebSocket) -> None:
+# pylint: disable=unused-argument
+async def test_callback(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        web_socket: WebSocket
+) -> None:
+    """The websocket callback handler"""
     await web_socket.accept()
 
     try:
@@ -258,14 +280,20 @@ async def test_callback(scope: Scope, info: Info, matches: RouteMatches, web_soc
             if text is None:
                 break
             await web_socket.send('You said: ' + text)
-    except Exception as error:
+    except Exception as error:  # pylint: disable=broad-except
         print(error)
 
     await web_socket.close()
 
 
-# noinspection PyUnusedLocal
-async def test_page1(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def test_page1(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A simple page"""
     html = """
 <!DOCTYPE html>
 <html>
@@ -297,13 +325,13 @@ if __name__ == "__main__":
     from hypercorn.config import Config
 
     USE_UVICORN = False
-    host = socket.getfqdn()
+    hostname = socket.getfqdn()  # pylint: disable=invalid-name
 
     if USE_UVICORN:
         uvicorn.run(app, port=9009)
     else:
         config = Config()
-        config.bind = [f"{host}:9009"]
-        config.certfile = os.path.expanduser(f"~/.keys/{host}.crt")
-        config.keyfile = os.path.expanduser(f"~/.keys/{host}.key")
+        config.bind = [f"{hostname}:9009"]
+        config.certfile = os.path.expanduser(f"~/.keys/{hostname}.crt")
+        config.keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
         asyncio.run(serve(app, config))

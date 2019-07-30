@@ -1,3 +1,7 @@
+"""
+REST style examples.
+"""
+
 import json
 import logging
 from bareasgi import (
@@ -14,12 +18,26 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def get_info(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def get_info(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """Write out the info a dictionary as JSON"""
     text = json.dumps(info)
     return 200, [(b'content-type', b'application/json')], text_writer(text)
 
 
-async def set_info(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def set_info(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """Set the info dictionary to the posted JSON body"""
     text = await text_reader(content)
     data = json.loads(text)
     info.update(data)

@@ -1,3 +1,6 @@
+"""
+A simple request handler.
+"""
 import logging
 from bareasgi import (
     Application,
@@ -12,8 +15,14 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-# noinspection PyUnusedLocal
-async def http_request_callback(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+# pylint: disable=unused-argument
+async def http_request_callback(
+        scope: Scope,
+        info: Info,
+        matches: RouteMatches,
+        content: Content
+) -> HttpResponse:
+    """A request handler which returns some text"""
     return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
 
 
