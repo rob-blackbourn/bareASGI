@@ -2,7 +2,7 @@
 ASGI Application
 """
 
-from typing import Mapping, Any, Optional, MutableMapping, Sequence
+from typing import Mapping, Any, Optional, MutableMapping, List
 import logging
 from baretypes import (
     Scope,
@@ -65,11 +65,11 @@ class Application:
     def __init__(
             self,
             *,
-            middlewares: Optional[Sequence[HttpMiddlewareCallback]] = None,
+            middlewares: Optional[List[HttpMiddlewareCallback]] = None,
             http_router: Optional[HttpRouter] = None,
             web_socket_router: Optional[WebSocketRouter] = None,
-            startup_handlers: Optional[Sequence[LifespanHandler]] = None,
-            shutdown_handlers: Optional[Sequence[LifespanHandler]] = None,
+            startup_handlers: Optional[List[LifespanHandler]] = None,
+            shutdown_handlers: Optional[List[LifespanHandler]] = None,
             not_found_response: Optional[HttpResponse] = None,
             info: Optional[MutableMapping[str, Any]] = None
     ) -> None:
@@ -112,7 +112,7 @@ class Application:
         return self._context['info']
 
     @property
-    def middlewares(self) -> Sequence[HttpMiddlewareCallback]:
+    def middlewares(self) -> List[HttpMiddlewareCallback]:
         """The middlewares.
 
         :return: A list of the middleware to apply to every route.
@@ -133,12 +133,12 @@ class Application:
         return self._context['websocket']
 
     @property
-    def startup_handlers(self) -> Sequence[LifespanHandler]:
+    def startup_handlers(self) -> List[LifespanHandler]:
         """Handlers run at startup"""
         return self._context['lifespan']['lifespan.startup']
 
     @property
-    def shutdown_handlers(self) -> Sequence[LifespanHandler]:
+    def shutdown_handlers(self) -> List[LifespanHandler]:
         """Handlers run on shutdown"""
         return self._context['lifespan']['lifespan.shutdown']
 

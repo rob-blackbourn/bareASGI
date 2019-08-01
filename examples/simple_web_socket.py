@@ -47,7 +47,7 @@ async def index(
     else:
         host, port = scope['server']
         authority = f'{host}:{port}'
-    web_socket_url = f"{scheme}://{authority}/websocket"
+    web_socket_url = f"{scheme}://{authority}/test/websocket"
 
     html = """
 <!DOCTYPE html>
@@ -164,25 +164,28 @@ async def websocket_callback(
 
     await web_socket.close()
 
+
 if __name__ == "__main__":
 
     app = Application()
     app.http_router.add({'GET'}, '/', index_redirect)
-    app.http_router.add({'GET'}, '/index.html', index)
-    app.ws_router.add('/websocket', websocket_callback)
+    app.http_router.add({'GET'}, '/test/index.html', index)
+    app.ws_router.add('/test/websocket', websocket_callback)
 
     import uvicorn
     from hypercorn.asyncio import serve
     from hypercorn.config import Config
 
-    USE_UVICORN = True
-    hostname = socket.getfqdn()  # pylint: disable=invalid-name
+    USE_UVICORN = False
+    hostname = socket.gethostname()  # pylint: disable=invalid-name
 
     if USE_UVICORN:
         uvicorn.run(app, port=9009)
     else:
+        logging.basicConfig(level=logging.DEBUG)
         config = Config()
-        config.bind = [f"{hostname}:9009"]
+        config.bind = ["0.0.0.0:9009"]
+        config.loglevel = 'debug'
         config.certfile = os.path.expanduser(f"~/.keys/{hostname}.crt")
         config.keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
         asyncio.run(serve(app, config))

@@ -9,13 +9,13 @@ A middleware callback is an async function with the following prototype.
 
 .. code-block:: python
 
-    status, headers, content = await fn(scope, info, matches, content, callback)
+    status, headers, content, pushes = await fn(scope, info, matches, content, callback)
 
 This is the same as an HTTP handler, with the addition of the ``callback`` which is
 either another middleware callback or an HTTP handler.
 
-Example
--------
+Simple Example
+--------------
 
 Here is a simple middleware example.
 

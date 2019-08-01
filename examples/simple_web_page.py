@@ -105,14 +105,14 @@ if __name__ == "__main__":
     from hypercorn.asyncio import serve
     from hypercorn.config import Config
 
-    USE_UVICORN = True
-    host = socket.getfqdn()
+    USE_UVICORN = False
+    host = socket.gethostname()
 
     if USE_UVICORN:
         uvicorn.run(app, port=9009)
     else:
         config = Config()
-        config.bind = [f"{host}:9009"]
+        config.bind = ["127.0.0.1:9009"]
         config.certfile = os.path.expanduser(f"~/.keys/{host}.crt")
         config.keyfile = os.path.expanduser(f"~/.keys/{host}.key")
         asyncio.run(serve(app, config))
