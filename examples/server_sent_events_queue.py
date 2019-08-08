@@ -150,6 +150,8 @@ async def test_event(
             try:
                 now: datetime = await listener.get()
                 yield f'data: {now}\n\n\n'.encode('utf-8')
+                # Defeat buffering by giving the server a nudge.
+                yield ':\n\n\n'.encode('utf-8')
             except asyncio.CancelledError:
                 is_cancelled = True
         logger.debug('Done')

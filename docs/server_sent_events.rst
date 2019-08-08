@@ -4,11 +4,11 @@ Server Sent Events
 Server sent events can be implemented by providing an endpoint with an async
 generator.
 
-The following program provides an endpoint `test_page` for the html document which contains
-the JavaScript code to create the `EventSource` with a url served by the `test_events`
-function. This function returnes as the body an async generator which sends the
-time every second. When the event souurce is closed the task will be cancelled and the
-function exits.
+The following program provides an endpoint `test_page` for the html document
+which contains the JavaScript code to create the `EventSource` with a url
+served by the `test_events`function. This function returnes as the body an
+async generator which sends the time every second. When the event source
+is closed the task will be cancelled and the function exits.
 
 events end
 
@@ -53,6 +53,8 @@ events end
             while not is_cancelled:
                 try:
                     yield f'data: {datetime.now()}\n\n\n'.encode('utf-8')
+                    # Defeat buffering by giving the server a nudge.
+                    yield ':\n\n\n'.encode('utf-8')
                     await asyncio.sleep(1)
                 except asyncio.CancelledError:
                     is_cancelled = True
@@ -72,4 +74,12 @@ events end
 
     uvicorn.run(app, host='localhost', port=9009)
 
-Note that we set the host to "localhost" to avaoid CORS errors.
+Note that we set the host to "localhost" to avoid CORS errors.
+
+Also, most ASGI servers (all the ones I've tried) buffer streaming
+data. The effect of this is that an event gets sent when the next event
+is yielded. We can defeat this by sending an SSE comment `":\\n\\n\\n"`. In
+the above example this can be seen by increasing the time tick from 1
+second to 5 seconds, and observing the raw event stream in the Network
+tab of dev-tools in the browser. Without the "nudge" the timestamp is always
+out by the sleep interval.

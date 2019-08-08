@@ -75,7 +75,9 @@ async def test_events(
             try:
                 logger.debug('Sending event')
                 yield f'data: {datetime.now()}\n\n\n'.encode('utf-8')
-                await asyncio.sleep(1)
+                # Defeat buffering by giving the server a nudge.
+                yield ':\n\n\n'.encode('utf-8')
+                await asyncio.sleep(5)
             except asyncio.CancelledError:
                 logger.debug('Cancelled')
                 is_cancelled = True
