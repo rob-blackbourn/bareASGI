@@ -5,6 +5,7 @@ import asyncio
 import logging
 import os
 import socket
+import ssl
 from bareasgi import (
     Application,
     Scope,
@@ -105,14 +106,23 @@ if __name__ == "__main__":
     from hypercorn.asyncio import serve
     from hypercorn.config import Config
 
+    logging.basicConfig(level=logging.DEBUG)
+
     USE_UVICORN = False
-    host = socket.gethostname()
+    hostname = socket.gethostname()
+    certfile = os.path.expanduser(f"~/.keys/{hostname}.crt")
+    keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
 
     if USE_UVICORN:
-        uvicorn.run(app, port=9009)
+        uvicorn.run(app, host='0.0.0.0', port=9009, ssl_keyfile=keyfile, ssl_certfile=certfile)
     else:
         config = Config()
-        config.bind = ["127.0.0.1:9009"]
-        config.certfile = os.path.expanduser(f"~/.keys/{host}.crt")
-        config.keyfile = os.path.expanduser(f"~/.keys/{host}.key")
+        config.bind = ["0.0.0.0:9009"]
+        config.loglevel = 'debug'
+        config.certfile = certfile
+        config.keyfile = keyfile
+        # config.verify_flags = ssl.VERIFY_X509_TRUSTED_FIRST
+        # config.verify_mode = ssl.CERT_NONE
+        # config.ciphers = "TLSv1"
         asyncio.run(serve(app, config))
+        # Options.OP_ALL|OP_NO_SSLv3|OP_NO_SSLv2|OP_CIPHER_SERVER_PREFERENCE|OP_SINGLE_DH_USE|OP_SINGLE_ECDH_USE|OP_NO_COMPRESSION
