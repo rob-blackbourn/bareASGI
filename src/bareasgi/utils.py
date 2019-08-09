@@ -1,3 +1,7 @@
+"""
+Utilities
+"""
+
 from collections.abc import AsyncIterable, AsyncIterator
 from typing import Optional, MutableMapping, Any, Pattern, Callable, Tuple
 from decimal import Decimal

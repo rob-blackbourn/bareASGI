@@ -66,10 +66,10 @@ class WebSocketImpl(WebSocket):
 class WebSocketInstance:
     """Provides an instance to handle websocket event requests"""
 
-    def __init__(self, scope: Scope, web_socker_router: WebSocketRouter, info: Info) -> None:
+    def __init__(self, scope: Scope, web_socket_router: WebSocketRouter, info: Info) -> None:
         self.scope = scope
         self.info = info
-        self.request_handler, self.matches = web_socker_router.resolve(scope['path'])
+        self.request_handler, self.matches = web_socket_router.resolve(scope['path'])
 
     async def __call__(self, receive: Receive, send: Send):
 

@@ -158,7 +158,7 @@ class HttpInstance:
                     if request['type'] != 'http.disconnect':
                         raise HttpInternalError('Expected http.disconnect')
 
-                    logger.debug('diconnecting')
+                    logger.debug('disconnecting')
 
                     for task in pending:
                         task.cancel()

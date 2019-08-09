@@ -185,13 +185,19 @@ class Application:
 
         return decorator
 
-    def on_startup(self, callback: LifespanHandler) -> Callable[[LifespanHandler], LifespanHandler]:
+    def on_startup(
+            self,
+            callback: LifespanHandler
+    ) -> Callable[[LifespanHandler], LifespanHandler]:
         """A decorator to add a startup handler to the application
         """
         self.startup_handlers.append(callback)
         return callback
 
-    def on_shutdown(self, callback: LifespanHandler) -> Callable[[LifespanHandler], LifespanHandler]:
+    def on_shutdown(
+            self,
+            callback: LifespanHandler
+    ) -> Callable[[LifespanHandler], LifespanHandler]:
         """A decorator to add a startup handler to the application
         """
         self.shutdown_handlers.append(callback)
