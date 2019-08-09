@@ -34,7 +34,6 @@ This can be implemented in the following manner:
             Click me
         </button>
         <p id="here" />
-        <script
       </body>
     </html>
 
