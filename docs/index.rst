@@ -75,11 +75,12 @@ The following packages provide additional functionality:
     io
     application
     middleware
-    api
+    decorators
     background_tasks
     server_sent_events
     ssl
     h2
+    api
 
 Indices and tables
 ==================
