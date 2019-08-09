@@ -99,6 +99,7 @@ html_theme_options = {
     'description': 'A lightweight ASGI framework',
     'github_user': 'rob-blackbourn',
     'github_repo': 'bareasgi',
+    'github_button': True,
     'fixed_sidebar': True,
     'page_width': '70%'
 }
