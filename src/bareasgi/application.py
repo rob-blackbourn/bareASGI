@@ -2,7 +2,15 @@
 ASGI Application
 """
 
-from typing import Mapping, Any, Optional, MutableMapping, List
+from typing import (
+    Mapping,
+    Any,
+    Optional,
+    MutableMapping,
+    List,
+    AbstractSet,
+    Callable
+)
 import logging
 from baretypes import (
     Scope,
@@ -11,7 +19,9 @@ from baretypes import (
     WebSocketRouter,
     LifespanHandler,
     HttpResponse,
-    HttpMiddlewareCallback
+    HttpMiddlewareCallback,
+    HttpRequestCallback,
+    WebSocketRequestCallback
 )
 from bareutils.streaming import text_writer
 from .instance import Instance
@@ -141,6 +151,51 @@ class Application:
     def shutdown_handlers(self) -> List[LifespanHandler]:
         """Handlers run on shutdown"""
         return self._context['lifespan']['lifespan.shutdown']
+
+    def on_http_request(
+            self,
+            methods: AbstractSet[str],
+            path: str
+    ) -> Callable[[HttpRequestCallback], HttpRequestCallback]:
+        """A decorator to add an http route handler to the application
+
+        :param methods: The http mothods, e.g. {{'POST', 'PUT'}
+        :type methods: AbstractSet[str]
+        :param path: The path
+        :type path: str
+        """
+        def decorator(callback: HttpRequestCallback) -> Callable:
+            self.http_router.add(methods, path, callback)
+            return callback
+
+        return decorator
+
+    def on_ws_request(
+            self,
+            path: str
+    ) -> Callable[[WebSocketRequestCallback], WebSocketRequestCallback]:
+        """A decorator to add a websocket route handler to the application
+
+        :param path: The path
+        :type path: str
+        """
+        def decorator(callback: HttpRequestCallback) -> Callable:
+            self.ws_router.add(path, callback)
+            return callback
+
+        return decorator
+
+    def on_startup(self, callback: LifespanHandler) -> Callable[[LifespanHandler], LifespanHandler]:
+        """A decorator to add a startup handler to the application
+        """
+        self.startup_handlers.append(callback)
+        return callback
+
+    def on_shutdown(self, callback: LifespanHandler) -> Callable[[LifespanHandler], LifespanHandler]:
+        """A decorator to add a startup handler to the application
+        """
+        self.shutdown_handlers.append(callback)
+        return callback
 
     def __call__(self, scope: Scope) -> ASGIInstance:
         logger.debug('Creating instance', extra=scope)
