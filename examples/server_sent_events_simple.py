@@ -47,7 +47,7 @@ async def test_page(
     Time: <snap id="time"></span>
     
     <script>
-      var eventSource = new EventSource("http://localhost:9009/events")
+      var eventSource = new EventSource("/events")
       eventSource.onmessage = function(event) {
         element = document.getElementById("time")
         element.innerHTML = event.data
@@ -77,7 +77,7 @@ async def test_events(
                 yield f'data: {datetime.now()}\n\n\n'.encode('utf-8')
                 # Defeat buffering by giving the server a nudge.
                 yield ':\n\n\n'.encode('utf-8')
-                await asyncio.sleep(5)
+                await asyncio.sleep(1)
             except asyncio.CancelledError:
                 logger.debug('Cancelled')
                 is_cancelled = True
@@ -100,4 +100,20 @@ if __name__ == "__main__":
     app.http_router.add({'GET'}, '/test', test_page)
     app.http_router.add({'GET'}, '/events', test_events)
 
-    uvicorn.run(app, host='localhost', port=9009)
+    import uvicorn
+    import socket
+    import os.path
+    from hypercorn.asyncio import serve
+    from hypercorn.config import Config
+
+    USE_UVICORN = False
+    hostname = socket.gethostname()  # pylint: disable=invalid-name
+
+    if USE_UVICORN:
+        uvicorn.run(app, port=9009)
+    else:
+        config = Config()
+        config.bind = [f"{hostname}:9009"]
+        config.certfile = os.path.expanduser(f"~/.keys/{hostname}.crt")
+        config.keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
+        asyncio.run(serve(app, config))
