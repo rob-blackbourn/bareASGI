@@ -8,6 +8,7 @@ readme = "README.md"
 packages = [
     { include = "bareasgi", from = "src" },
 ]
+repository = "https://github.com/rob-blackbourn/bareasgi"
 
 [tool.poetry.dependencies]
 python = "^3.7"
