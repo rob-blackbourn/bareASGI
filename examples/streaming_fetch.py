@@ -27,18 +27,21 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('server_sent_events')
 
 
-# pylint: disable=unused-argument
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+async def index(
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
+) -> HttpResponse:
     """Redirect to the index page"""
     return 303, [(b'Location', b'/test')], None
 
 
-# pylint: disable=unused-argument
 async def test_page(
         scope: Scope,
         info: Info,
-        matches: RouteMatches,
-        content: Content
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """A request handler which provides the page to respond to server sent events"""
     host = header.find(b'host', scope['headers']).decode()
@@ -47,11 +50,10 @@ async def test_page(
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
-# pylint: disable=unused-argument
 async def test_events(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
         content: Content
 ) -> HttpResponse:
     """A request handler which provides server sent events"""

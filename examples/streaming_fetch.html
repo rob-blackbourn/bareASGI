@@ -19,20 +19,16 @@
     <script language="javascript" type="text/javascript">
 
         function makeWriteableEventStream(eventTarget) {
-
             return new WritableStream({
                 start(controller) {
                     eventTarget.dispatchEvent(new Event('start'))
                 },
-
                 write(message, controller) {
                     eventTarget.dispatchEvent(new MessageEvent(message.type, { data: message.data }))
                 },
-
                 close(controller) {
                     eventTarget.dispatchEvent(new CloseEvent('close'))
                 },
-
                 abort(reason) {
                     eventTarget.dispatchEvent(new CloseEvent('abort', { reason }))
                 }
@@ -50,7 +46,6 @@
                     while (controller.pos < controller.buf.length) {
                         if (controller.buf[controller.pos] == '\n') {
                             const line = controller.buf.substring(0, controller.pos)
-                            console.log(line)
                             controller.enqueue(JSON.parse(line))
                             controller.buf = controller.buf.substring(controller.pos + 1)
                             controller.pos = 0
