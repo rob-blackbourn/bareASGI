@@ -1,0 +1,3 @@
+Sphinx~=1.8
+sphinxcontrib-websupport~=1.1
+uvicorn~=0.3
