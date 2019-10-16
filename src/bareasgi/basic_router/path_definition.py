@@ -2,7 +2,7 @@
 Path definitions used by the routers.
 """
 
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List, Dict, Any
 from baretypes import RouteMatches
 from .path_segment import PathSegment
 
@@ -27,7 +27,7 @@ class PathDefinition:
             self.ends_with_slash = False
 
         # Parse each path segment.
-        self.segments = []
+        self.segments: List[PathSegment] = []
         for segment in path.split('/'):
             self.segments.append(PathSegment(segment))
 
@@ -55,7 +55,7 @@ class PathDefinition:
             return self.NO_MATCH
 
         # Keep the matches we find.
-        matches = {}
+        matches: Dict[str, Optional[Any]] = {}
 
         # A path with more segments is allowed if the last segment is a variable of type 'path'.
         if len(parts) > len(self.segments):

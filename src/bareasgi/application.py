@@ -12,16 +12,18 @@ from typing import (
     Callable
 )
 import logging
+
 from baretypes import (
     Scope,
-    ASGIInstance,
     HttpRouter,
     WebSocketRouter,
     LifespanHandler,
     HttpResponse,
     HttpMiddlewareCallback,
     HttpRequestCallback,
-    WebSocketRequestCallback
+    WebSocketRequestCallback,
+    Send,
+    Receive
 )
 from bareutils.streaming import text_writer
 from .instance import Instance
@@ -203,6 +205,7 @@ class Application:
         self.shutdown_handlers.append(callback)
         return callback
 
-    def __call__(self, scope: Scope) -> ASGIInstance:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         logger.debug('Creating instance', extra=scope)
-        return Instance(self._context, scope)
+        instance = Instance(self._context, scope)
+        await instance(receive, send)

@@ -36,10 +36,16 @@ class LifespanInstance:
 
             logger.debug('Handling request for "%s"', request_type, extra=request)
 
-            # Run the handlers for this action.
-            handlers: List[LifespanHandler] = self.context.get(request_type, [])
-            for handler in handlers:
-                await handler(self.scope, self.info, request)
+            try:
+                # Run the handlers for this action.
+                handlers: List[LifespanHandler] = self.context.get(request_type, [])
+                for handler in handlers:
+                    await handler(self.scope, self.info, request)
 
-            # Send the response
-            await send({'type': f'{request_type}.complete'})
+                # Send the response
+                await send({'type': f'{request_type}.complete'})
+            except Exception as error: # pylint: disable=broad-except
+                await send({
+                    'type': f'{request_type}.failed',
+                    'message': '{}: {}'.format(type(error).__name__, error)
+                })

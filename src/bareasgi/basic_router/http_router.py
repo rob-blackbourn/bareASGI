@@ -2,7 +2,7 @@
 Http Routing
 """
 
-from typing import AbstractSet, Optional, Tuple
+from typing import AbstractSet, Optional, Tuple, Dict, List
 import logging
 from baretypes import (
     HttpRouter,
@@ -22,7 +22,7 @@ class BasicHttpRouter(HttpRouter):
     """A basic http routing implementation"""
 
     def __init__(self, not_found_response: HttpResponse) -> None:
-        self._routes = {}
+        self._routes: Dict[str, List[Tuple[PathDefinition, HttpRequestCallback]]] = {}
         self._not_found_response = not_found_response
 
     @property

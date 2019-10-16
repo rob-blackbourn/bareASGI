@@ -10,7 +10,7 @@ from ..utils import parse_json_datetime
 Converter = Callable[[Any, Optional[str]], Any]
 
 
-def _parse_datetime(value, fmt) -> datetime:
+def _parse_datetime(value, fmt) -> Optional[datetime]:
     return datetime.strptime(value, fmt) if fmt else parse_json_datetime(value)
 
 
@@ -36,6 +36,9 @@ class PathSegment:
         The 'path' type catches all following segments, so '/foo/{rest:path}'
         would match '/foo/bar/grum'.
         """
+        self.type: Optional[str] = None
+        self.format: Optional[str] = None
+
         if segment.startswith('{') and segment.endswith('}'):
             self.name, *type_and_format = segment[1:-1].split(':', maxsplit=3)
             if len(type_and_format) == 2:
@@ -66,7 +69,7 @@ class PathSegment:
         if self.is_variable:
             # noinspection PyBroadException
             try:
-                converter = CONVERTERS[self.type]
+                converter = CONVERTERS[self.type or 'str']
                 value = converter(value, self.format) if self.type else value
                 return True, self.name, value
             except ValueError:

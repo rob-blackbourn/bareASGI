@@ -1,11 +1,13 @@
 """
 A handler for websocket event requests.
 """
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any, List
 import logging
+
 from baretypes import (
     Scope,
     Info,
+    Header,
     Send,
     Receive,
     WebSocket,
@@ -22,11 +24,18 @@ class WebSocketImpl(WebSocket):
     def __init__(self, receive: Receive, send: Send):
         self._receive = receive
         self._send = send
+        self._code: Optional[int] = None
 
-    async def accept(self, subprotocol: Optional[str] = None) -> None:
-        response = {'type': 'websocket.accept'}
+    async def accept(
+            self,
+            subprotocol: Optional[str] = None,
+            headers: Optional[List[Header]] = None
+    ) -> None:
+        response: Dict[str, Any] = {'type': 'websocket.accept'}
         if subprotocol:
             response['subprotocol'] = subprotocol
+        if headers:
+            response['headers'] = headers
         logger.debug('Accepting', extra=response)
         await self._send(response)
 
@@ -38,13 +47,14 @@ class WebSocketImpl(WebSocket):
         if request_type == 'websocket.receive':
             return request['bytes'] if 'bytes' in request and request['bytes'] else request['text']
         if request_type == 'websocket.disconnect':
+            self._code = request.get('code', 1000)
             return None
 
         logger.error('Failed to understand request type "%s"', request_type, extra=request)
         raise WebSocketInternalError(f'Unknown type: "{request_type}"')
 
     async def send(self, content: Union[bytes, str]) -> None:
-        response = {'type': 'websocket.send'}
+        response: Dict[str, Any] = {'type': 'websocket.send'}
 
         if isinstance(content, bytes):
             response['bytes'] = content
@@ -61,6 +71,9 @@ class WebSocketImpl(WebSocket):
         logger.debug('Closing with code %d', code, extra=response)
         await self._send(response)
 
+    @property
+    def code(self) -> Optional[str]:
+        return "self._code"
 
 # pylint: disable=too-few-public-methods
 class WebSocketInstance:
