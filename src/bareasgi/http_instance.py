@@ -3,8 +3,9 @@ HTTP Instance
 """
 
 import asyncio
-from typing import Optional, AsyncIterable, Tuple, Sequence
+from typing import Optional, AsyncIterable, Tuple, Sequence, Set, Dict, Any
 import logging
+
 from baretypes import (
     HttpInternalError,
     HttpDisconnectError,
@@ -94,7 +95,7 @@ class HttpInstance:
                 })
 
         # Create and send the response body.
-        response_body = {'type': 'http.response.body'}
+        response_body: Dict[str, Any] = {'type': 'http.response.body'}
 
         # If we don't get a body, just send the basic response.
         try:
@@ -144,17 +145,18 @@ class HttpInstance:
 
             send_task = asyncio.create_task(self._send_response(send, *response))
             receive_task = asyncio.create_task(receive())
-            tasks = [send_task, receive_task]
+            pending: Set[asyncio.Future] = {send_task, receive_task}
 
             is_connected = True
 
             while is_connected:
 
-                done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-                tasks = pending
+                done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
 
                 if receive_task in done:
                     request = receive_task.result()
+                    logger.debug('request: %s', request)
+
                     if request['type'] != 'http.disconnect':
                         raise HttpInternalError('Expected http.disconnect')
 
@@ -166,5 +168,6 @@ class HttpInstance:
                     is_connected = False
 
             logger.debug('finish handling request')
-        except:  # pylint: disable=bare-except
-            logger.exception('Failed to process http request')
+
+        except asyncio.CancelledError:
+            pass
