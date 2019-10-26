@@ -1,8 +1,10 @@
 """
 Middleware utilities.
 """
+
 from functools import partial
-from typing import Tuple, Optional
+from typing import Optional, Tuple
+
 from baretypes import (
     HttpRequestCallback,
     HttpMiddlewareCallback,

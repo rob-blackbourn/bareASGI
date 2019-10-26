@@ -37,7 +37,8 @@ async def time_ticker(shutdown_event: Event) -> None:
         try:
             await asyncio.wait_for(shutdown_event.wait(), timeout=1)
         except asyncio.TimeoutError:
-            logger.debug('Timeout - normal behaviour when waiting with a timeout')
+            logger.debug(
+                'Timeout - normal behaviour when waiting with a timeout')
         except:  # pylint: disable=bare-except
             logger.exception('Failure - we should not see this exception')
 
@@ -52,7 +53,7 @@ async def time_ticker_startup_handler(scope: Scope, info: Info, request: Message
     Note: the asyncio.Event object is created here. This ensures the object acquires
     the correct event loop.
 
-    :param scope: The ASGI information about the lifspan scope.
+    :param scope: The ASGI information about the lifespan scope.
     :param info: The application info object where data can be passed around the application.
     :param request: The lifespace request
     """
@@ -70,7 +71,7 @@ async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Messag
     """
     This handles shutting down the time ticker.
 
-    :param scope: The ASGI information about the lifspan scope.
+    :param scope: The ASGI information about the lifespan scope.
     :param info: The application info object where data can be passed around the application.
     :param request: The lifespace request
     """

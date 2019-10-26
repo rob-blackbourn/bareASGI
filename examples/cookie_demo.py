@@ -1,4 +1,4 @@
-"""An example of sending andd receiving cookies.
+"""An example of sending and receiving cookies.
 """
 
 import logging

@@ -2,8 +2,15 @@
 Http Routing
 """
 
-from typing import AbstractSet, Optional, Tuple, Dict, List
 import logging
+from typing import (
+    AbstractSet,
+    Dict,
+    List,
+    Optional,
+    Tuple
+)
+
 from baretypes import (
     HttpRouter,
     RouteMatches,
@@ -22,7 +29,8 @@ class BasicHttpRouter(HttpRouter):
     """A basic http routing implementation"""
 
     def __init__(self, not_found_response: HttpResponse) -> None:
-        self._routes: Dict[str, List[Tuple[PathDefinition, HttpRequestCallback]]] = {}
+        self._routes: Dict[str,
+                           List[Tuple[PathDefinition, HttpRequestCallback]]] = {}
         self._not_found_response = not_found_response
 
     @property

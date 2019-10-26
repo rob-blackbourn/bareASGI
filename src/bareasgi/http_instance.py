@@ -3,8 +3,16 @@ HTTP Instance
 """
 
 import asyncio
-from typing import Optional, AsyncIterable, Tuple, Sequence, Set, Dict, Any
 import logging
+from typing import (
+    Any,
+    AsyncIterable,
+    Dict,
+    Optional,
+    Sequence,
+    Set,
+    Tuple
+)
 
 from baretypes import (
     HttpInternalError,
@@ -18,6 +26,7 @@ from baretypes import (
     Context,
     HttpMiddlewareCallback
 )
+
 from .middleware import mw
 from .utils import anext
 
@@ -32,12 +41,14 @@ async def _body_iterator(receive: Receive, body: bytes, more_body: bool) -> Asyn
         logger.debug('Received "%s"', request_type, extra=request)
 
         if request_type == 'http.request':
-            body, more_body = request.get('body', b''), request.get('more_body', False)
+            body, more_body = request.get(
+                'body', b''), request.get('more_body', False)
             yield body
         elif request_type == 'http.disconnect':
             raise HttpDisconnectError
         else:
-            logger.error('Failed to understand request type "%s"', request_type, extra=request)
+            logger.error('Failed to understand request type "%s"',
+                         request_type, extra=request)
             raise HttpInternalError
 
 
@@ -51,11 +62,14 @@ class HttpInstance:
         self.info = info
         # Find the route.
         http_router: HttpRouter = context['router']
-        self.request_callback, self.matches = http_router.resolve(scope['method'], scope['path'])
+        self.request_callback, self.matches = http_router.resolve(
+            scope['method'], scope['path'])
         # Apply middleware.
-        middleware: Optional[Sequence[HttpMiddlewareCallback]] = context['middlewares']
+        middleware: Optional[Sequence[HttpMiddlewareCallback]
+                             ] = context['middlewares']
         if middleware:
-            self.request_callback = mw(*middleware, handler=self.request_callback)
+            self.request_callback = mw(
+                *middleware, handler=self.request_callback)
 
     @property
     def _is_http_2(self) -> bool:
@@ -82,12 +96,14 @@ class HttpInstance:
             # Needed for Hypercorn 0.7.1
             response_start['headers'] = []
 
-        logger.debug('Sending "http.response.start" with status %s', status, extra=response_start)
+        logger.debug('Sending "http.response.start" with status %s',
+                     status, extra=response_start)
         await send(response_start)
 
         if pushes is not None and self._is_http_push_supported:
             for push_path, push_headers in pushes:
-                logger.debug('sending "http.response.push" for path "%s"', push_path)
+                logger.debug(
+                    'sending "http.response.push" for path "%s"', push_path)
                 await send({
                     'type': 'http.response.push',
                     'path': push_path,
@@ -103,7 +119,8 @@ class HttpInstance:
         except StopAsyncIteration:
             buf = None
         if buf is None:
-            logger.debug('Sending "http.response.body" with empty body', extra=response_body)
+            logger.debug(
+                'Sending "http.response.body" with empty body', extra=response_body)
             await send(response_body)
             return
 
@@ -137,13 +154,15 @@ class HttpInstance:
                 self.scope,
                 self.info,
                 self.matches,
-                _body_iterator(receive, request.get('body', b''), request.get('more_body', False))
+                _body_iterator(receive, request.get('body', b''),
+                               request.get('more_body', False))
             )
 
             if isinstance(response, int):
                 response = (response,)
 
-            send_task = asyncio.create_task(self._send_response(send, *response))
+            send_task = asyncio.create_task(
+                self._send_response(send, *response))
             receive_task = asyncio.create_task(receive())
             pending: Set[asyncio.Future] = {send_task, receive_task}
 

@@ -1,5 +1,5 @@
 """
-An example of using cmpression middleware for automatic compression
+An example of using compression middleware for automatic compression
 """
 import logging
 from bareutils.compression import make_default_compression_middleware
@@ -39,7 +39,8 @@ if __name__ == "__main__":
     import uvicorn
 
     # pylint: disable=invalid-name
-    compression_middleware = make_default_compression_middleware(minimum_size=1024)
+    compression_middleware = make_default_compression_middleware(
+        minimum_size=1024)
 
     app = Application(middlewares=[compression_middleware])
 

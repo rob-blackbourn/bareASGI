@@ -1,8 +1,15 @@
 """
 A handler for websocket event requests.
 """
-from typing import Optional, Union, Dict, Any, List
+
 import logging
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Union
+)
 
 from baretypes import (
     Scope,
@@ -50,7 +57,8 @@ class WebSocketImpl(WebSocket):
             self._code = request.get('code', 1000)
             return None
 
-        logger.error('Failed to understand request type "%s"', request_type, extra=request)
+        logger.error('Failed to understand request type "%s"',
+                     request_type, extra=request)
         raise WebSocketInternalError(f'Unknown type: "{request_type}"')
 
     async def send(self, content: Union[bytes, str]) -> None:
@@ -73,16 +81,24 @@ class WebSocketImpl(WebSocket):
 
     @property
     def code(self) -> Optional[str]:
+        """The code return on close
+
+        :return: [description]
+        :rtype: The close code
+        """
         return "self._code"
 
 # pylint: disable=too-few-public-methods
+
+
 class WebSocketInstance:
     """Provides an instance to handle websocket event requests"""
 
     def __init__(self, scope: Scope, web_socket_router: WebSocketRouter, info: Info) -> None:
         self.scope = scope
         self.info = info
-        self.request_handler, self.matches = web_socket_router.resolve(scope['path'])
+        self.request_handler, self.matches = web_socket_router.resolve(
+            scope['path'])
 
     async def __call__(self, receive: Receive, send: Send):
 
@@ -100,5 +116,7 @@ class WebSocketInstance:
         elif request_type == 'websocket.disconnect':
             pass
         else:
-            logger.error('Failed to understand request type "%s"', request_type, extra=request)
-            raise WebSocketInternalError(f'Unknown request type "{request_type}')
+            logger.error('Failed to understand request type "%s"',
+                         request_type, extra=request)
+            raise WebSocketInternalError(
+                f'Unknown request type "{request_type}')

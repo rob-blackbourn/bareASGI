@@ -71,7 +71,7 @@ async def test_asset(
         matches: RouteMatches,
         content: Content
 ) -> HttpResponse:
-    """A request hadler which provides an asset required by the html."""
+    """A request handler which provides an asset required by the html."""
     js_content = """
 function handleClick(id) {
   document.getElementById(id).innerHTML = Date()

@@ -2,8 +2,9 @@
 A handler of lifecycle event requests
 """
 
-from typing import List
 import logging
+from typing import List
+
 from baretypes import (
     Context,
     Info,
@@ -34,17 +35,19 @@ class LifespanInstance:
             request = await receive()
             request_type = request['type']
 
-            logger.debug('Handling request for "%s"', request_type, extra=request)
+            logger.debug('Handling request for "%s"',
+                         request_type, extra=request)
 
             try:
                 # Run the handlers for this action.
-                handlers: List[LifespanHandler] = self.context.get(request_type, [])
+                handlers: List[LifespanHandler] = self.context.get(
+                    request_type, [])
                 for handler in handlers:
                     await handler(self.scope, self.info, request)
 
                 # Send the response
                 await send({'type': f'{request_type}.complete'})
-            except Exception as error: # pylint: disable=broad-except
+            except Exception as error:  # pylint: disable=broad-except
                 await send({
                     'type': f'{request_type}.failed',
                     'message': '{}: {}'.format(type(error).__name__, error)

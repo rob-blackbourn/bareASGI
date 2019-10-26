@@ -2,8 +2,16 @@
 Path definitions used by the routers.
 """
 
-from typing import Optional, Tuple, List, Dict, Any
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Tuple
+)
+
 from baretypes import RouteMatches
+
 from .path_segment import PathSegment
 
 
