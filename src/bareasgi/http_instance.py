@@ -185,6 +185,9 @@ class HttpInstance:
                         task.cancel()
 
                     is_connected = False
+                elif send_task in done:
+                    # Fetch result to trigger possible exceptions
+                    send_task.result()
 
             logger.debug('finish handling request')
 
