@@ -6,7 +6,7 @@ authors = ["Rob Blackbourn <rob.blackbourn@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 packages = [
-    { include = "bareasgi", from = "src" },
+    { include = "bareasgi" }
 ]
 repository = "https://github.com/rob-blackbourn/bareasgi"
 

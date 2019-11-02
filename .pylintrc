@@ -1,8 +1,0 @@
-[MASTER]
-init-hook="import sys; sys.path.append('./src')"
-
-[BASIC]
-good-names=app,config,host
-
-[TYPECHECK]
-ignored-classes=easydict.EasyDict
