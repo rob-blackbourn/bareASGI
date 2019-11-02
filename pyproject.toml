@@ -17,7 +17,7 @@ bareutils = "^3.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.0"
-pytest-asyncio "^0.10"
+pytest-asyncio = "^0.10"
 pytest-runner = "^5.1"
 uvicorn = "^0.9"
 hypercorn = "^0.9"
