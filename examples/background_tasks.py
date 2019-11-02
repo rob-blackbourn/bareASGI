@@ -6,6 +6,7 @@ import asyncio
 from asyncio import Event
 from datetime import datetime
 import logging
+
 from bareasgi import (
     Application,
     Scope,
@@ -19,7 +20,7 @@ from bareasgi import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-logger = logging.getLogger('background_tasks')
+LOGGER = logging.getLogger('background_tasks')
 
 
 async def time_ticker(shutdown_event: Event) -> None:
@@ -30,19 +31,19 @@ async def time_ticker(shutdown_event: Event) -> None:
     :param shutdown_event: An event which gets set when the task is cancelled.
     """
 
-    logger.debug('Starting the time ticker')
+    LOGGER.debug('Starting the time ticker')
 
     while not shutdown_event.is_set():
-        logger.debug('time: %s', datetime.now())
+        LOGGER.debug('time: %s', datetime.now())
         try:
             await asyncio.wait_for(shutdown_event.wait(), timeout=1)
         except asyncio.TimeoutError:
-            logger.debug(
+            LOGGER.debug(
                 'Timeout - normal behaviour when waiting with a timeout')
         except:  # pylint: disable=bare-except
-            logger.exception('Failure - we should not see this exception')
+            LOGGER.exception('Failure - we should not see this exception')
 
-    logger.debug('The time ticker has stopped')
+    LOGGER.debug('The time ticker has stopped')
 
 
 # pylint: disable=unused-argument
@@ -78,14 +79,14 @@ async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Messag
 
     # Set the shutdown event so the background task can stop gracefully.
     shutdown_event: Event = info['shutdown_event']
-    logger.debug('Stopping the time_ticker')
+    LOGGER.debug('Stopping the time_ticker')
     shutdown_event.set()
 
     # Wait for the background task to finish.
     time_ticker_task: asyncio.Task = info['time_ticker_task']
-    logger.debug('Waiting for time_ticker')
+    LOGGER.debug('Waiting for time_ticker')
     await time_ticker_task
-    logger.debug('time_ticker shutdown')
+    LOGGER.debug('time_ticker shutdown')
 
 
 # pylint: disable=unused-argument

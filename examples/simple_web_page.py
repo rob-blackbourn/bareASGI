@@ -5,7 +5,7 @@ import asyncio
 import logging
 import os
 import socket
-import ssl
+
 from bareasgi import (
     Application,
     Scope,
@@ -18,26 +18,24 @@ from bareasgi import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-logger = logging.getLogger('server_sent_events')
+LOGGER = logging.getLogger('server_sent_events')
 
 
-# pylint: disable=unused-argument
 async def index(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """Redirect to the example"""
     return 303, [(b'Location', b'/example1')]
 
 
-# pylint: disable=unused-argument
 async def test_page1(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """A request handler which returns some html"""
     html = """
@@ -58,12 +56,11 @@ async def test_page1(
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
-# pylint: disable=unused-argument
 async def test_page2(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """A request handler which returns HTML"""
     html = """
@@ -83,12 +80,11 @@ async def test_page2(
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
-# pylint: disable=unused-argument
 async def test_empty(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """A request handler which only returns a valid "no content" status"""
     return 204
@@ -114,7 +110,8 @@ if __name__ == "__main__":
     keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
 
     if USE_UVICORN:
-        uvicorn.run(app, host='0.0.0.0', port=9009, ssl_keyfile=keyfile, ssl_certfile=certfile)
+        uvicorn.run(app, host='0.0.0.0', port=9009,
+                    ssl_keyfile=keyfile, ssl_certfile=certfile)
     else:
         config = Config()
         config.bind = ["0.0.0.0:9009"]

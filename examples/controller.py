@@ -1,7 +1,9 @@
 """An example of using a class as a controller for route handling.
 """
+
 import json
 import logging
+
 from bareasgi import (
     Application,
     Scope,

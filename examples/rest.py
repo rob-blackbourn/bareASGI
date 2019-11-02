@@ -4,6 +4,7 @@ REST style examples.
 
 import json
 import logging
+
 from bareasgi import (
     Application,
     Scope,
@@ -73,8 +74,4 @@ if __name__ == "__main__":
         config.loglevel = 'debug'
         config.certfile = certfile
         config.keyfile = keyfile
-        # config.verify_flags = ssl.VERIFY_X509_TRUSTED_FIRST
-        # config.verify_mode = ssl.CERT_NONE
-        # config.ciphers = "TLSv1"
         asyncio.run(serve(app, config))
-        # Options.OP_ALL|OP_NO_SSLv3|OP_NO_SSLv2|OP_CIPHER_SERVER_PREFERENCE|OP_SINGLE_DH_USE|OP_SINGLE_ECDH_USE|OP_NO_COMPRESSION

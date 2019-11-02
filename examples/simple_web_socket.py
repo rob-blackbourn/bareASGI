@@ -6,7 +6,9 @@ import asyncio
 import logging
 import os
 import socket
+
 import bareutils.header as header
+
 from bareasgi import (
     Application,
     Scope,
@@ -21,12 +23,11 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-# pylint: disable=unused-argument
 async def index_redirect(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """Redirect to the index page"""
     return 303, [(b'Location', b'/test/index.html')]
@@ -34,9 +35,9 @@ async def index_redirect(
 
 async def index(
         scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """The Websocket page"""
 
@@ -145,9 +146,9 @@ async def index(
 
 
 async def websocket_callback(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
         web_socket: WebSocket
 ) -> None:  # pylint: disable=unused-argument
     """The websocket callback handler"""
@@ -184,15 +185,12 @@ if __name__ == "__main__":
     keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
 
     if USE_UVICORN:
-        uvicorn.run(app, host='0.0.0.0', port=9009, ssl_keyfile=keyfile, ssl_certfile=certfile)
+        uvicorn.run(app, host='0.0.0.0', port=9009,
+                    ssl_keyfile=keyfile, ssl_certfile=certfile)
     else:
         config = Config()
         config.bind = ["0.0.0.0:9009"]
         config.loglevel = 'debug'
         config.certfile = certfile
         config.keyfile = keyfile
-        # config.verify_flags = ssl.VERIFY_X509_TRUSTED_FIRST
-        # config.verify_mode = ssl.CERT_NONE
-        # config.ciphers = "TLSv1"
         asyncio.run(serve(app, config))
-        # Options.OP_ALL|OP_NO_SSLv3|OP_NO_SSLv2|OP_CIPHER_SERVER_PREFERENCE|OP_SINGLE_DH_USE|OP_SINGLE_ECDH_USE|OP_NO_COMPRESSION

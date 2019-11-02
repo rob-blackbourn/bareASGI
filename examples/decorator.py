@@ -1,6 +1,7 @@
 """
 A simple request handler.
 """
+
 import logging
 
 import uvicorn

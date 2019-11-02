@@ -4,6 +4,7 @@ An example of HTTP/2 server push.
 
 import asyncio
 import logging
+
 from bareasgi import (
     Application,
     Scope,
@@ -16,7 +17,7 @@ from bareasgi import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-logger = logging.getLogger('server_sent_events')
+LOGGER = logging.getLogger('server_sent_events')
 
 
 # pylint: disable=unused-argument

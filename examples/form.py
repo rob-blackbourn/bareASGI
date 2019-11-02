@@ -4,6 +4,7 @@ An example using forms.
 
 import logging
 import urllib.parse
+
 from bareasgi import (
     Application,
     Scope,

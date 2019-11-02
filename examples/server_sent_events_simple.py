@@ -22,17 +22,21 @@ from baretypes import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
+
 
 async def on_startup(_scope: Scope, _info: Info, _request: Message) -> None:
     """Run at startup"""
-    logger.info("Running startup handler")
+    LOGGER.info("Running startup handler")
+
 
 async def on_shutdown(_scope: Scope, _info: Info, _request: Message) -> None:
     """Run on shutdown"""
-    logger.info("Running shutdown handler")
+    LOGGER.info("Running shutdown handler")
 
 # pylint: disable=unused-argument
+
+
 async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
     """Redirect to the index page"""
     return 303, [(b'Location', b'/test')], None
@@ -85,16 +89,16 @@ async def test_events(
         is_cancelled = False
         while not is_cancelled:
             try:
-                logger.debug('Sending event')
+                LOGGER.debug('Sending event')
                 yield f'data: {datetime.now()}\n\n\n'.encode('utf-8')
                 # Defeat buffering by giving the server a nudge.
                 yield ':\n\n\n'.encode('utf-8')
                 await asyncio.sleep(60)
             except asyncio.CancelledError:
-                logger.debug('Cancelled')
+                LOGGER.debug('Cancelled')
                 is_cancelled = True
-            except Exception as error:
-                logger.exception('Failed')
+            except:  # pylint: disable=bare-except
+                LOGGER.exception('Failed')
 
     headers = [
         (b'cache-control', b'no-cache'),
@@ -115,7 +119,6 @@ if __name__ == "__main__":
     app.http_router.add({'GET'}, '/test', test_page)
     app.http_router.add({'GET'}, '/events', test_events)
 
-
     USE_UVICORN = True
 
     if USE_UVICORN:
@@ -131,6 +134,7 @@ if __name__ == "__main__":
         asyncio.set_event_loop(loop)
 
         shutdown_event = asyncio.Event()
+
         def _signal_handler(*_: Any) -> None:
             shutdown_event.set()
         loop.add_signal_handler(signal.SIGTERM, _signal_handler)
@@ -139,5 +143,9 @@ if __name__ == "__main__":
         config = Config()
         config.bind = ["0.0.0.0:9009"]
         loop.run_until_complete(
-            serve(app, config, shutdown_trigger=shutdown_event.wait)
+            serve(
+                app,
+                config,
+                shutdown_trigger=shutdown_event.wait  # type: ignore
+            )
         )

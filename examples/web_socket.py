@@ -7,6 +7,7 @@ import logging
 import os
 import socket
 import bareutils.header as header
+
 from bareasgi import (
     Application,
     Scope,
@@ -21,28 +22,27 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-# pylint: disable=unused-argument
 async def index(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """Redirect to the test page"""
     return 303, [(b'Location', b'/test')]
 
 
-# pylint: disable=unused-argument
 async def test_page(
         scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
 ) -> HttpResponse:
     """Send the page with the example web socket"""
     scheme = 'wss' if scope['scheme'] == 'https' else 'ws'
     if scope['http_version'] in ('2', '2.0'):
-        authority = header.find(b':authority', scope['headers']).decode('ascii')
+        authority = header.find(
+            b':authority', scope['headers']).decode('ascii')
     else:
         host, port = scope['server']
         authority = f'{host}:{port}'

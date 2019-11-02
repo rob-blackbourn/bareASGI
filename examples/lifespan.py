@@ -4,10 +4,6 @@ import asyncio
 import logging
 from typing import Any
 
-from bareasgi import (
-    Application,
-    text_writer,
-)
 from baretypes import (
     Scope,
     Info,
@@ -17,19 +13,28 @@ from baretypes import (
     Message
 )
 
+from bareasgi import (
+    Application,
+    text_writer,
+)
+
 logging.basicConfig(level=logging.DEBUG)
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
+
 
 async def on_startup(_scope: Scope, _info: Info, _request: Message) -> None:
     """Run at startup"""
-    logger.info("Running startup handler")
+    LOGGER.info("Running startup handler")
+
 
 async def on_shutdown(_scope: Scope, _info: Info, _request: Message) -> None:
     """Run on shutdown"""
-    logger.info("Running shutdown handler")
+    LOGGER.info("Running shutdown handler")
 
 # pylint: disable=unused-argument
+
+
 async def http_request_callback(
         scope: Scope,
         info: Info,
@@ -62,6 +67,7 @@ if __name__ == "__main__":
         asyncio.set_event_loop(loop)
 
         shutdown_event = asyncio.Event()
+
         def _signal_handler(*_: Any) -> None:
             shutdown_event.set()
         loop.add_signal_handler(signal.SIGTERM, _signal_handler)
@@ -70,5 +76,9 @@ if __name__ == "__main__":
         config = Config()
         config.bind = ["0.0.0.0:9009"]
         loop.run_until_complete(
-            serve(app, config, shutdown_trigger=shutdown_event.wait)
+            serve(
+                app,
+                config,
+                shutdown_trigger=shutdown_event.wait  # type: ignore
+            )
         )

@@ -5,6 +5,7 @@ A simple request handler.
 import logging
 from typing import List
 from urllib.error import HTTPError
+
 import bareutils.header as header
 
 from bareasgi import (

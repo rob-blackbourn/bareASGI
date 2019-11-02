@@ -3,6 +3,7 @@ Compression examples
 """
 
 import logging
+
 from bareutils import (
     compression_writer,
     make_compress_compressobj,

@@ -18,6 +18,7 @@ the "transfer-encoding" in the "Response Headers".
 """
 
 import logging
+
 from bareasgi import (
     Application,
     Scope,

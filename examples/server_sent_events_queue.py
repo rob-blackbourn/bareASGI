@@ -12,6 +12,7 @@ from asyncio.queues import Queue
 from datetime import datetime
 import logging
 from typing import List
+
 from bareasgi import (
     Application,
     Scope,
@@ -25,7 +26,7 @@ from bareasgi import (
 
 logging.basicConfig(level=logging.DEBUG)
 
-logger = logging.getLogger('server_sent_events')
+LOGGER = logging.getLogger('server_sent_events')
 
 
 class TimeTicker:
@@ -47,7 +48,7 @@ class TimeTicker:
             except asyncio.TimeoutError:
                 pass
             except:  # pylint: disable=bare-except
-                logger.exception('Cancelled')
+                LOGGER.exception('Cancelled')
 
     def stop(self):
         """Stop the event source"""
@@ -55,8 +56,8 @@ class TimeTicker:
 
     def add_listener(self) -> Queue:
         """Add a listener to the event source"""
-        logger.debug('Adding a listener')
-        listener = Queue()
+        LOGGER.debug('Adding a listener')
+        listener: Queue = Queue()
         self.listeners.append(listener)
         return listener
 
@@ -82,12 +83,12 @@ async def start_time_ticker(scope: Scope, info: Info, request: Message) -> None:
 async def stop_time_ticker(scope: Scope, info: Info, request: Message) -> None:
     """Stop the time ticker"""
     time_ticker: TimeTicker = info['time_ticker']
-    logger.debug('Stopping time_ticker')
+    LOGGER.debug('Stopping time_ticker')
     time_ticker.stop()
     time_ticker_task: asyncio.Task = info['time_ticker_task']
-    logger.debug('Waiting for time_ticker')
+    LOGGER.debug('Waiting for time_ticker')
     await time_ticker_task
-    logger.debug('time_ticker shutdown')
+    LOGGER.debug('time_ticker shutdown')
 
 
 # pylint: disable=unused-argument
@@ -154,7 +155,7 @@ async def test_event(
                 yield ':\n\n\n'.encode('utf-8')
             except asyncio.CancelledError:
                 is_cancelled = True
-        logger.debug('Done')
+        LOGGER.debug('Done')
 
     headers = [
         (b'cache-control', b'no-cache'),

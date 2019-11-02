@@ -3,6 +3,7 @@ Ann example of chaining middleware.
 """
 
 import logging
+
 from bareasgi import (
     Application,
     Scope,
@@ -58,6 +59,7 @@ if __name__ == "__main__":
     import uvicorn
 
     app = Application(middlewares=[first_middleware, second_middleware])
-    app.http_router.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
+    app.http_router.add({'GET', 'POST', 'PUT', 'DELETE'},
+                        '/{path}', http_request_callback)
 
     uvicorn.run(app, port=9009)
