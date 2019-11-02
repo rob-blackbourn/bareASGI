@@ -45,10 +45,36 @@ async def set_info(
 
 
 if __name__ == "__main__":
-    import uvicorn
 
     app = Application(info={'name': 'Michael Caine'})
-    app.http_router.add({'GET'}, '/info', get_info)
-    app.http_router.add({'POST'}, '/info', set_info)
+    app.http_router.add({'GET'}, '/test/api/info', get_info)
+    app.http_router.add({'POST'}, '/test/api/info', set_info)
 
-    uvicorn.run(app, port=9009)
+    import asyncio
+    import uvicorn
+    from hypercorn.asyncio import serve
+    from hypercorn.config import Config
+    import socket
+    import os.path
+
+    logging.basicConfig(level=logging.DEBUG)
+
+    USE_UVICORN = False
+    hostname = socket.gethostname()
+    certfile = os.path.expanduser(f"~/.keys/{hostname}.crt")
+    keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
+
+    if USE_UVICORN:
+        uvicorn.run(app, host='0.0.0.0', port=9009,
+                    ssl_keyfile=keyfile, ssl_certfile=certfile)
+    else:
+        config = Config()
+        config.bind = ["0.0.0.0:9009"]
+        config.loglevel = 'debug'
+        config.certfile = certfile
+        config.keyfile = keyfile
+        # config.verify_flags = ssl.VERIFY_X509_TRUSTED_FIRST
+        # config.verify_mode = ssl.CERT_NONE
+        # config.ciphers = "TLSv1"
+        asyncio.run(serve(app, config))
+        # Options.OP_ALL|OP_NO_SSLv3|OP_NO_SSLv2|OP_CIPHER_SERVER_PREFERENCE|OP_SINGLE_DH_USE|OP_SINGLE_ECDH_USE|OP_NO_COMPRESSION
