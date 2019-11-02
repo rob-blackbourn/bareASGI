@@ -18,7 +18,7 @@ from .lifespan_instance import LifespanInstance
 from .http_instance import HttpInstance
 from .websocket_instance import WebSocketInstance
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 # pylint: disable=too-few-public-methods
@@ -36,7 +36,7 @@ class Instance:
         klass = self.INSTANCES_CLASSES[scope_type]
         klass_context = context.get(scope_type)
         info: Info = context['info']
-        logger.debug(
+        LOGGER.debug(
             'Creating instance for "%s"',
             scope_type,
             extra={'scope': scope, 'context': context, 'info': info}

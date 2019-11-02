@@ -14,7 +14,7 @@ from baretypes import (
     LifespanHandler
 )
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 # pylint: disable=too-few-public-methods
@@ -35,7 +35,7 @@ class LifespanInstance:
             request = await receive()
             request_type = request['type']
 
-            logger.debug('Handling request for "%s"',
+            LOGGER.debug('Handling request for "%s"',
                          request_type, extra=request)
 
             try:

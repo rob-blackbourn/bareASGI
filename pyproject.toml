@@ -26,6 +26,7 @@ sphinxcontrib-websupport = "^1.1"
 uvloop = "^0.13.0"
 pylint = "^2.4"
 mypy = "^0.740.0"
+rope = "^0.14.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

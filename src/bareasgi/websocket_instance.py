@@ -22,7 +22,7 @@ from baretypes import (
     WebSocketInternalError
 )
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class WebSocketImpl(WebSocket):
@@ -43,13 +43,13 @@ class WebSocketImpl(WebSocket):
             response['subprotocol'] = subprotocol
         if headers:
             response['headers'] = headers
-        logger.debug('Accepting', extra=response)
+        LOGGER.debug('Accepting', extra=response)
         await self._send(response)
 
     async def receive(self) -> Optional[Union[bytes, str]]:
         request = await self._receive()
         request_type = request['type']
-        logger.debug('Received "%s"', request_type, extra=request)
+        LOGGER.debug('Received "%s"', request_type, extra=request)
 
         if request_type == 'websocket.receive':
             return request['bytes'] if 'bytes' in request and request['bytes'] else request['text']
@@ -57,7 +57,7 @@ class WebSocketImpl(WebSocket):
             self._code = request.get('code', 1000)
             return None
 
-        logger.error('Failed to understand request type "%s"',
+        LOGGER.error('Failed to understand request type "%s"',
                      request_type, extra=request)
         raise WebSocketInternalError(f'Unknown type: "{request_type}"')
 
@@ -71,12 +71,12 @@ class WebSocketImpl(WebSocket):
         else:
             raise ValueError('Content must be bytes or str')
 
-        logger.debug('Sending "%s"', response["type"], extra=response)
+        LOGGER.debug('Sending "%s"', response["type"], extra=response)
         await self._send(response)
 
     async def close(self, code: int = 1000) -> None:
         response = {'type': 'websocket.close', 'code': code}
-        logger.debug('Closing with code %d', code, extra=response)
+        LOGGER.debug('Closing with code %d', code, extra=response)
         await self._send(response)
 
     @property
@@ -104,7 +104,7 @@ class WebSocketInstance:
 
         request = await receive()
         request_type = request['type']
-        logger.debug('Received "%s"', request_type, extra=request)
+        LOGGER.debug('Received "%s"', request_type, extra=request)
 
         if request_type == 'websocket.connect':
             await self.request_handler(
@@ -116,7 +116,7 @@ class WebSocketInstance:
         elif request_type == 'websocket.disconnect':
             pass
         else:
-            logger.error('Failed to understand request type "%s"',
+            LOGGER.error('Failed to understand request type "%s"',
                          request_type, extra=request)
             raise WebSocketInternalError(
                 f'Unknown request type "{request_type}')

@@ -37,7 +37,7 @@ DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (
     None
 )
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 class Application:
@@ -207,6 +207,6 @@ class Application:
         return callback
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        logger.debug('Creating instance', extra=scope)
+        LOGGER.debug('Creating instance', extra=scope)
         instance = Instance(self._context, scope)
         await instance(receive, send)

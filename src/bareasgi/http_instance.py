@@ -36,7 +36,7 @@ from bareutils import (
 from .middleware import mw
 from .utils import anext
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 async def _body_iterator(
@@ -48,7 +48,7 @@ async def _body_iterator(
     while more_body:
         request = await receive()
         request_type = request['type']
-        logger.debug('Received "%s"', request_type, extra=request)
+        LOGGER.debug('Received "%s"', request_type, extra=request)
 
         if request_type == 'http.request':
             body, more_body = request.get(
@@ -57,7 +57,7 @@ async def _body_iterator(
         elif request_type == 'http.disconnect':
             raise HttpDisconnectError
         else:
-            logger.error('Failed to understand request type "%s"',
+            LOGGER.error('Failed to understand request type "%s"',
                          request_type, extra=request)
             raise HttpInternalError
 
@@ -118,13 +118,13 @@ class HttpInstance:
             # Needed for Hypercorn 0.7.1
             response_start['headers'] = []
 
-        logger.debug('Sending "http.response.start" with status %s',
+        LOGGER.debug('Sending "http.response.start" with status %s',
                      status, extra=response_start)
         await send(response_start)
 
         if pushes is not None and self._is_http_push_supported:
             for push_path, push_headers in pushes:
-                logger.debug(
+                LOGGER.debug(
                     'sending "http.response.push" for path "%s"', push_path)
                 await send({
                     'type': 'http.response.push',
@@ -141,7 +141,7 @@ class HttpInstance:
         except StopAsyncIteration:
             buf = None
         if buf is None:
-            logger.debug(
+            LOGGER.debug(
                 'Sending "http.response.body" with empty body', extra=response_body)
             await send(response_body)
             return
@@ -155,7 +155,7 @@ class HttpInstance:
             except StopAsyncIteration:
                 buf = None
                 response_body['more_body'] = False
-            logger.debug(
+            LOGGER.debug(
                 'Sending "http.response.body" with more_body="%s',
                 response_body["more_body"],
                 extra=response_body
@@ -165,7 +165,7 @@ class HttpInstance:
 
     async def __call__(self, receive: Receive, send: Send) -> None:
 
-        logger.debug('start handling request')
+        LOGGER.debug('start handling request')
 
         # The first step is to receive the ASGI request.
         try:
@@ -215,12 +215,12 @@ class HttpInstance:
 
                 if receive_task in done:
                     request = receive_task.result()
-                    logger.debug('request: %s', request)
+                    LOGGER.debug('request: %s', request)
 
                     if request['type'] != 'http.disconnect':
                         raise HttpInternalError('Expected http.disconnect')
 
-                    logger.debug('disconnecting')
+                    LOGGER.debug('disconnecting')
 
                     # Cancel pending tasks.
                     for task in pending:
@@ -235,7 +235,7 @@ class HttpInstance:
                     # Fetch result to trigger possible exceptions
                     send_task.result()
 
-            logger.debug('finish handling request')
+            LOGGER.debug('finish handling request')
 
         except asyncio.CancelledError:
             pass
