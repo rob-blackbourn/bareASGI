@@ -51,9 +51,9 @@ async def _body_iterator(
         LOGGER.debug('Received "%s"', request_type, extra=request)
 
         if request_type == 'http.request':
-            body, more_body = request.get(
-                'body', b''), request.get('more_body', False)
+            body = request.get('body', b'')
             yield body
+            more_body = request.get('more_body', False)
         elif request_type == 'http.disconnect':
             raise HttpDisconnectError
         else:
@@ -72,9 +72,9 @@ def _make_error_response(error: HTTPError) -> HttpResponse:
 
     return error.code, error.headers, content, None
 
+Middlewares = Sequence[HttpMiddlewareCallback]
+
 # pylint: disable=too-few-public-methods
-
-
 class HttpInstance:
     """An HTTP instance services an HTTP request.
     """
@@ -85,13 +85,15 @@ class HttpInstance:
         # Find the route.
         http_router: HttpRouter = context['router']
         self.request_callback, self.matches = http_router.resolve(
-            scope['method'], scope['path'])
+            scope['method'], scope['path']
+        )
         # Apply middleware.
-        middleware: Optional[Sequence[HttpMiddlewareCallback]
-                             ] = context['middlewares']
+        middleware: Optional[Middlewares] = context['middlewares']
         if middleware:
             self.request_callback = mw(
-                *middleware, handler=self.request_callback)
+                *middleware,
+                handler=self.request_callback
+            )
 
     @property
     def _is_http_2(self) -> bool:
@@ -99,7 +101,8 @@ class HttpInstance:
 
     @property
     def _is_http_push_supported(self) -> bool:
-        return self._is_http_2 and 'http.response.push' in self.scope.get('extensions', {})
+        extensions = self.scope.get('extensions', {})
+        return self._is_http_2 and 'http.response.push' in extensions
 
     # pylint: disable=too-many-arguments
     async def _send_response(
@@ -125,7 +128,9 @@ class HttpInstance:
         if pushes is not None and self._is_http_push_supported:
             for push_path, push_headers in pushes:
                 LOGGER.debug(
-                    'sending "http.response.push" for path "%s"', push_path)
+                    'sending "http.response.push" for path "%s"',
+                    push_path
+                )
                 await send({
                     'type': 'http.response.push',
                     'path': push_path,
@@ -142,7 +147,9 @@ class HttpInstance:
             buf = None
         if buf is None:
             LOGGER.debug(
-                'Sending "http.response.body" with empty body', extra=response_body)
+                'Sending "http.response.body" with empty body',
+                extra=response_body
+            )
             await send(response_body)
             return
 
@@ -179,14 +186,16 @@ class HttpInstance:
 
         # The next step is to call the handler.
         try:
+            content = _body_iterator(
+                receive,
+                request.get('body', b''),
+                request.get('more_body', False)
+            )
             response = await self.request_callback(
                 self.scope,
                 self.info,
                 self.matches,
-                _body_iterator(
-                    receive,
-                    request.get('body', b''),
-                    request.get('more_body', False))
+                content
             )
         except asyncio.CancelledError:
             return
@@ -218,19 +227,23 @@ class HttpInstance:
                     LOGGER.debug('request: %s', request)
 
                     if request['type'] != 'http.disconnect':
-                        raise HttpInternalError('Expected http.disconnect')
+                        # The request handler has already read or ignored the
+                        # request. We need to keep reading in order to detect
+                        # the disconnect for streaming writers.
+                        receive_task = asyncio.create_task(receive())
+                        pending.add(receive_task)
+                    else:
+                        LOGGER.debug('disconnecting')
 
-                    LOGGER.debug('disconnecting')
+                        # Cancel pending tasks.
+                        for task in pending:
+                            try:
+                                task.cancel()
+                                await task
+                            except:  # pylint: disable=bare-except
+                                pass
 
-                    # Cancel pending tasks.
-                    for task in pending:
-                        try:
-                            task.cancel()
-                            await task
-                        except:  # pylint: disable=bare-except
-                            pass
-
-                    is_connected = False
+                        is_connected = False
                 elif send_task in done:
                     # Fetch result to trigger possible exceptions
                     send_task.result()

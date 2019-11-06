@@ -6,7 +6,9 @@ import asyncio
 from datetime import datetime
 import json
 import logging
+import signal
 import string
+from typing import Any
 
 import pkg_resources
 
@@ -90,7 +92,6 @@ async def test_events(
 
 
 if __name__ == "__main__":
-    import uvicorn
 
     page_filename = pkg_resources.resource_filename(__name__, "streaming_fetch.html")
     with open(page_filename, 'rt') as file_ptr:
@@ -102,4 +103,29 @@ if __name__ == "__main__":
     app.http_router.add({'GET'}, '/test', test_page)
     app.http_router.add({'POST', 'OPTION'}, '/events', test_events)
 
-    uvicorn.run(app, port=9009)
+    from hypercorn.asyncio import serve
+    from hypercorn.config import Config
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    shutdown_event = asyncio.Event()
+
+    def _signal_handler(*_: Any) -> None:
+        shutdown_event.set()
+    loop.add_signal_handler(signal.SIGTERM, _signal_handler)
+    loop.add_signal_handler(signal.SIGINT, _signal_handler)
+
+    config = Config()
+    config.bind = ["0.0.0.0:9009"]
+    config.loglevel = 'debug'
+    # config.certfile = os.path.expanduser(f"~/.keys/server.crt")
+    # config.keyfile = os.path.expanduser(f"~/.keys/server.key")
+
+    loop.run_until_complete(
+        serve(
+            app,
+            config,
+            shutdown_trigger=shutdown_event.wait  # type: ignore
+        )
+    )
