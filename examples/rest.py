@@ -66,12 +66,17 @@ if __name__ == "__main__":
     keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
 
     if USE_UVICORN:
-        uvicorn.run(app, host='0.0.0.0', port=9009,
-                    ssl_keyfile=keyfile, ssl_certfile=certfile)
+        uvicorn.run(
+            app,
+            host='0.0.0.0',
+            port=9009,
+            ssl_keyfile=keyfile,
+            ssl_certfile=certfile
+        )
     else:
         config = Config()
         config.bind = ["0.0.0.0:9009"]
         config.loglevel = 'debug'
-        config.certfile = certfile
-        config.keyfile = keyfile
+        # config.certfile = certfile
+        # config.keyfile = keyfile
         asyncio.run(serve(app, config))

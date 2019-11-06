@@ -3,6 +3,7 @@ HTTP Instance
 """
 
 import asyncio
+from asyncio import Queue
 import logging
 from typing import (
     Any,
@@ -38,29 +39,58 @@ from .utils import anext
 
 LOGGER = logging.getLogger(__name__)
 
+class BodyIterator:
+    """Iterate over the body content"""
 
-async def _body_iterator(
-        receive: Receive,
-        body: bytes,
-        more_body: bool
-) -> AsyncIterable[bytes]:
-    yield body
-    while more_body:
-        request = await receive()
+    def __init__(
+            self,
+            receive: Receive,
+            body: bytes,
+            more_body: bool
+    ) -> None:
+        self._receive = receive
+        self._queue: Queue = Queue()
+        self._queue.put_nowait(body)
+        self._more_body = more_body
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if not self._queue.empty():
+            body = await self._queue.get()
+            return body
+
+        if not self._more_body:
+            raise StopAsyncIteration
+
+        return await self._read()
+
+    async def _read(self) -> bytes:
+        request = await self._receive()
         request_type = request['type']
         LOGGER.debug('Received "%s"', request_type, extra=request)
 
-        if request_type == 'http.request':
-            body = request.get('body', b'')
-            yield body
-            more_body = request.get('more_body', False)
-        elif request_type == 'http.disconnect':
+        if request_type == 'http.disconnect':
             raise HttpDisconnectError
-        else:
-            LOGGER.error('Failed to understand request type "%s"',
-                         request_type, extra=request)
+
+        if request_type != 'http.request':
+            LOGGER.error(
+                'Failed to understand request type "%s"',
+                request_type,
+                extra=request
+            )
             raise HttpInternalError
 
+        body = request.get('body', b'')
+        self._more_body = request.get('more_body', False)
+        return body
+
+
+    async def flush(self):
+        """Flush all remaining http.request messages"""
+        while self._more_body:
+            await self._queue.put(await self._read())
 
 def _make_error_response(error: HTTPError) -> HttpResponse:
     if isinstance(error.reason, str):
@@ -186,7 +216,7 @@ class HttpInstance:
 
         # The next step is to call the handler.
         try:
-            content = _body_iterator(
+            content = BodyIterator(
                 receive,
                 request.get('body', b''),
                 request.get('more_body', False)
@@ -204,6 +234,11 @@ class HttpInstance:
 
         # Finally handle sending the body and the disconnect.
         try:
+            # Typically the request handler has already processed the request
+            # body, but we flush all the "http.request" messages so we can catch
+            # the final "http.disconnect".
+            await content.flush()
+
             if isinstance(response, int):
                 response = (response,)
 
@@ -226,24 +261,23 @@ class HttpInstance:
                     request = receive_task.result()
                     LOGGER.debug('request: %s', request)
 
+                    # Cancel pending tasks.
+                    for task in pending:
+                        try:
+                            task.cancel()
+                            await task
+                        except:  # pylint: disable=bare-except
+                            pass
+
+                    # Check for abnormal disconnection.
                     if request['type'] != 'http.disconnect':
-                        # The request handler has already read or ignored the
-                        # request. We need to keep reading in order to detect
-                        # the disconnect for streaming writers.
-                        receive_task = asyncio.create_task(receive())
-                        pending.add(receive_task)
-                    else:
-                        LOGGER.debug('disconnecting')
+                        raise HttpInternalError(
+                            'Unexpected request type "{request["type"]}"'
+                        )
 
-                        # Cancel pending tasks.
-                        for task in pending:
-                            try:
-                                task.cancel()
-                                await task
-                            except:  # pylint: disable=bare-except
-                                pass
+                    LOGGER.debug('disconnecting')
 
-                        is_connected = False
+                    is_connected = False
                 elif send_task in done:
                     # Fetch result to trigger possible exceptions
                     send_task.result()
