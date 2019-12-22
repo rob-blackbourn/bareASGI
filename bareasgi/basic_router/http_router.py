@@ -43,9 +43,27 @@ class BasicHttpRouter(HttpRouter):
 
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
         logger.debug('Adding route for %s on "%s"', methods, path)
+        path_definition = PathDefinition(path)
         for method in methods:
-            path_definition_list = self._routes.setdefault(method, [])
-            path_definition_list.append((PathDefinition(path), callback))
+            self.add_route(method, path_definition, callback)
+
+    def add_route(
+            self,
+            method: str,
+            path_definition: PathDefinition,
+            callback: HttpRequestCallback
+    ) -> None:
+        """Add a route to a callback for a method and path definition
+
+        :param method: The method
+        :type method: str
+        :param path_definition: The path definition
+        :type path_definition: PathDefinition
+        :param callback: The callback
+        :type callback: HttpRequestCallback
+        """
+        path_definition_list = self._routes.setdefault(method, [])
+        path_definition_list.append((path_definition, callback))
 
     # pylint: disable=unused-argument
     async def _not_found(
