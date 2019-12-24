@@ -22,6 +22,9 @@ class PathDefinition:
 
     def __init__(self, path: str) -> None:
         """Create a path definition."""
+        # Save for hashing
+        self.path = path
+
         if not path.startswith('/'):
             raise Exception('Paths must be absolute')
         # Trim off the leading '/'
@@ -83,6 +86,9 @@ class PathDefinition:
                 matches[name] = value
 
         return True, matches
+
+    def __hash__(self) -> int:
+        return hash(self.path)
 
     def __str__(self):
         return f'<PathDefinition: segments={self.segments}, ends_with_slash={self.ends_with_slash}>'

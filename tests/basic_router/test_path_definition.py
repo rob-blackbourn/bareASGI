@@ -5,7 +5,6 @@ from datetime import datetime
 from bareasgi.basic_router.path_definition import PathDefinition
 
 
-
 def test_literal_paths():
     """Test for literal paths"""
     path_def = PathDefinition('/foo/bar/grum')
@@ -39,6 +38,7 @@ def test_variable_path_with_type():
 
     is_match, matches = path_def.match('/foo/123/grum')
     assert is_match
+    assert matches is not None
     assert 'id' in matches
     assert matches['id'] == 123
 
@@ -71,3 +71,13 @@ def test_path_type():
     assert is_match
     assert 'rest' in matches
     assert matches['rest'] == 'folder/other.html'
+
+
+def test_hashing():
+    """Test that path definitions can be keys"""
+    dct = {
+        PathDefinition(path): path
+        for path in ['/a/b', '/a/b/{c:int}']
+    }
+    for path_definition, path in dct.items():
+        assert path_definition.path == path
