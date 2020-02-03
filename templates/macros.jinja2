@@ -1,0 +1,362 @@
+{#
+Rendering marcos
+#}
+
+
+{#
+Render the title
+
+    Args:
+    qualifier (str): The qualifier
+    name (str): The name
+    object_type (str): The object type
+#}
+{% macro render_qualified_title(qualifier, name, object_type) -%}
+<h3 class="autodoc-title">
+  <span class="autodoc-title-type">{{ object_type }} </span><span class="autodoc-qualifier">{{ qualifier }}</span><span class="autodoc-punctuation">.</span><span class="autodoc-title-name">{{ name }}</span>
+</h3>
+{%- endmacro %}
+
+
+{#
+Render the class title
+
+    Args:
+    name (str): The name
+    bases (List[ClassDescriptor]): The class bases
+    object_type (str): The object type
+#}
+{% macro render_class_title(name, bases, object_type) -%}
+<h3 class="autodoc-title">
+  <span class="autodoc-title-type">{{ object_type }} </span><span class="autodoc-title-name">{{ name }}</span>
+  {%- if bases|length > 0 -%}
+    <span class="autodoc-punctuation">(</span>
+    {%-for base in bases -%}
+      <span class="autodoc-type">{{ base.name }}</span>
+      {%- if not loop.last -%}
+        <span class="autodoc-puntuation">, </span>
+      {%- endif -%}
+    {%- endfor -%}
+    <span class="autodoc-punctuation">)</span>
+  {%- endif %}
+</h3>
+{%- endmacro %}
+
+
+{#
+Render the summary
+
+    Args:
+        summary (str): The summary
+#}
+{% macro render_summary(summary) -%}
+{% if summary -%}
+  <h4 class="autodoc-title">Summary</h4>
+  {{ summary | md_format }}
+{%- endif %}
+{%- endmacro %}
+
+
+{#
+Render the signature
+
+    Args:
+        callable (CallableDescriptor): The callable
+#}
+{% macro render_signature(callable) -%}
+<code class="autodoc-signature">
+    {%- if callable.is_async -%}
+    <span class="autodoc-keyword">async</span><span> </span>
+    {%- endif -%}
+    <span class="autodoc-qualifier">{{ callable.qualifier }}</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">{{ callable.name }}</var><span class="autodoc-punctuation">(</span>
+    {%- for arg in callable.arguments -%}
+      {%- if not loop.first -%}
+        <span class="autodoc-punctuation">, </span>
+      {%- endif -%}
+      <var class="autodoc-varname">{{ arg.name }}</var>
+      {%- if arg.type -%}
+        <span class="autodoc-punctuation">: </span><span class="autodoc-vartype">{{ arg.type }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+    <span class="autodoc-punctuation">)</span>
+    {%- if return_type -%}
+      <span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">{{ return_type }}</span>
+    {%- endif -%}
+</code>
+{%- endmacro %}
+
+
+{#
+Render parameters
+
+    Args:
+        arguments (List[ArgumentDescriptor]): The argument descriptors
+#}
+{% macro render_parameters(arguments) -%}
+<div class="autodoc-parameters">
+  <h4 class="autodoc-title">Parameters</h4>
+
+{% for argument in arguments %}
+    <var class="autodoc-varname">{{ argument.name }}</var>
+{%- if argument.type -%}
+      <span class="autodoc-punctuation">: </span><span class="autodoc-vartype">{{ argument.type }}</span>
+{%- endif -%}
+{%- if argument.is_optional -%}
+      <span class="autodoc-punctuation"> (optional)</span>
+{%- endif -%}
+{% if argument.description -%}
+      {{ argument.description | md_format }}
+{%- else -%}
+      <p />
+{%- endif %}
+{% endfor %}
+</div>
+{%- endmacro %}
+
+
+{#
+Render attributes
+
+    Args:
+        attributes (List[ArgumentDescription]): The attributes
+#}
+{% macro render_attributes(atttributes) -%}
+<div class="autodoc-attributes">
+{% if attributes -%}
+  <h3 class="autodoc-title">Attributes</h3>
+{% for attribute in attributes -%}
+  <var class="autodoc-varname">{{ attribute.name }}</var>
+{%- if attribute.type -%}
+  <span class="autodoc-punctuation">: </span><span class="autodoc-vartype">{{ attribute.type }}</span>
+{%- endif %}
+{%- if attribute.is_optional -%}
+  <span class="autodoc-punctuation"> (optional)</span>
+{%- endif -%}
+{% if attribute.description -%}
+  <p>{{ attribute.description }}</p>
+{% else %}
+  <p></p>
+{% endif %}
+{%- endfor -%}
+{%- endif %}
+</div>
+{%- endmacro %}
+
+
+{#
+Render a class constructor
+    Args:
+        constructor (CallableDescriptor): The constructor
+#}
+{% macro render_constructor(constructor) -%}
+{{ render_signature(constructor) }}
+{{ render_parameters(constructor.arguments) }}
+{%- endmacro %}
+
+
+{#
+Render the description
+
+    Args:
+        description (Optional[str]): The description
+#}
+{% macro render_description(description) -%}
+<div class="autodoc-description">
+{% if description -%}
+    <h4 class="autodoc-title">Description</h4>
+    {{ description | md_format }}
+{%- endif %}
+</div>
+{%- endmacro %}
+
+
+{#
+Render examples
+    Args:
+        examples (Optional[List[str]]): A list of examples
+#}
+{% macro render_examples(examples) -%}
+<div class="autodoc-examples">
+{% if examples -%}
+    <h3 class="autodoc-title">Examples</h3>
+{% for example in examples -%}
+    <p class="autodoc-example">{{ example }}</p>
+{%- endfor %}
+{%- endif %}
+</div>
+{%- endmacro %}
+
+
+{#
+Render raises
+
+    Args:
+        raises (List[RaiseDescriptor]): Raises descriptors
+#}
+{% macro render_raises(raises) -%}
+<div class="autodoc-raises">
+{% if descriptors -%}
+    <h3 class="autodoc-title">Raises</h3>
+{% for raises_descriptor in raises -%}
+    <p>
+      <span class="autodoc-vartype">raises_descriptor.type</span><span class="autodoc-punctuation">: </span><span class="autodoc-raises">{{ raises_descriptor.description  }}</span>
+    </p>
+{%- endfor %}
+{%- endif %}
+</div>
+{%- endmacro %}
+
+
+{#
+Render returns
+
+    Args:
+        callable (CallableDescriptor): The callable
+#}
+{% macro render_returns(callable) -%}
+<div class="autodoc-returns">
+{% if callable.return_type not in ['None', 'typing.None'] -%}
+{% if callable.is_generator -%}
+        <h4 class="autodoc-title">Yields</h4>
+{%- else %}
+        <h4 class="autodoc-title">Returns</h4>
+{%- endif %}
+      <span class="autodoc-vartype">{{ callable.return_type }}</span><span class="autodoc-punctuation">: </span>
+{% if callable.return_description -%}
+      <span class="autodoc-summary">{{ callable.return_description }}</span>
+{%- endif %}
+
+{%- endif %}
+</div>
+{%- endmacro %}
+
+
+{#
+Render properties
+
+    Args:
+        properties (List[PropertyDescriptor]): The property descriptors
+#}
+{% macro render_properties(properties) -%}
+<div class="autodoc-properties">
+{% for property in properties -%}
+  <div class="autodoc-property">
+    {{ render_qualified_title(property.qualifier, property.name, "property") }}
+    {{ render_summary(property.summary) }}
+    <code><var class="autodoc-varname">{{ property.name }}</var><span class="autodoc-punctuation"> -> </span><span class="autodoc-vartype">{{ property.type }}</span></code>
+{%- if property.is_settable %}
+    <br /><code><var class="autodoc-varname">{{ property.name }}</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">{{ property.type }}</span><span class="autodoc-punctuation"> = ...</span></code>
+{%- endif -%}
+{%- if property.is_deletable %}
+    <br /><code><span class="autodoc-keyword">del</span><span class="autodoc-punctuation"> </span><var class="autodoc-varname">{{ property.name }}</var></code>
+{%- endif -%}
+    {{ render_raises(property.raises) }}
+    {{ render_description(property.description) }}
+    {{ render_examples(property.examples) }}
+  </div>
+{%- endfor %}
+</div>
+{%- endmacro %}
+
+
+{#
+Render callable
+
+    Args:
+        callable (CallableDescriptor): The callable
+#}
+{% macro render_callable(callable) -%}
+<div class="autodoc-callable">
+  {{ render_qualified_title(callable.qualifier, callable.name, callable.callable_type_description) }}
+  {{ render_summary(callable.summary) }}
+  {{ render_signature(callable) }}
+  {{ render_parameters(callable.arguments) }}
+  {{ render_returns(callable) }}
+  {{ render_raises(callable.raises) }}
+  {{ render_description(callable.description) }}
+  {{ render_examples(callable.examples )}}
+</div>
+{%- endmacro %}
+
+
+{#
+Render methods
+
+    Args:
+        methods (List[CallableDescriptor]): The methods
+#}
+{% macro render_methods(methods) -%}
+<div class="autodoc-methods">
+{%- for method in methods %}
+{{ render_callable(method) }}
+{% endfor -%}
+</div>
+{%- endmacro %}
+
+
+{#
+Render class methods
+
+    Args:
+        methods (List[CallableDescriptor]): The methods
+#}
+{% macro render_class_methods(methods) -%}
+<div class="autodoc-classmethods">
+{%- for method in methods %}
+{{ render_callable(method) }}
+{% endfor -%}
+</div>
+{%- endmacro %}
+
+
+{#
+Render class
+
+    Args:
+        class (ClassDescriptor): The class
+#}
+{% macro render_class(class) -%}
+<div class="autodoc-class">
+  {{ render_class_title(class.name, class.bases, "class") }}
+  {{ render_summary(class.summary) }}
+  {{ render_signature(class.constructor) }}
+  {{ render_parameters(class.constructor.arguments) }}
+  {{ render_description(class.description) }}
+  {{ render_attributes(class.attributes) }}
+  {{ render_properties(class.properties) }}
+  {{ render_class_methods(class.class_methods) }}
+  {{ render_methods(class.methods) }}
+  {{ render_examples(class.examples) }}
+</div>
+{%- endmacro %}
+
+
+{#
+Render a module
+
+    Args:
+        module (ModuleDescriptor): The module
+#}
+{% macro render_module(module) -%}
+<div class="autodoc-module">
+    <h3 class="autodoc-title">
+        <span class="autodoc-title-type">module </span><span class="autodoc-title-name">{{ module.name }}</span>
+    </h3>
+  {{ render_summary(module.summary) }}
+  {{ render_attributes(module.attributes) }}
+  {{ render_description(module.description) }}
+  {{ render_examples(module.examples) }}
+{%- for function in module.functions %}
+  {{ render_callable(function)}}
+  <hr />
+{% endfor -%}
+{%- for class in module.classes %}
+  {{ render_class(class)}}
+  <hr />
+{% endfor -%}
+{%- for child_module in module.modules %}
+  {{ render_module(child_module)}}
+  <hr />
+{% endfor -%}
+</div>
+{%- endmacro %}

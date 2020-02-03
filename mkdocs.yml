@@ -1,0 +1,53 @@
+site_name: bareASGI
+site_description: A lightweight ASGI web framework
+site_dir: docs
+
+docs_dir: documentation
+
+repo_name: rob-blackbourn/bareASGI
+repo_url: https://github.com/rob-blackbourn/bareASGI
+edit_uri: ""
+
+theme:
+    name: 'material'
+    logo: images/peach.svg
+    favicon: images/favicon.ico
+
+nav:
+  - index.md
+  - User Guide:
+    - user-guide/installation.md
+    - user-guide/usage.md
+    - user-guide/optional-packages.md
+    - user-guide/asgi.md
+    - user-guide/application.md
+    - user-guide/io.md
+    - user-guide/routing.md
+    - user-guide/middleware.md
+    - user-guide/background-tasks.md
+    - user-guide/decorators.md
+    - user-guide/h2.md
+    - user-guide/server-sent-events.md
+    - user-guide/ssl.md
+    - user-guide/examples.md
+  - API:
+    - bareasgi: api/bareasgi.md
+  
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - jetblack_markdown.autodoc:
+      class_from_init: true
+      ignore_dunder: true
+      ignore_private: true
+      ignore_all: false
+      ignore_inherited: false
+      follow_module_tree: false
+      prefer_docstring: true
+      template_folder: templates
+  - toc:
+      permalink: true
+
+extra_css:
+    - css/custom.css

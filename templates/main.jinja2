@@ -1,0 +1,14 @@
+{#
+Render an object
+
+    Args:
+        obj (Descriptor): a descriptor
+#}
+{% import 'macros.jinja2' as macros with context %}
+{% if obj.descriptor_type == "module" %}
+{{ macros.render_module(obj) }}
+{% elif obj.descriptor_type == "class" %}
+{{ macros.render_class(obj) }}
+{% elif obj.descriptor_type == "callable" %}
+{{ macros.render_callable(obj) }}
+{% endif %}
