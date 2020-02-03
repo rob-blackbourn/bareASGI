@@ -1,6 +1,6 @@
 # bareASGI
 
-A lightweight ASGI framework (read the [documentation](https://bareasgi.readthedocs.io/en/latest/))
+A lightweight ASGI framework (read the [documentation](https://rob-blackbourn.github.io/bareASGI/))
 
 ## Status
 
@@ -16,10 +16,11 @@ Some of the features provided by web frameworks are not required for a given app
 version or varient required for a given solution. 
 
 See also:
-* [bareASGI-cors](https://github.com/rob-blackbourn/bareasgi-cors) for cross origin resource sharing
-* [bareASGI-static](https://github.com/rob-blackbourn/bareasgi-static) for static file serving
-* [bareASGI-jinja2](https://github.com/rob-blackbourn/bareasgi-jinja2) for Jinja2 template rendering
-* [bareASGI-graphql-next](https://github.com/rob-blackbourn/bareasgi-graphql-next) for GraphQL
+* [bareASGI-cors](https://github.com/rob-blackbourn/bareASGI-cors) for cross origin resource sharing
+* [bareASGI-static](https://github.com/rob-blackbourn/bareASGI-static) for static file serving
+* [bareASGI-jinja2](https://github.com/rob-blackbourn/bareASGI-jinja2) for Jinja2 template rendering
+* [bareASGI-graphql-next](https://github.com/rob-blackbourn/bareASGI-graphql-next) for GraphQL
+* [bareASGI-rest](https://github.com/rob-blackbourn/bareASGI-rest) for GraphQL
 
 ## Functionality
 
