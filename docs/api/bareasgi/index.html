@@ -2248,8 +2248,8 @@
 <p>
 <div class="autodoc-module">
 <h3 class="autodoc-title" id="module-bareasgi">
-        <span class="autodoc-title-type">module </span><span class="autodoc-title-name">bareasgi</span>
-    <a class="headerlink" href="#module-bareasgi" title="Permanent link">&para;</a></h3>
+      <span class="autodoc-title-type">module </span><span class="autodoc-title-name">bareasgi</span>
+  <a class="headerlink" href="#module-bareasgi" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h4>
 <p>bareASGI exports</p>
 <div class="autodoc-attributes">
@@ -2268,8 +2268,11 @@
 <a class="headerlink" href="#async-function-bareutilsbytes_reader" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_1">Summary<a class="headerlink" href="#summary_1" title="Permanent link">&para;</a></h4>
 <p>Extracts the body content as bytes.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">bytes_reader</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Content</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">bytes_reader</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Content</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">bytes</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Content</span><span class="autodoc-punctuation"> (optional)</span><p>The content argument of the request handler.</p>
 </div>
@@ -2295,8 +2298,21 @@
 <a class="headerlink" href="#function-bareutilsbytes_response" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_2">Summary<a class="headerlink" href="#summary_2" title="Permanent link">&para;</a></h4>
 <p>A helper function to create a bytes response.</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">bytes_response</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">buf</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">content_type</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">pushes</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">bytes_response</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">buf</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">content_type</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">pushes</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Union[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation"> (optional)</span><p>The HTTP status code.</p>
 <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation"> (optional)</span><p>The HTTP headers.</p>
@@ -2327,8 +2343,13 @@
 <a class="headerlink" href="#async-generator-function-bareutilsbytes_writer" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_3">Summary<a class="headerlink" href="#summary_3" title="Permanent link">&para;</a></h4>
 <p>Creates an asynchronous generator from the supplied response body.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">bytes_writer</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">buf</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">bytes_writer</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">buf</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Content</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">buf</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation"> (optional)</span><p>The response body to return.</p>
 <var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><p>The size of each chunk to send or -1 to send as a single chunk.</p>
@@ -2355,8 +2376,11 @@
 <a class="headerlink" href="#function-bareutilsdecode_cookies" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_4">Summary<a class="headerlink" href="#summary_4" title="Permanent link">&para;</a></h4>
 <p>Decode a cookie header</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">decode_cookies</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">cookies</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">decode_cookies</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">cookies</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Mapping[bytesList[bytes]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">cookies</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation"> (optional)</span><p>The header</p>
 </div>
@@ -2382,8 +2406,11 @@
 <a class="headerlink" href="#function-bareutilsdecode_set_cookie" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_5">Summary<a class="headerlink" href="#summary_5" title="Permanent link">&para;</a></h4>
 <p>Decode a set-cookie header into a dictionary.</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">decode_set_cookie</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">set_cookie</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">decode_set_cookie</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">set_cookie</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Mapping[strAny]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">set_cookie</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation"> (optional)</span><p>The set-cookie header</p>
 </div>
@@ -2412,8 +2439,11 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#function-bareutilsencode_cookies" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_6">Summary<a class="headerlink" href="#summary_6" title="Permanent link">&para;</a></h4>
 <p>Encode the cookie header</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">encode_cookies</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">cookies</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Mapping[bytesList[bytes]]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">encode_cookies</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">cookies</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Mapping[bytesList[bytes]]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">bytes</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_5">Parameters<a class="headerlink" href="#parameters_5" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">cookies</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Mapping[bytesList[bytes]]</span><span class="autodoc-punctuation"> (optional)</span><p>The cookies</p>
 </div>
@@ -2439,8 +2469,29 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#function-bareutilsencode_set_cookie" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_7">Summary<a class="headerlink" href="#summary_7" title="Permanent link">&para;</a></h4>
 <p>Encode set-cookie</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">encode_set_cookie</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">name</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">value</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">*</var><span class="autodoc-punctuation">, </span><var class="autodoc-varname">expires</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[datetime.datetime, NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">max_age</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[int, datetime.timedelta, NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">domain</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">secure</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bool</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">http_only</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bool</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">same_site</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, NoneType]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">encode_set_cookie</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">name</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">value</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">*</var><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">expires</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[datetime.datetime, NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">max_age</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[int, datetime.timedelta, NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">domain</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">secure</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bool</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">http_only</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bool</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">same_site</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, NoneType]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">bytes</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_6">Parameters<a class="headerlink" href="#parameters_6" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">name</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation"> (optional)</span><p>The cookie name</p>
 <var class="autodoc-varname">value</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation"> (optional)</span><p>The cookie value</p>
@@ -2475,8 +2526,23 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#function-bareutilsjson_response" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_8">Summary<a class="headerlink" href="#summary_8" title="Permanent link">&para;</a></h4>
 <p>A helper function to send a json repsonse.</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">json_response</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">obj</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListAnyMapping[strAny]]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">content_type</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">dumps</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Any</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">pushes</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">json_response</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">obj</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListAnyMapping[strAny]]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">content_type</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">dumps</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Any</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">pushes</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Union[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_7">Parameters<a class="headerlink" href="#parameters_7" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation"> (optional)</span><p>The HTTP status code.</p>
 <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation"> (optional)</span><p>The HTTP headers.</p>
@@ -2508,8 +2574,13 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#async-function-bareutilstext_reader" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_9">Summary<a class="headerlink" href="#summary_9" title="Permanent link">&para;</a></h4>
 <p>Extracts the body contents as text.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">text_reader</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Content</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">text_reader</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Content</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">str</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_8">Parameters<a class="headerlink" href="#parameters_8" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Content</span><span class="autodoc-punctuation"> (optional)</span><p>The content argument of the request handler.</p>
 <var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The encoding of the text (defaults to 'utf-8').</p>
@@ -2536,8 +2607,23 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#function-bareutilstext_response" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_10">Summary<a class="headerlink" href="#summary_10" title="Permanent link">&para;</a></h4>
 <p>A helper function to create a text response.</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">text_response</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">text</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">content_type</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">pushes</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">text_response</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">text</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">content_type</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">bytes</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">pushes</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Union[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_9">Parameters<a class="headerlink" href="#parameters_9" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">status</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation"> (optional)</span><p>The HTTP status code.</p>
 <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation"> (optional)</span><p>The HTTP headers.</p>
@@ -2569,8 +2655,15 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#async-generator-function-bareutilstext_writer" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_11">Summary<a class="headerlink" href="#summary_11" title="Permanent link">&para;</a></h4>
 <p>Creates an asynchronous generator from the supplied response body.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">text_writer</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">text</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">bareutils</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">text_writer</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">text</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">chunk_size</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Content</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_10">Parameters<a class="headerlink" href="#parameters_10" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">text</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The response body.</p>
 <var class="autodoc-varname">encoding</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The encoding to apply when transforming the text into bytes (defaults to 'utf-8').</p>
@@ -2598,8 +2691,23 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#class-application" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_12">Summary<a class="headerlink" href="#summary_12" title="Permanent link">&para;</a></h4>
 <p>Construct the application</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">bareasgi</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">Application</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">*</var><span class="autodoc-punctuation">, </span><var class="autodoc-varname">http_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[baretypes.types.HttpRouter, NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">web_socket_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[baretypes.types.WebSocketRouter, NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">startup_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]], NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">shutdown_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]], NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]], NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">info</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionMutableMapping[strAny], NoneType]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareasgi</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">Application</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">*</var><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">http_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[baretypes.types.HttpRouter, NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">web_socket_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[baretypes.types.WebSocketRouter, NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">startup_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]], NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">shutdown_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]], NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]], NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">info</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionMutableMapping[strAny], NoneType]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_11">Parameters<a class="headerlink" href="#parameters_11" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">*</var><span class="autodoc-punctuation"> (optional)</span><p></p>
 <var class="autodoc-varname">http_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[baretypes.types.HttpRouter, NoneType]</span><p>Optional router to for http routes.</p>
@@ -2721,8 +2829,13 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#method-applicationon_http_request" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_19">Summary<a class="headerlink" href="#summary_19" title="Permanent link">&para;</a></h4>
 <p>A decorator to add an http route handler to the application</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_http_request</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_http_request</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">CallableCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAsyncIterable[bytesAwaitableUnion[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneTypeCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAsyncIterable[bytesAwaitableUnion[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]]]]]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_12">Parameters<a class="headerlink" href="#parameters_12" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><span class="autodoc-punctuation"> (optional)</span><p>The http mothods, e.g. {{'POST', 'PUT'}</p>
 <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path</p>
@@ -2748,8 +2861,11 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#method-applicationon_shutdown" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_20">Summary<a class="headerlink" href="#summary_20" title="Permanent link">&para;</a></h4>
 <p>A decorator to add a startup handler to the application</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_shutdown</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">CallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_shutdown</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">CallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">CallableCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneTypeCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_13">Parameters<a class="headerlink" href="#parameters_13" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">CallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]</span><span class="autodoc-punctuation"> (optional)</span><p></p>
 </div>
@@ -2774,8 +2890,11 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#method-applicationon_startup" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_21">Summary<a class="headerlink" href="#summary_21" title="Permanent link">&para;</a></h4>
 <p>A decorator to add a startup handler to the application</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_startup</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">CallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_startup</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">CallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">CallableCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneTypeCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_14">Parameters<a class="headerlink" href="#parameters_14" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">CallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAnyAwaitable[NoneType]]</span><span class="autodoc-punctuation"> (optional)</span><p></p>
 </div>
@@ -2800,8 +2919,11 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#method-applicationon_ws_request" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_22">Summary<a class="headerlink" href="#summary_22" title="Permanent link">&para;</a></h4>
 <p>A decorator to add a websocket route handler to the application</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_ws_request</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_ws_request</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">CallableCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAny], baretypes.types.WebSocketAwaitable[NoneTypeCallableMapping[strAnyUnionMutableMapping[strAny], NoneTypeMapping[strAny], baretypes.types.WebSocketAwaitable[NoneType]]]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_15">Parameters<a class="headerlink" href="#parameters_15" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path</p>
 </div>
@@ -2832,8 +2954,8 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#class-websocket" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_23">Summary<a class="headerlink" href="#summary_23" title="Permanent link">&para;</a></h4>
 <p>Initialize self.  See help(type(self)) for accurate signature.</p>
-<code class="autodoc-signature"><span class="autodoc-qualifier">baretypes</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">WebSocket</var><span class="autodoc-punctuation">(</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-qualifier">baretypes</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">WebSocket</var><span class="autodoc-punctuation">(</span><span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_16">Parameters<a class="headerlink" href="#parameters_16" title="Permanent link">&para;</a></h4>
 </div>
 <div class="autodoc-description">
@@ -2853,8 +2975,13 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#async-method-websocketaccept" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_24">Summary<a class="headerlink" href="#summary_24" title="Permanent link">&para;</a></h4>
 <p>Accept the socket.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">accept</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">subprotocol</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[str, NoneType]</span><span class="autodoc-punctuation">, </span><var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">accept</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">subprotocol</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[str, NoneType]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Any</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_17">Parameters<a class="headerlink" href="#parameters_17" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">subprotocol</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[str, NoneType]</span><p>An optional subprotocol sent by the client.</p>
 <var class="autodoc-varname">headers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">UnionListTuple[bytes, bytes]], NoneType]</span><p>Optional headers to send, defaults to None</p>
@@ -2881,8 +3008,11 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#async-method-websocketclose" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_25">Summary<a class="headerlink" href="#summary_25" title="Permanent link">&para;</a></h4>
 <p>Closes the WebSocket.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">close</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">code</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">close</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">code</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Any</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_18">Parameters<a class="headerlink" href="#parameters_18" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">code</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">int</span><p>The reason code (defaults to 1000).</p>
 </div>
@@ -2907,8 +3037,8 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#async-method-websocketreceive" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_26">Summary<a class="headerlink" href="#summary_26" title="Permanent link">&para;</a></h4>
 <p>Receive data from the WebSocket.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">receive</var><span class="autodoc-punctuation">(</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">receive</var><span class="autodoc-punctuation">(</span><span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Union[bytes, str, NoneType]</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_19">Parameters<a class="headerlink" href="#parameters_19" title="Permanent link">&para;</a></h4>
 </div>
 <div class="autodoc-returns">
@@ -2932,8 +3062,11 @@ The <code>secure</code> value is represented as a <code>bool</code>.</p>
 <a class="headerlink" href="#async-method-websocketsend" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_27">Summary<a class="headerlink" href="#summary_27" title="Permanent link">&para;</a></h4>
 <p>Send data to the client.</p>
-<code class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">send</var><span class="autodoc-punctuation">(</span><var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, str]</span><span class="autodoc-punctuation">)</span></code>
-  <div class="autodoc-parameters">
+<div class="autodoc-signature"><span class="autodoc-keyword">async</span><span> </span><span class="autodoc-qualifier">WebSocket</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">send</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, str]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Any</span></div>
+<div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_20">Parameters<a class="headerlink" href="#parameters_20" title="Permanent link">&para;</a></h4>
 <var class="autodoc-varname">content</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[bytes, str]</span><span class="autodoc-punctuation"> (optional)</span><p>Either bytes or a string.</p>
 </div>

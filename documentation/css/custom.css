@@ -17,3 +17,11 @@ h4.autodoc-title {
 .autodoc-qualifier {
     font-weight: normal;
 }
+
+.autodoc-argument {
+    text-indent: 4em;
+}
+
+.autodoc-signature {
+    font-family: "Roboto Mono","Courier New",Courier,monospace;
+}

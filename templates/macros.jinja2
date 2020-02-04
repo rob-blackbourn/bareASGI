@@ -64,25 +64,30 @@ Render the signature
         callable (CallableDescriptor): The callable
 #}
 {% macro render_signature(callable) -%}
-<code class="autodoc-signature">
+<div class="autodoc-signature">
     {%- if callable.is_async -%}
     <span class="autodoc-keyword">async</span><span> </span>
     {%- endif -%}
     <span class="autodoc-qualifier">{{ callable.qualifier }}</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">{{ callable.name }}</var><span class="autodoc-punctuation">(</span>
-    {%- for arg in callable.arguments -%}
-      {%- if not loop.first -%}
-        <span class="autodoc-punctuation">, </span>
-      {%- endif -%}
-      <var class="autodoc-varname">{{ arg.name }}</var>
-      {%- if arg.type -%}
-        <span class="autodoc-punctuation">: </span><span class="autodoc-vartype">{{ arg.type }}</span>
-      {%- endif -%}
+    {%- if callable.arguments|length > 0 -%}
+      <br />
+      {%- for arg in callable.arguments -%}
+        <div class="autodoc-argument">
+        <var class="autodoc-varname">{{ arg.name }}</var>
+        {%- if arg.type -%}
+          <span class="autodoc-punctuation">: </span><span class="autodoc-vartype">{{ arg.type }}</span>
+        {%- endif -%}
+        {%- if not loop.last -%}
+          <span class="autodoc-punctuation">,</span>
+        {%- endif -%}
+        </div>
     {%- endfor -%}
-    <span class="autodoc-punctuation">)</span>
-    {%- if return_type -%}
-      <span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">{{ return_type }}</span>
     {%- endif -%}
-</code>
+    <span class="autodoc-punctuation">)</span>
+    {%- if callable.return_type -%}
+      <span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">{{ callable.return_type }}</span>
+    {%- endif -%}
+</div>
 {%- endmacro %}
 
 
@@ -339,9 +344,9 @@ Render a module
 #}
 {% macro render_module(module) -%}
 <div class="autodoc-module">
-    <h3 class="autodoc-title">
-        <span class="autodoc-title-type">module </span><span class="autodoc-title-name">{{ module.name }}</span>
-    </h3>
+  <h3 class="autodoc-title">
+      <span class="autodoc-title-type">module </span><span class="autodoc-title-name">{{ module.name }}</span>
+  </h3>
   {{ render_summary(module.summary) }}
   {{ render_attributes(module.attributes) }}
   {{ render_description(module.description) }}
