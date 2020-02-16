@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.3">
     
     
       
@@ -42,12 +42,12 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/application.1b62728e.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
       
       
     
     
-      <script src="../../assets/javascripts/modernizr.268332fc.js"></script>
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
     
     
       
@@ -81,7 +81,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#background-tasks" tabindex="1" class="md-skip">
+      <a href="#background-tasks" tabindex="0" class="md-skip">
         Skip to content
       </a>
     
@@ -90,9 +90,9 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../.." title="bareASGI" class="md-header-nav__button md-logo">
+        <a href="../.." title="bareASGI" aria-label="bareASGI" class="md-header-nav__button md-logo">
           
-            <img src="../../images/peach.svg" width="24" height="24">
+            <img alt="logo" src="../../images/peach.svg" width="24" height="24">
           
         </a>
       </div>
@@ -121,7 +121,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
       <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
         &#xE5CD;
@@ -184,7 +184,7 @@
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href="../.." title="bareASGI" class="md-nav__button md-logo">
       
-        <img src="../../images/peach.svg" width="48" height="48">
+        <img alt="logo" src="../../images/peach.svg" width="48" height="48">
       
     </a>
     bareASGI
@@ -500,7 +500,7 @@ loop (e.g. asyncio.Event(), asyncio.Queue(), etc.) <em>must</em> be done in the 
 of the ASGI server. Failure to do this will lead to errors complaining that the
 object is owned by a different event loop.</p>
 <p>This can be achieved by passing the application startup and shutdown handlers:</p>
-<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">my_startup_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Info</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">my_startup_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Info</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="o">...</span>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">my_shutdown_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Info</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -511,13 +511,13 @@ object is owned by a different event loop.</p>
     <span class="n">startup_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">my_startup_handler</span><span class="p">],</span>
     <span class="n">shutdown_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">my_shutdown_handler</span><span class="p">]</span>
 <span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>The tasks may be one-off or long running. The long-running tasks can be gracefully terminated
 with shutdown handlers.</p>
 <p>Here is an example of a long running task which simply ticks every second.</p>
-<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker</span><span class="p">(</span><span class="n">shutdown_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker</span><span class="p">(</span><span class="n">shutdown_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
     <span class="k">while</span> <span class="ow">not</span> <span class="n">shutdown_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;time: {datetime.now()}&#39;</span><span class="p">)</span>
@@ -549,7 +549,7 @@ with shutdown handlers.</p>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Waiting for time_ticker&#39;</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">time_ticker_task</span>
     <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;time_ticker shutdown&#39;</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
                 
                   
                 
@@ -608,9 +608,9 @@ with shutdown handlers.</p>
       <div class="md-footer-copyright">
         
         powered by
-        <a href="https://www.mkdocs.org">MkDocs</a>
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
         and
-        <a href="https://squidfunk.github.io/mkdocs-material/">
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
           Material for MkDocs</a>
       </div>
       
@@ -620,7 +620,7 @@ with shutdown handlers.</p>
       
     </div>
     
-      <script src="../../assets/javascripts/application.808e90bb.js"></script>
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
       
