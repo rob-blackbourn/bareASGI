@@ -1,3 +1,3 @@
 # API
 
-@[bareasgi]
+@[bareasgi.application:Application]

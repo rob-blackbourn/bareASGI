@@ -1,5 +1,4 @@
-"""
-ASGI Application
+"""ASGI Application
 """
 
 from typing import (
@@ -41,12 +40,22 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Application:
-    """A class to hold the application.
+    """A class to hold the application."""
 
-    For example:
+    def __init__(
+            self,
+            *,
+            middlewares: Optional[List[HttpMiddlewareCallback]] = None,
+            http_router: Optional[HttpRouter] = None,
+            web_socket_router: Optional[WebSocketRouter] = None,
+            startup_handlers: Optional[List[LifespanHandler]] = None,
+            shutdown_handlers: Optional[List[LifespanHandler]] = None,
+            not_found_response: Optional[HttpResponse] = None,
+            info: Optional[MutableMapping[str, Any]] = None
+    ) -> None:
+        """Construct the application
 
-    .. code-block:: python
-
+        ```python
         from bareasgi import (
             Application,
             Scope,
@@ -73,33 +82,23 @@ class Application:
         app.http_router.add({'GET', 'POST', 'PUT', 'DELETE'}, '/{path}', http_request_callback)
 
         uvicorn.run(app, port=9009)
-    """
+        ```
 
-    def __init__(
-            self,
-            *,
-            middlewares: Optional[List[HttpMiddlewareCallback]] = None,
-            http_router: Optional[HttpRouter] = None,
-            web_socket_router: Optional[WebSocketRouter] = None,
-            startup_handlers: Optional[List[LifespanHandler]] = None,
-            shutdown_handlers: Optional[List[LifespanHandler]] = None,
-            not_found_response: Optional[HttpResponse] = None,
-            info: Optional[MutableMapping[str, Any]] = None
-    ) -> None:
-        """Construct the application
-
-        :param middlewares: Optional middleware callbacks.
-        :type middlewares: Optional[Sequence[HttpMiddlewareCallback]]
-        :param http_router: Optional router to for http routes.
-        :type http_router: Optional[HttpRouter]
-        :param web_socket_router: Optional router for web routes.
-        :type web_socket_router: Optional[WebSocketRouter]
-        :param startup_handlers: Optional handlers to run at startup.
-        :type startup_handlers: Optional[Sequence[StartupHandler]]
-        :param shutdown_handlers: Optional handlers to run at shutdown.
-        :type shutdown_handlers: Optional[Sequence[ShutdownHandler]]
-        :param info: Optional dictionary for user data.
-        :type info: Optional[MutableMapping[str, Any]]
+        Args:
+            middlewares (Optional[List[HttpMiddlewareCallback]], optional): Optional
+                middleware callbacks. Defaults to None.
+            http_router (Optional[HttpRouter], optional): Optional router to for
+                http routes. Defaults to None.
+            web_socket_router (Optional[WebSocketRouter], optional): Optional
+                router for web routes. Defaults to None.
+            startup_handlers (Optional[List[LifespanHandler]], optional): Optional
+                handlers to run at startup. Defaults to None.
+            shutdown_handlers (Optional[List[LifespanHandler]], optional): Optional
+                handlers to run at shutdown. Defaults to None.
+            not_found_response (Optional[HttpResponse], optional): Optional not
+                found (404) response. Defaults to None.
+            info (Optional[MutableMapping[str, Any]], optional): Optional
+                dictionary for user data. Defaults to None.
         """
         self._context: Mapping[str, Any] = {
             'info': dict() if info is None else info,
@@ -119,40 +118,56 @@ class Application:
     @property
     def info(self) -> MutableMapping[str, Any]:
         """A place to sto application specific data.
-
-        :return: A dictionary.
+        
+        Returns:
+            MutableMapping[str, Any]: A dictionary
         """
         return self._context['info']
 
     @property
     def middlewares(self) -> List[HttpMiddlewareCallback]:
         """The middlewares.
-
-        :return: A list of the middleware to apply to every route.
+        
+        Returns:
+            List[HttpMiddlewareCallback]: A list of the middleware to apply to
+                every route.
         """
         return self._context['http']['middlewares']
 
     @property
     def http_router(self) -> HttpRouter:
         """Router for http routes
-
-        :return: The configured router.
+        
+        Returns:
+            HttpRouter: The http router.
         """
         return self._context['http']['router']
 
     @property
     def ws_router(self) -> WebSocketRouter:
-        """Router for WebSocket routes"""
+        """Router for WebSocket routes
+        
+        Returns:
+            WebSocketRouter: The WebSocket router.
+        """
         return self._context['websocket']
 
     @property
     def startup_handlers(self) -> List[LifespanHandler]:
-        """Handlers run at startup"""
+        """Handlers run at startup
+        
+        Returns:
+            List[LifespanHandler]: The startup handlers
+        """
         return self._context['lifespan']['lifespan.startup']
 
     @property
     def shutdown_handlers(self) -> List[LifespanHandler]:
-        """Handlers run on shutdown"""
+        """Handlers run on shutdown
+        
+        Returns:
+            List[LifespanHandler]: The shutdown handlers.
+        """
         return self._context['lifespan']['lifespan.shutdown']
 
     def on_http_request(
@@ -161,11 +176,14 @@ class Application:
             path: str
     ) -> Callable[[HttpRequestCallback], HttpRequestCallback]:
         """A decorator to add an http route handler to the application
-
-        :param methods: The http mothods, e.g. {{'POST', 'PUT'}
-        :type methods: AbstractSet[str]
-        :param path: The path
-        :type path: str
+        
+        Args:
+            methods (AbstractSet[str]): The http methods, e.g. {{'POST', 'PUT'}
+            path (str): The path
+        
+        Returns:
+            Callable[[HttpRequestCallback], HttpRequestCallback]: The decorated
+                request.
         """
         def decorator(callback: HttpRequestCallback) -> Callable:
             self.http_router.add(methods, path, callback)
@@ -178,9 +196,13 @@ class Application:
             path: str
     ) -> Callable[[WebSocketRequestCallback], WebSocketRequestCallback]:
         """A decorator to add a websocket route handler to the application
-
-        :param path: The path
-        :type path: str
+        
+        Args:
+            path (str): The path
+        
+        Returns:
+            Callable[[WebSocketRequestCallback], WebSocketRequestCallback]: The
+                decorated handler
         """
         def decorator(callback: HttpRequestCallback) -> Callable:
             self.ws_router.add(path, callback)
@@ -193,6 +215,12 @@ class Application:
             callback: LifespanHandler
     ) -> Callable[[LifespanHandler], LifespanHandler]:
         """A decorator to add a startup handler to the application
+        
+        Args:
+            callback (LifespanHandler): The startup handler.
+        
+        Returns:
+            Callable[[LifespanHandler], LifespanHandler]: The decorated handler.
         """
         self.startup_handlers.append(callback)
         return callback
@@ -202,6 +230,12 @@ class Application:
             callback: LifespanHandler
     ) -> Callable[[LifespanHandler], LifespanHandler]:
         """A decorator to add a startup handler to the application
+        
+        Args:
+            callback (LifespanHandler): The shutdown handler.
+        
+        Returns:
+            Callable[[LifespanHandler], LifespanHandler]: The decorated handler.
         """
         self.shutdown_handlers.append(callback)
         return callback
