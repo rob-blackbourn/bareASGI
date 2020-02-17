@@ -20,7 +20,7 @@ See also:
 * [bareASGI-static](https://github.com/rob-blackbourn/bareASGI-static) for static file serving
 * [bareASGI-jinja2](https://github.com/rob-blackbourn/bareASGI-jinja2) for Jinja2 template rendering
 * [bareASGI-graphql-next](https://github.com/rob-blackbourn/bareASGI-graphql-next) for GraphQL
-* [bareASGI-rest](https://github.com/rob-blackbourn/bareASGI-rest) for GraphQL
+* [bareASGI-rest](https://github.com/rob-blackbourn/bareASGI-rest) for REST support
 
 ## Functionality
 
