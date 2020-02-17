@@ -5,6 +5,10 @@ Here are some examples. More can be found in the github repository
 
 All the examples use the [uvicorn](https://www.uvicorn.org/) server.
 
+The is further documentation on the
+[types](https://rob-blackbourn.github.io/bareTypes/)
+and [utilities](https://rob-blackbourn.github.io/bareUtils/).
+
 ## Simple
 
 Here is a trivial example which registers a single http request callback at the endpoint `/test`
