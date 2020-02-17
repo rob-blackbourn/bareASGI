@@ -1,0 +1,1169 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="A lightweight ASGI web framework">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Background Tasks - bareASGI</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#background-tasks" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="bareASGI" aria-label="bareASGI" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../images/peach.svg" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              bareASGI
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Background Tasks
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/rob-blackbourn/bareASGI" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    rob-blackbourn/bareASGI
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../.." title="bareASGI" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../images/peach.svg" width="48" height="48">
+      
+    </a>
+    bareASGI
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/rob-blackbourn/bareASGI" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    rob-blackbourn/bareASGI
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Lightweight ASGI Web Framework" class="md-nav__link">
+      Lightweight ASGI Web Framework
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      User Guide
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        User Guide
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/installation/" title="Installation" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/getting-started/" title="Getting Started" class="md-nav__link">
+      Getting Started
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/usage/" title="Usage" class="md-nav__link">
+      Usage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/optional-packages/" title="Optional Packages" class="md-nav__link">
+      Optional Packages
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/asgi/" title="ASGI" class="md-nav__link">
+      ASGI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/application/" title="Application" class="md-nav__link">
+      Application
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/io/" title="Reading and Writing" class="md-nav__link">
+      Reading and Writing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/routing/" title="Routing" class="md-nav__link">
+      Routing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/middleware/" title="Middleware" class="md-nav__link">
+      Middleware
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/background-tasks/" title="Background Tasks" class="md-nav__link">
+      Background Tasks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/decorators/" title="Decorators" class="md-nav__link">
+      Decorators
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/h2/" title="HTTP/2" class="md-nav__link">
+      HTTP/2
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/server-sent-events/" title="Server Sent Events" class="md-nav__link">
+      Server Sent Events
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../user-guide/ssl/" title="SSL/HTTPS" class="md-nav__link">
+      SSL/HTTPS
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      Tutorial
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        Tutorial
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../" title="bareASGI-tutorial" class="md-nav__link">
+      bareASGI-tutorial
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../getting-started/" title="Getting Started with bareASGI" class="md-nav__link">
+      Getting Started with bareASGI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../simple-rest/" title="Simple REST" class="md-nav__link">
+      Simple REST
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../lifespan/" title="Lifespan" class="md-nav__link">
+      Lifespan
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Background Tasks
+      </label>
+    
+    <a href="./" title="Background Tasks" class="md-nav__link md-nav__link--active">
+      Background Tasks
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-task" class="md-nav__link">
+    The Task
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-startup-handler" class="md-nav__link">
+    The Startup Handler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-shutdown-handler" class="md-nav__link">
+    The Shutdown Handler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-program" class="md-nav__link">
+    The Program
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canceling" class="md-nav__link">
+    Canceling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cancel-or-shutdown-event" class="md-nav__link">
+    Cancel or Shutdown Event?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gotcha" class="md-nav__link">
+    Gotcha!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-next" class="md-nav__link">
+    What next?
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../headers/" title="None" class="md-nav__link">
+      None
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../https/" title="HTTPS" class="md-nav__link">
+      HTTPS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../middleware/" title="Middleware" class="md-nav__link">
+      Middleware
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../websockets/" title="Web Sockets" class="md-nav__link">
+      Web Sockets
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../headers/" title="Headers (including cookies)" class="md-nav__link">
+      Headers (including cookies)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../cors/" title="Cross-Origin Resource Sharing" class="md-nav__link">
+      Cross-Origin Resource Sharing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../jinja2/" title="Jinja2 Templating" class="md-nav__link">
+      Jinja2 Templating
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../static-files/" title="Static Files" class="md-nav__link">
+      Static Files
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../server-sent-events/" title="Server Sent Events" class="md-nav__link">
+      Server Sent Events
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../streaming-fetch/" title="Streaming Fetch" class="md-nav__link">
+      Streaming Fetch
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../compression/" title="Compression" class="md-nav__link">
+      Compression
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../controller-classes/" title="Controller Classes" class="md-nav__link">
+      Controller Classes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../exceptions/" title="Exceptions" class="md-nav__link">
+      Exceptions
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      API
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        API
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../api/bareasgi/" title="bareasgi" class="md-nav__link">
+      bareasgi
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../api/bareasgi.basic_router/" title="bareasgi.basic_router" class="md-nav__link">
+      bareasgi.basic_router
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-task" class="md-nav__link">
+    The Task
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-startup-handler" class="md-nav__link">
+    The Startup Handler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-shutdown-handler" class="md-nav__link">
+    The Shutdown Handler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-program" class="md-nav__link">
+    The Program
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#canceling" class="md-nav__link">
+    Canceling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cancel-or-shutdown-event" class="md-nav__link">
+    Cancel or Shutdown Event?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gotcha" class="md-nav__link">
+    Gotcha!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-next" class="md-nav__link">
+    What next?
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="background-tasks">Background Tasks<a class="headerlink" href="#background-tasks" title="Permanent link">&para;</a></h1>
+<p>Some times it is necessary to run background tasks. For example to poll a data
+source, or listen to a data stream.</p>
+<p>The following example starts a background task when the server starts up,
+then gracefully terminates it when the server shuts down.</p>
+<p>The source code for the following example can be found
+<a href="../../examples/lifespan_nt.py">here</a>
+(and here <a href="../../examples/lifespan.py">here</a> with typing).</p>
+<h2 id="the-task">The Task<a class="headerlink" href="#the-task" title="Permanent link">&para;</a></h2>
+<p>The following code provides a dummy task, which just waits for a second then
+gets the time. This time I've used the typed code.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker</span><span class="p">(</span><span class="n">info</span><span class="p">:</span> <span class="n">Info</span><span class="p">,</span> <span class="n">shutdown_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Starting the time ticker&#39;</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">shutdown_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time: </span><span class="si">{info[&#39;now&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">shutdown_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Timeout - normal behaviour when waiting with a timeout&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failure - we should not see this exception&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The time ticker has stopped&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Rather than simply cancelling the task, I've used the asyncio
+<a href="https://docs.python.org/3/library/asyncio-sync.html#asyncio.Event">Event</a>
+to shutdown more gracefully.</p>
+<h2 id="the-startup-handler">The Startup Handler<a class="headerlink" href="#the-startup-handler" title="Permanent link">&para;</a></h2>
+<p>First we create the event and store it in the application's <code>info</code>.</p>
+<p>Then we create the task with
+<a href="https://docs.python.org/3/library/asyncio-task.html#asyncio.create_task"><code>asyncio.create_task</code></a>
+and store the task in the application's <code>info</code>.</p>
+<p>When the task is created it will be scheduled to run. Any time the task
+<em>awaits</em>, it gives up control and other tasks which are ready to run can
+proceed.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker_startup_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="c1"># Create an event that can be set when the background task should shutdown.</span>
+    <span class="n">shutdown_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+    <span class="n">info</span><span class="p">[</span><span class="s1">&#39;shutdown_event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shutdown_event</span>
+
+    <span class="c1"># Create the background task.</span>
+    <span class="n">info</span><span class="p">[</span><span class="s1">&#39;time_ticker_task&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span>
+        <span class="n">time_ticker</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">shutdown_event</span><span class="p">)</span>
+    <span class="p">)</span>
+</code></pre></div>
+
+
+<p>Note that the shutdown event was created in the startup handler. This is
+<strong>critical</strong>. I'll discuss why in the "Gotcha!" section.</p>
+<h2 id="the-shutdown-handler">The Shutdown Handler<a class="headerlink" href="#the-shutdown-handler" title="Permanent link">&para;</a></h2>
+<p>Here is the code for the shutdown handler.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker_shutdown_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="c1"># Set the shutdown event so the background task can stop gracefully.</span>
+    <span class="n">shutdown_event</span><span class="p">:</span> <span class="n">Event</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;shutdown_event&#39;</span><span class="p">]</span>
+    <span class="n">shutdown_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+    <span class="c1"># Wait for the background task to finish.</span>
+    <span class="n">time_ticker_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;time_ticker_task&#39;</span><span class="p">]</span>
+    <span class="k">await</span> <span class="n">time_ticker_task</span>
+</code></pre></div>
+
+
+<p>First we retrieve the event from the application's info and set it. In the
+background task the loop will exit when it next checks the event.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">while</span> <span class="ow">not</span> <span class="n">shutdown_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="o">...</span>
+</code></pre></div>
+
+
+<p>Next we fetch the task from the applications info and <code>await</code> it. When the
+next timeout occurs in the background task it will exit it's loop, and the
+background task gracefully shuts down.</p>
+<h2 id="the-program">The Program<a class="headerlink" href="#the-program" title="Permanent link">&para;</a></h2>
+<p>Here is the full code.</p>
+<p>I've added a request handler which returns the time stored by the background
+task to demonstrate that the web server is still able to handle requests.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">uvicorn</span>
+
+<span class="kn">from</span> <span class="nn">bareasgi</span> <span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">text_writer</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;background_tasks&#39;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">shutdown_event</span><span class="p">):</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Starting the time ticker&#39;</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">shutdown_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+        <span class="c1"># Store the time</span>
+        <span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;time: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">shutdown_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s1">&#39;Timeout - normal behaviour when waiting with a timeout&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Failure - we should not see this exception&#39;</span><span class="p">)</span>
+
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;The time ticker has stopped&#39;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker_startup_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="c1"># Create an event that can be set when the background task should shutdown.</span>
+    <span class="n">shutdown_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+    <span class="n">info</span><span class="p">[</span><span class="s1">&#39;shutdown_event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shutdown_event</span>
+
+    <span class="c1"># Create the background task.</span>
+    <span class="n">info</span><span class="p">[</span><span class="s1">&#39;time_ticker_task&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span>
+        <span class="n">time_ticker</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">shutdown_event</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker_shutdown_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="c1"># Set the shutdown event so the background task can stop gracefully.</span>
+    <span class="n">shutdown_event</span><span class="p">:</span> <span class="n">Event</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;shutdown_event&#39;</span><span class="p">]</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Stopping the time_ticker&#39;</span><span class="p">)</span>
+    <span class="n">shutdown_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+
+    <span class="c1"># Wait for the background task to finish.</span>
+    <span class="n">time_ticker_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;time_ticker_task&#39;</span><span class="p">]</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Waiting for time_ticker&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">time_ticker_task</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;time_ticker shutdown&#39;</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">http_request_callback</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">matches</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">text_writer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Last time tick: {info.get(&#39;now&#39;)}&quot;</span><span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span>
+    <span class="n">startup_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">time_ticker_startup_handler</span><span class="p">],</span>
+    <span class="n">shutdown_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">time_ticker_shutdown_handler</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">http_router</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s1">&#39;GET&#39;</span><span class="p">},</span> <span class="s1">&#39;/{rest:path}&#39;</span><span class="p">,</span> <span class="n">http_request_callback</span><span class="p">)</span>
+
+<span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9009</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h2 id="canceling">Canceling<a class="headerlink" href="#canceling" title="Permanent link">&para;</a></h2>
+<p>Rather than using an event we could have just cancelled the task.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker_shutdown_handler</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="n">time_ticker_task</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;time_ticker_task&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">time_ticker_task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">time_ticker_task</span>
+    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancellationError</span><span class="p">:</span>
+        <span class="k">pass</span>
+</code></pre></div>
+
+
+<p>The background task might then look as follows.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">time_ticker</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">shutdown_event</span><span class="p">):</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Store the time</span>
+        <span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time: </span><span class="si">{info[&#39;now&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancellationError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="c1"># Catch the task.cancel() and exit</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failure - we should not see this exception&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The time ticker has stopped&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h2 id="cancel-or-shutdown-event">Cancel or Shutdown Event?<a class="headerlink" href="#cancel-or-shutdown-event" title="Permanent link">&para;</a></h2>
+<p>In the above example cancelling the task would have been appropriate. Nothing
+bad would happen, and no data would be lost.</p>
+<p>The event approach is useful where cancelling the task would result in some
+kind of corrupt state. For example if a database write was in progress, or
+a message queue was being serviced.</p>
+<h2 id="gotcha">Gotcha!<a class="headerlink" href="#gotcha" title="Permanent link">&para;</a></h2>
+<p>If we had a large program running many background tasks with multiple startup
+handlers, it would seem reasonable to create the shutdown event right at the
+start.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># This won&#39;t work!</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="n">info</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shutdown_event&#39;</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()})</span>
+</code></pre></div>
+
+
+<p>Unfortunately this won't work and will lead to hours of frustration.</p>
+<p>When an ASGI server starts it creates a <strong>new</strong> event loop. However the
+<code>asyncio.Event()</code> call attached the event to the existing event loop. At the
+point the event is awaited you will get an error telling you the coroutine was
+attached to another event loop, which is true, but not helpful!</p>
+<p>This is true for anything that can be awaited. They must all be created in the
+context of the ASGI server's event loop.</p>
+<h2 id="what-next">What next?<a class="headerlink" href="#what-next" title="Permanent link">&para;</a></h2>
+<p>Either go back to the <a href="../">table of contents</a> or go
+to the <a href="../https/">https</a> tutorial.</p>
+                
+                  
+                
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../lifespan/" title="Lifespan" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Lifespan
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../headers/" title="None" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                None
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      
+    
+  </body>
+</html>

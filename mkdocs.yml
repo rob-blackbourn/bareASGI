@@ -40,7 +40,7 @@ nav:
     - tutorial/https.md
     - tutorial/middleware.md
     - tutorial/websockets.md
-    - tutorial.headers.md
+    - tutorial/headers.md
     - tutorial/cors.md
     - tutorial/jinja2.md
     - tutorial/static-files.md
