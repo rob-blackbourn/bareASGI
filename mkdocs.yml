@@ -30,6 +30,25 @@ nav:
     - user-guide/h2.md
     - user-guide/server-sent-events.md
     - user-guide/ssl.md
+  - Tutorial:
+    - tutorial/index.md
+    - tutorial/getting-started.md
+    - tutorial/simple-rest.md
+    - tutorial/lifespan.md
+    - tutorial/background-tasks.md
+    - tutorial/headers.md
+    - tutorial/https.md
+    - tutorial/middleware.md
+    - tutorial/websockets.md
+    - tutorial.headers.md
+    - tutorial/cors.md
+    - tutorial/jinja2.md
+    - tutorial/static-files.md
+    - tutorial/server-sent-events.md
+    - tutorial/streaming-fetch.md
+    - tutorial/compression.md
+    - tutorial/controller-classes.md
+    - tutorial/exceptions.md
   - API:
     - bareasgi: api/bareasgi.md
     - bareasgi.basic_router: api/bareasgi.basic_router.md
