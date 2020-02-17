@@ -1,4 +1,4 @@
-# Examples
+# Getting Started
 
 Here are some examples. More can be found in the github repository
 [here](https://github.com/rob-blackbourn/bareasgi/tree/master/examples).

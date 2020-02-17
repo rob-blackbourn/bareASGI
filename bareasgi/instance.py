@@ -32,6 +32,12 @@ class Instance:
     }
 
     def __init__(self, context: Context, scope: Scope) -> None:
+        """Initialise the instance provider
+        
+        Args:
+            context (Context): The application context
+            scope (Scope): The ASGI scope
+        """
         scope_type = scope['type']
         klass = self.INSTANCES_CLASSES[scope_type]
         klass_context = context.get(scope_type)

@@ -22,6 +22,13 @@ class LifespanInstance:
     """An instance factor for lifespan event requests"""
 
     def __init__(self, scope: Scope, context: Context, info: Info) -> None:
+        """Initialise a lifespan instance.
+        
+        Args:
+            scope (Scope): The ASGI scope
+            context (Context): The application context
+            info (Info): The user provided dict
+        """
         self.scope = scope
         self.context = context
         self.info = info

@@ -48,6 +48,13 @@ class BodyIterator:
             body: bytes,
             more_body: bool
     ) -> None:
+        """Initialise the body iterator
+        
+        Args:
+            receive (Receive): The receive callable
+            body (bytes): The initial body
+            more_body (bool): Signifies if there is additional content to come. 
+        """
         self._receive = receive
         self._queue: Queue = Queue()
         self._queue.put_nowait(body)
@@ -87,7 +94,7 @@ class BodyIterator:
         return body
 
 
-    async def flush(self):
+    async def flush(self) -> None:
         """Flush all remaining http.request messages"""
         while self._more_body:
             await self._queue.put(await self._read())
@@ -106,10 +113,16 @@ Middlewares = Sequence[HttpMiddlewareCallback]
 
 # pylint: disable=too-few-public-methods
 class HttpInstance:
-    """An HTTP instance services an HTTP request.
-    """
+    """An HTTP instance services an HTTP request."""
 
     def __init__(self, scope: Scope, context: Context, info: Info) -> None:
+        """Initialise an HTTP instance
+        
+        Args:
+            scope (Scope): The ASGI connection scope
+            context (Context): The application context
+            info (Info): The user provided dictionary
+        """
         self.scope = scope
         self.info = info
         # Find the route.

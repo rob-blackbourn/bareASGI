@@ -45,12 +45,14 @@ def mw(
         handler: HttpRequestCallback
 ) -> HttpRequestCallback:
     """Create a handler from a chain of middleware.
-
-    :param handlers: The middleware handlers.
-    :param handler: The final response handler.
-    :return: A handler which calls the middleware chain.
+    
+    Args:
+        *handlers (HttpMiddlewareCallback): The middleware handlers.
+        handler (HttpRequestCallback): The final response handler.
+    
+    Returns:
+        HttpRequestCallback: A handler which calls the middleware chain.
     """
-
     for middleware in reversed(handlers):
         handler = partial(middleware, handler=partial(_call_handler, handler))
     return handler

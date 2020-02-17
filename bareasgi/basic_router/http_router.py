@@ -54,13 +54,11 @@ class BasicHttpRouter(HttpRouter):
             callback: HttpRequestCallback
     ) -> None:
         """Add a route to a callback for a method and path definition
-
-        :param method: The method
-        :type method: str
-        :param path_definition: The path definition
-        :type path_definition: PathDefinition
-        :param callback: The callback
-        :type callback: HttpRequestCallback
+        
+        Args:
+            method (str): The method.
+            path_definition (PathDefinition): The path definition
+            callback (HttpRequestCallback): The callback
         """
         path_definition_list = self._routes.setdefault(method, [])
         path_definition_list.append((path_definition, callback))

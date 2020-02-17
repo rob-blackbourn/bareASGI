@@ -44,7 +44,7 @@ description = "Types for bareASGI and bareClient"
 name = "baretypes"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "3.1.0"
+version = "3.1.1"
 
 [[package]]
 category = "main"
@@ -185,7 +185,7 @@ description = "A markdown extension for python documentation"
 name = "jetblack-markdown"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "0.4.1"
+version = "0.4.2"
 
 [package.dependencies]
 docstring-parser = ">=0.6,<0.7"
@@ -599,8 +599,8 @@ attrs = [
     {file = "attrs-19.3.0.tar.gz", hash = "sha256:f7b7ce16570fe9965acd6d30101a28f62fb4a7f9e926b3bbc9b61f8b04247e72"},
 ]
 baretypes = [
-    {file = "baretypes-3.1.0-py3-none-any.whl", hash = "sha256:125e6b05ed0f930d4f4a0c88d68435a94950ff7202310daf74ce5d01841400bf"},
-    {file = "baretypes-3.1.0.tar.gz", hash = "sha256:ab6f8535c76bdf03a601e7923593c6df9e2e3e35c18b4b1cd26f74247ccc8565"},
+    {file = "baretypes-3.1.1-py3-none-any.whl", hash = "sha256:69a62b9786b5f53f5ddd9f27cf7735170e0eb8d20e01503aa03afdb2e527ef80"},
+    {file = "baretypes-3.1.1.tar.gz", hash = "sha256:75bc0185e891bca7cc96118840aacaee3eba1c8566a4d4d0590404f38fe39b64"},
 ]
 bareutils = [
     {file = "bareutils-3.4.0-py3-none-any.whl", hash = "sha256:c620cbf1e9dab8076a8f8c18dfcad69a6e99ada39c7e85b1b001ce6ec2899e61"},
@@ -649,8 +649,8 @@ isort = [
     {file = "isort-4.3.21.tar.gz", hash = "sha256:54da7e92468955c4fceacd0c86bd0ec997b0e1ee80d97f67c35a78b719dccab1"},
 ]
 jetblack-markdown = [
-    {file = "jetblack-markdown-0.4.1.tar.gz", hash = "sha256:1b91ad21ca3ebd2c93a4931fcad645c9cbbc3253b25306e160d3b05766aa4d9d"},
-    {file = "jetblack_markdown-0.4.1-py3-none-any.whl", hash = "sha256:617e5161dc40467263a617dd749fa4647f91dc1437dc5e99c77d14372639f6bb"},
+    {file = "jetblack-markdown-0.4.2.tar.gz", hash = "sha256:45903b3fba4398dc4c4f74b7d3b71441b14ba5e8a819d7a31edc2eed4191d8bb"},
+    {file = "jetblack_markdown-0.4.2-py3-none-any.whl", hash = "sha256:7ba120bbeb552464831d8da3988931ecfb4d1eea3f14145561aa3655ef614f4e"},
 ]
 jinja2 = [
     {file = "Jinja2-2.11.1-py2.py3-none-any.whl", hash = "sha256:b0eaf100007721b5c16c1fc1eecb87409464edc10469ddc9a22a27a99123be49"},

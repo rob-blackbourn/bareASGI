@@ -17,6 +17,7 @@ nav:
   - index.md
   - User Guide:
     - user-guide/installation.md
+    - user-guide/getting-started.md
     - user-guide/usage.md
     - user-guide/optional-packages.md
     - user-guide/asgi.md
@@ -29,9 +30,9 @@ nav:
     - user-guide/h2.md
     - user-guide/server-sent-events.md
     - user-guide/ssl.md
-    - user-guide/examples.md
   - API:
     - bareasgi: api/bareasgi.md
+    - bareasgi.basic_router: api/bareasgi.basic_router.md
   
 markdown_extensions:
   - admonition
