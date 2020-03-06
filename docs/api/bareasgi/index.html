@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
     
     
       
@@ -721,15 +721,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
+  <a href="#description" class="md-nav__link">
+    Description
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
+  <a href="#parameters" class="md-nav__link">
+    Parameters
   </a>
   
 </li>
@@ -1057,15 +1057,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
+  <a href="#description" class="md-nav__link">
+    Description
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
+  <a href="#parameters" class="md-nav__link">
+    Parameters
   </a>
   
 </li>
@@ -1357,38 +1357,6 @@
 <a class="headerlink" href="#class-application" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h4>
 <p>Construct the application</p>
-<div class="autodoc-signature"><span class="autodoc-qualifier">bareasgi</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">Application</var><span class="autodoc-punctuation">(</span><br />
-<div class="autodoc-argument">
-        <var class="autodoc-varname">*</var><span class="autodoc-punctuation">,</span></div>
-<div class="autodoc-argument">
-        <var class="autodoc-varname">http_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpRouter]</span><span class="autodoc-punctuation">,</span></div>
-<div class="autodoc-argument">
-        <var class="autodoc-varname">web_socket_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[WebSocketRouter]</span><span class="autodoc-punctuation">,</span></div>
-<div class="autodoc-argument">
-        <var class="autodoc-varname">startup_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><span class="autodoc-punctuation">,</span></div>
-<div class="autodoc-argument">
-        <var class="autodoc-varname">shutdown_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><span class="autodoc-punctuation">,</span></div>
-<div class="autodoc-argument">
-        <var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpResponse]</span><span class="autodoc-punctuation">,</span></div>
-<div class="autodoc-argument">
-        <var class="autodoc-varname">info</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[MutableMapping[str</span></div>
-<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
-<br />
-<div class="autodoc-parameters">
-<h4 class="autodoc-title" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">http_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpRouter]</span><p>Optional router to for
-http routes. Defaults to None.</p>
-<var class="autodoc-varname">web_socket_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[WebSocketRouter]</span><p>Optional
-router for web routes. Defaults to None.</p>
-<var class="autodoc-varname">startup_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><p>Optional
-handlers to run at startup. Defaults to None.</p>
-<var class="autodoc-varname">shutdown_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><p>Optional
-handlers to run at shutdown. Defaults to None.</p>
-<var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpResponse]</span><p>Optional not
-found (404) response. Defaults to None.</p>
-<var class="autodoc-varname">info</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[MutableMapping[str</span><p>Optional
-dictionary for user data. Defaults to None.</p>
-</div>
 <div class="autodoc-description">
 <h4 class="autodoc-title" id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h4>
 <div class="codehilite">
@@ -1421,6 +1389,42 @@ dictionary for user data. Defaults to None.</p>
 </code></pre>
 </div>
 </div>
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareasgi</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">Application</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">*</var><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">middlewares</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[HttpMiddlewareCallback]]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">http_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpRouter]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">web_socket_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[WebSocketRouter]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">startup_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">shutdown_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpResponse]</span><span class="autodoc-punctuation">,</span></div>
+<div class="autodoc-argument">
+        <var class="autodoc-varname">info</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[MutableMapping[str, Any]]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
+<br />
+<div class="autodoc-parameters">
+<h4 class="autodoc-title" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<var class="autodoc-varname">middlewares</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[HttpMiddlewareCallback]]</span><span class="autodoc-punctuation"> (optional)</span><p>Optional
+middleware callbacks. Defaults to None.</p>
+<var class="autodoc-varname">http_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpRouter]</span><span class="autodoc-punctuation"> (optional)</span><p>Optional router to for
+http routes. Defaults to None.</p>
+<var class="autodoc-varname">web_socket_router</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[WebSocketRouter]</span><span class="autodoc-punctuation"> (optional)</span><p>Optional
+router for web routes. Defaults to None.</p>
+<var class="autodoc-varname">startup_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><span class="autodoc-punctuation"> (optional)</span><p>Optional
+handlers to run at startup. Defaults to None.</p>
+<var class="autodoc-varname">shutdown_handlers</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[List[LifespanHandler]]</span><span class="autodoc-punctuation"> (optional)</span><p>Optional
+handlers to run at shutdown. Defaults to None.</p>
+<var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[HttpResponse]</span><span class="autodoc-punctuation"> (optional)</span><p>Optional not
+found (404) response. Defaults to None.</p>
+<var class="autodoc-varname">info</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Optional[MutableMapping[str, Any]]</span><span class="autodoc-punctuation"> (optional)</span><p>Optional
+dictionary for user data. Defaults to None.</p>
+</div>
 <div class="autodoc-attributes">
 
 </div>
@@ -1431,13 +1435,13 @@ dictionary for user data. Defaults to None.</p>
 <a class="headerlink" href="#property-applicationhttp_router" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_1">Summary<a class="headerlink" href="#summary_1" title="Permanent link">&para;</a></h4>
 <p>Router for http routes</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-property">
       <var class="autodoc-varname">http_router</var><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">HttpRouter</span>
     </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1450,13 +1454,13 @@ dictionary for user data. Defaults to None.</p>
 <a class="headerlink" href="#property-applicationinfo" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_2">Summary<a class="headerlink" href="#summary_2" title="Permanent link">&para;</a></h4>
 <p>A place to sto application specific data.</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-property">
       <var class="autodoc-varname">info</var><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">MutableMapping[str, Any]</span>
     </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1469,13 +1473,13 @@ dictionary for user data. Defaults to None.</p>
 <a class="headerlink" href="#property-applicationmiddlewares" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_3">Summary<a class="headerlink" href="#summary_3" title="Permanent link">&para;</a></h4>
 <p>The middlewares.</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-property">
       <var class="autodoc-varname">middlewares</var><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">List[HttpMiddlewareCallback]</span>
     </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1488,13 +1492,13 @@ dictionary for user data. Defaults to None.</p>
 <a class="headerlink" href="#property-applicationshutdown_handlers" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_4">Summary<a class="headerlink" href="#summary_4" title="Permanent link">&para;</a></h4>
 <p>Handlers run on shutdown</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-property">
       <var class="autodoc-varname">shutdown_handlers</var><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">List[LifespanHandler]</span>
     </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1507,13 +1511,13 @@ dictionary for user data. Defaults to None.</p>
 <a class="headerlink" href="#property-applicationstartup_handlers" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_5">Summary<a class="headerlink" href="#summary_5" title="Permanent link">&para;</a></h4>
 <p>Handlers run at startup</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-property">
       <var class="autodoc-varname">startup_handlers</var><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">List[LifespanHandler]</span>
     </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1526,13 +1530,13 @@ dictionary for user data. Defaults to None.</p>
 <a class="headerlink" href="#property-applicationws_router" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_6">Summary<a class="headerlink" href="#summary_6" title="Permanent link">&para;</a></h4>
 <p>Router for WebSocket routes</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-property">
       <var class="autodoc-varname">ws_router</var><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">WebSocketRouter</span>
     </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1548,6 +1552,9 @@ dictionary for user data. Defaults to None.</p>
 <a class="headerlink" href="#method-applicationon_http_request" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_7">Summary<a class="headerlink" href="#summary_7" title="Permanent link">&para;</a></h4>
 <p>A decorator to add an http route handler to the application</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_http_request</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><span class="autodoc-punctuation">,</span></div>
@@ -1557,8 +1564,8 @@ dictionary for user data. Defaults to None.</p>
 <br />
 <div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><span class="autodoc-punctuation"> (optional)</span><p>The http methods, e.g. {{'POST', 'PUT'}</p>
-<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path</p>
+<var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><p>The http methods, e.g. {{'POST', 'PUT'}</p>
+<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The path</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h4>
@@ -1567,9 +1574,6 @@ dictionary for user data. Defaults to None.</p>
 request.</span>
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1582,6 +1586,9 @@ request.</span>
 <a class="headerlink" href="#method-applicationon_shutdown" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_8">Summary<a class="headerlink" href="#summary_8" title="Permanent link">&para;</a></h4>
 <p>A decorator to add a startup handler to the application</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_shutdown</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">LifespanHandler</span></div>
@@ -1589,7 +1596,7 @@ request.</span>
 <br />
 <div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">LifespanHandler</span><span class="autodoc-punctuation"> (optional)</span><p>The shutdown handler.</p>
+<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">LifespanHandler</span><p>The shutdown handler.</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns_1">Returns<a class="headerlink" href="#returns_1" title="Permanent link">&para;</a></h4>
@@ -1597,9 +1604,6 @@ request.</span>
 <span class="autodoc-summary">The decorated handler.</span>
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1612,6 +1616,9 @@ request.</span>
 <a class="headerlink" href="#method-applicationon_startup" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_9">Summary<a class="headerlink" href="#summary_9" title="Permanent link">&para;</a></h4>
 <p>A decorator to add a startup handler to the application</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_startup</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">LifespanHandler</span></div>
@@ -1619,7 +1626,7 @@ request.</span>
 <br />
 <div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">LifespanHandler</span><span class="autodoc-punctuation"> (optional)</span><p>The startup handler.</p>
+<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">LifespanHandler</span><p>The startup handler.</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns_2">Returns<a class="headerlink" href="#returns_2" title="Permanent link">&para;</a></h4>
@@ -1627,9 +1634,6 @@ request.</span>
 <span class="autodoc-summary">The decorated handler.</span>
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1642,6 +1646,9 @@ request.</span>
 <a class="headerlink" href="#method-applicationon_ws_request" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_10">Summary<a class="headerlink" href="#summary_10" title="Permanent link">&para;</a></h4>
 <p>A decorator to add a websocket route handler to the application</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">Application</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">on_ws_request</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span></div>
@@ -1649,7 +1656,7 @@ request.</span>
 <br />
 <div class="autodoc-parameters">
 <h4 class="autodoc-title" id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path</p>
+<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The path</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns_3">Returns<a class="headerlink" href="#returns_3" title="Permanent link">&para;</a></h4>
@@ -1658,9 +1665,6 @@ request.</span>
 decorated handler</span>
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1745,7 +1749,7 @@ decorated handler</span>
     
       <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
       
     
   </body>

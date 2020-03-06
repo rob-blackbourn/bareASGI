@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
     
     
       
@@ -752,6 +752,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -793,7 +800,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -827,7 +834,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters_2" class="md-nav__link">
     Parameters
   </a>
   
@@ -861,7 +868,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     Parameters
   </a>
   
@@ -935,7 +942,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
+  <a href="#parameters_4" class="md-nav__link">
     Parameters
   </a>
   
@@ -969,7 +976,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     Parameters
   </a>
   
@@ -1056,6 +1063,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1097,7 +1111,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     Parameters
   </a>
   
@@ -1131,7 +1145,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
+  <a href="#parameters_2" class="md-nav__link">
     Parameters
   </a>
   
@@ -1165,7 +1179,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     Parameters
   </a>
   
@@ -1239,7 +1253,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
+  <a href="#parameters_4" class="md-nav__link">
     Parameters
   </a>
   
@@ -1273,7 +1287,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     Parameters
   </a>
   
@@ -1317,13 +1331,13 @@
   <a class="headerlink" href="#module-bareasgibasic_routerhttp_router" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h4>
 <p>Http Routing</p>
-<div class="autodoc-attributes">
-
-</div>
 <div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
+
+</div>
+<div class="autodoc-attributes">
 
 </div>
 <div class="autodoc-class">
@@ -1332,10 +1346,17 @@
 <a class="headerlink" href="#class-basichttprouterhttprouter" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_1">Summary<a class="headerlink" href="#summary_1" title="Permanent link">&para;</a></h4>
 <p>A basic http routing implementation</p>
-<div class="autodoc-signature"><span class="autodoc-qualifier">bareasgi.basic_router</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">BasicHttpRouter</var><span class="autodoc-punctuation">(</span><span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
-<br />
 <div class="autodoc-description">
 
+</div>
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareasgi.basic_router</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">BasicHttpRouter</var><span class="autodoc-punctuation">(</span><br />
+<div class="autodoc-argument">
+        <var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]]]</span></div>
+<span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
+<br />
+<div class="autodoc-parameters">
+<h4 class="autodoc-title" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
+<var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">Union[intTuple[intUnionListTuple[bytes, bytes]], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeTuple[intUnionListTuple[bytes, bytes]], NoneTypeUnionAsyncIterable[bytes], NoneTypeUnionIterableTuple[strListTuple[bytes, bytes]]]], NoneType]]]</span><p></p>
 </div>
 <div class="autodoc-attributes">
 
@@ -1347,6 +1368,9 @@
 <a class="headerlink" href="#property-basichttprouternot_found_response" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_2">Summary<a class="headerlink" href="#summary_2" title="Permanent link">&para;</a></h4>
 <p>The response when a handler could not be found for a method/path</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-property">
       <var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">HttpResponse</span>
     </div>
@@ -1354,9 +1378,6 @@
       <var class="autodoc-varname">not_found_response</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">HttpResponse</span><span class="autodoc-punctuation"> = ...</span>
     </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1372,6 +1393,9 @@
 <a class="headerlink" href="#method-basichttprouteradd" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_3">Summary<a class="headerlink" href="#summary_3" title="Permanent link">&para;</a></h4>
 <p>Add an HTTP request handler</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">BasicHttpRouter</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">add</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><span class="autodoc-punctuation">,</span></div>
@@ -1382,10 +1406,10 @@
 <span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Any</span></div>
 <br />
 <div class="autodoc-parameters">
-<h4 class="autodoc-title" id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><span class="autodoc-punctuation"> (optional)</span><p>The supported HTTP methods.</p>
-<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path.</p>
-<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">HttpRequestCallback</span><span class="autodoc-punctuation"> (optional)</span><p>The request handler.</p>
+<h4 class="autodoc-title" id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
+<var class="autodoc-varname">methods</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">AbstractSet[str]</span><p>The supported HTTP methods.</p>
+<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The path.</p>
+<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">HttpRequestCallback</span><p>The request handler.</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h4>
@@ -1393,9 +1417,6 @@
 
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1408,6 +1429,9 @@
 <a class="headerlink" href="#method-basichttprouteradd_route" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_4">Summary<a class="headerlink" href="#summary_4" title="Permanent link">&para;</a></h4>
 <p>Add a route to a callback for a method and path definition</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">BasicHttpRouter</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">add_route</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">method</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">,</span></div>
@@ -1418,10 +1442,10 @@
 <span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Any</span></div>
 <br />
 <div class="autodoc-parameters">
-<h4 class="autodoc-title" id="parameters_1">Parameters<a class="headerlink" href="#parameters_1" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">method</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The method.</p>
-<var class="autodoc-varname">path_definition</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">PathDefinition</span><span class="autodoc-punctuation"> (optional)</span><p>The path definition</p>
-<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">HttpRequestCallback</span><span class="autodoc-punctuation"> (optional)</span><p>The callback</p>
+<h4 class="autodoc-title" id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
+<var class="autodoc-varname">method</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The method.</p>
+<var class="autodoc-varname">path_definition</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">PathDefinition</span><p>The path definition</p>
+<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">HttpRequestCallback</span><p>The callback</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns_1">Returns<a class="headerlink" href="#returns_1" title="Permanent link">&para;</a></h4>
@@ -1429,9 +1453,6 @@
 
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1444,6 +1465,9 @@
 <a class="headerlink" href="#method-basichttprouterresolve" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_5">Summary<a class="headerlink" href="#summary_5" title="Permanent link">&para;</a></h4>
 <p>Resolve a request to a handler with the route matches</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">BasicHttpRouter</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">resolve</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">method</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">,</span></div>
@@ -1452,9 +1476,9 @@
 <span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]</span></div>
 <br />
 <div class="autodoc-parameters">
-<h4 class="autodoc-title" id="parameters_2">Parameters<a class="headerlink" href="#parameters_2" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">method</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The HTTP method.</p>
-<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path.</p>
+<h4 class="autodoc-title" id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
+<var class="autodoc-varname">method</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The HTTP method.</p>
+<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The path.</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns_2">Returns<a class="headerlink" href="#returns_2" title="Permanent link">&para;</a></h4>
@@ -1463,9 +1487,6 @@
 handler and the optional route matches.</span>
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1487,13 +1508,13 @@ handler and the optional route matches.</span>
   <a class="headerlink" href="#module-bareasgibasic_routerweb_socket_router" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_6">Summary<a class="headerlink" href="#summary_6" title="Permanent link">&para;</a></h4>
 <p>A basic Websocket router.</p>
-<div class="autodoc-attributes">
-
-</div>
 <div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
+
+</div>
+<div class="autodoc-attributes">
 
 </div>
 <div class="autodoc-class">
@@ -1502,11 +1523,11 @@ handler and the optional route matches.</span>
 <a class="headerlink" href="#class-basicwebsocketrouterwebsocketrouter" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_7">Summary<a class="headerlink" href="#summary_7" title="Permanent link">&para;</a></h4>
 <p>The implementation of a basic Websocket router</p>
-<div class="autodoc-signature"><span class="autodoc-qualifier">bareasgi.basic_router</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">BasicWebSocketRouter</var><span class="autodoc-punctuation">(</span><span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
-<br />
 <div class="autodoc-description">
 
 </div>
+<div class="autodoc-signature"><span class="autodoc-qualifier">bareasgi.basic_router</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">BasicWebSocketRouter</var><span class="autodoc-punctuation">(</span><span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">None</span></div>
+<br />
 <div class="autodoc-attributes">
 
 </div>
@@ -1521,6 +1542,9 @@ handler and the optional route matches.</span>
 <a class="headerlink" href="#method-basicwebsocketrouteradd" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_8">Summary<a class="headerlink" href="#summary_8" title="Permanent link">&para;</a></h4>
 <p>Add the WebSocket handler for a route</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">BasicWebSocketRouter</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">add</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation">,</span></div>
@@ -1529,9 +1553,9 @@ handler and the optional route matches.</span>
 <span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Any</span></div>
 <br />
 <div class="autodoc-parameters">
-<h4 class="autodoc-title" id="parameters_3">Parameters<a class="headerlink" href="#parameters_3" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path.</p>
-<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">WebSocketRequestCallback</span><span class="autodoc-punctuation"> (optional)</span><p>The handler</p>
+<h4 class="autodoc-title" id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h4>
+<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The path.</p>
+<var class="autodoc-varname">callback</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">WebSocketRequestCallback</span><p>The handler</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns_3">Returns<a class="headerlink" href="#returns_3" title="Permanent link">&para;</a></h4>
@@ -1539,9 +1563,6 @@ handler and the optional route matches.</span>
 
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1554,14 +1575,17 @@ handler and the optional route matches.</span>
 <a class="headerlink" href="#method-basicwebsocketrouterresolve" title="Permanent link">&para;</a></h3>
 <h4 class="autodoc-title" id="summary_9">Summary<a class="headerlink" href="#summary_9" title="Permanent link">&para;</a></h4>
 <p>Resolve a route to a handler</p>
+<div class="autodoc-description">
+
+</div>
 <div class="autodoc-signature"><span class="autodoc-qualifier">BasicWebSocketRouter</span><span class="autodoc-punctuation">.</span><var class="autodoc-varname">resolve</var><span class="autodoc-punctuation">(</span><br />
 <div class="autodoc-argument">
         <var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span></div>
 <span class="autodoc-punctuation">)</span><span class="autodoc-punctuation"> -&gt; </span><span class="autodoc-vartype">Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]</span></div>
 <br />
 <div class="autodoc-parameters">
-<h4 class="autodoc-title" id="parameters_4">Parameters<a class="headerlink" href="#parameters_4" title="Permanent link">&para;</a></h4>
-<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><span class="autodoc-punctuation"> (optional)</span><p>The path</p>
+<h4 class="autodoc-title" id="parameters_5">Parameters<a class="headerlink" href="#parameters_5" title="Permanent link">&para;</a></h4>
+<var class="autodoc-varname">path</var><span class="autodoc-punctuation">: </span><span class="autodoc-vartype">str</span><p>The path</p>
 </div>
 <div class="autodoc-returns">
 <h4 class="autodoc-title" id="returns_4">Returns<a class="headerlink" href="#returns_4" title="Permanent link">&para;</a></h4>
@@ -1570,9 +1594,6 @@ handler and the optional route matches.</span>
 handler and possible route matches</span>
 </div>
 <div class="autodoc-raises">
-
-</div>
-<div class="autodoc-description">
 
 </div>
 <div class="autodoc-examples">
@@ -1645,7 +1666,7 @@ handler and possible route matches</span>
     
       <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
       
     
   </body>
