@@ -1,6 +1,6 @@
 # bareASGI
 
-A lightweight ASGI framework (read the [documentation](https://rob-blackbourn.github.io/bareASGI/))
+A lightweight ASGI framework (read the [docs](https://rob-blackbourn.github.io/bareASGI/))
 
 ## Status
 
@@ -18,9 +18,11 @@ version or varient required for a given solution.
 See also:
 * [bareASGI-cors](https://github.com/rob-blackbourn/bareASGI-cors) for cross origin resource sharing
 * [bareASGI-static](https://github.com/rob-blackbourn/bareASGI-static) for static file serving
-* [bareASGI-jinja2](https://github.com/rob-blackbourn/bareASGI-jinja2) for Jinja2 template rendering
-* [bareASGI-graphql-next](https://github.com/rob-blackbourn/bareASGI-graphql-next) for GraphQL
+* [bareASGI-jinja2](https://github.com/rob-blackbourn/bareASGI-jinja2) for [Jinja2](https://github.com/pallets/jinja) template rendering
+* [bareASGI-graphql-next](https://github.com/rob-blackbourn/bareASGI-graphql-next) for [GraphQL](https://github.com/graphql-python/graphql-core) and [grapehene](https://github.com/graphql-python/graphene).
 * [bareASGI-rest](https://github.com/rob-blackbourn/bareASGI-rest) for REST support
+* [bareASGI-prometheus](https://github.com/rob-blackbourn/bareASGI-prometheus) for [prometheus](https://prometheus.io/) metrics.
+* [bareASGI-session](https://github.com/rob-blackbourn/bareASGI-session) for session support.
 
 ## Functionality
 
