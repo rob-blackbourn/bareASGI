@@ -1,6 +1,6 @@
 # bareASGI
 
-A lightweight [ASGI](user-guide/asgi) framework
+A lightweight Python [ASGI](user-guide/asgi) web server framework
 (read the [docs](https://rob-blackbourn.github.io/bareASGI/)).
 
 ## Overview
@@ -11,6 +11,8 @@ sessions, etc.) being implemented by optional packages.
 
 The framework is targeted at micro-services which require a light footprint, or
 as a base for larger frameworks.
+
+Python 3.7+ is required.
 
 ## Optional Packages
 
@@ -34,9 +36,9 @@ developing sophisticated web applications including:
 * Http 2 push,
 * Streaming requests and responses.
 
-## Simple Client
+## Simple Server
 
-Here is a simple example which returns some text.
+Here is a simple server with a request handler that returns some text.
 
 ```python
 import uvicorn
