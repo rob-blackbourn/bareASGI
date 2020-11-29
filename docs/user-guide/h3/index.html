@@ -826,13 +826,17 @@ that it was working with a nightly build of FireFox on Ubuntu 20.04 following
 <a href="https://blog.cloudflare.com/how-to-test-http-3-and-quic-with-firefox-nightly/">these</a>
 instructions.</p>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p>The following code launches a web server which supports:
-* http on port 80
-* https on port 443
-* https using http/3 on port 4433</p>
+<p>The following code launches a web server which supports:</p>
+<ul>
+<li>http on port 80</li>
+<li>https on port 443</li>
+<li>https using http/3 on port 4433</li>
+</ul>
 <p>A browser that is capable of switching to http/3 will automatically upgrade
 the https connection.</p>
-<p>Not the <code>quic_bind</code> line.</p>
+<p>As this example uses "standard" ports you will need to run the server with
+<strong>sudo</strong>.</p>
+<p>Note the <code>quic_bind</code> line.</p>
 <div class="codehilite"><pre><span></span><code><span class="sd">&quot;&quot;&quot;Example server&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
