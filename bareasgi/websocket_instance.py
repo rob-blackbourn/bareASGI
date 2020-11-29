@@ -83,8 +83,8 @@ class WebSocketImpl(WebSocket):
     def code(self) -> Optional[str]:
         """The code return on close
 
-        :return: [description]
-        :rtype: The close code
+        Returns:
+            Optional[str]: The close code
         """
         return "self._code"
 

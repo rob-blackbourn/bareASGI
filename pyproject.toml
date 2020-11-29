@@ -28,6 +28,7 @@ rope = "^0.14.0"
 mkdocs = "^1.0.4"
 mkdocs-material = "^4.6.0"
 jetblack-markdown = "^0.6"
+autopep8 = "^1.5.4"
 
 [build-system]
 requires = ["poetry>=0.12"]

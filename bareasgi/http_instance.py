@@ -39,6 +39,7 @@ from .utils import anext
 
 LOGGER = logging.getLogger(__name__)
 
+
 class BodyIterator:
     """Iterate over the body content"""
 
@@ -49,7 +50,7 @@ class BodyIterator:
             more_body: bool
     ) -> None:
         """Initialise the body iterator
-        
+
         Args:
             receive (Receive): The receive callable
             body (bytes): The initial body
@@ -93,11 +94,11 @@ class BodyIterator:
         self._more_body = request.get('more_body', False)
         return body
 
-
     async def flush(self) -> None:
         """Flush all remaining http.request messages"""
         while self._more_body:
             await self._queue.put(await self._read())
+
 
 def _make_error_response(error: HTTPError) -> HttpResponse:
     if isinstance(error.reason, str):
@@ -109,15 +110,18 @@ def _make_error_response(error: HTTPError) -> HttpResponse:
 
     return error.code, error.headers, content, None
 
+
 Middlewares = Sequence[HttpMiddlewareCallback]
 
 # pylint: disable=too-few-public-methods
+
+
 class HttpInstance:
     """An HTTP instance services an HTTP request."""
 
     def __init__(self, scope: Scope, context: Context, info: Info) -> None:
         """Initialise an HTTP instance
-        
+
         Args:
             scope (Scope): The ASGI connection scope
             context (Context): The application context
@@ -228,12 +232,12 @@ class HttpInstance:
             return
 
         # The next step is to call the handler.
+        content = BodyIterator(
+            receive,
+            request.get('body', b''),
+            request.get('more_body', False)
+        )
         try:
-            content = BodyIterator(
-                receive,
-                request.get('body', b''),
-                request.get('more_body', False)
-            )
             response = await self.request_callback(
                 self.scope,
                 self.info,
