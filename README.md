@@ -29,7 +29,7 @@ Python 3.7+ is required.
 While lightweight, the framework contains all the functionality required for
 developing sophisticated web applications including:
 
-* Http (1.0, 1.1, 2),
+* Http (1.0, 1.1, 2, 3),
 * WebSockets,
 * A method and path based router,
 * Middleware,
