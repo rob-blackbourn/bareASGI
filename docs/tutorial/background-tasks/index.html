@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -903,7 +903,7 @@ gets the time. This time I've used the typed code.</p>
 
     <span class="k">while</span> <span class="ow">not</span> <span class="n">shutdown_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
         <span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time: </span><span class="si">{info[&#39;now&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">shutdown_event</span><span class="o">.</span><span class="n">wait</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1024,7 +1024,7 @@ task to demonstrate that the web server is still able to handle requests.</p>
     <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;text/plain&#39;</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">text_writer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Last time tick: {info.get(&#39;now&#39;)}&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">200</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">text_writer</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Last time tick: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span>
     <span class="n">startup_handlers</span><span class="o">=</span><span class="p">[</span><span class="n">time_ticker_startup_handler</span><span class="p">],</span>
@@ -1053,7 +1053,7 @@ task to demonstrate that the web server is still able to handle requests.</p>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># Store the time</span>
         <span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time: </span><span class="si">{info[&#39;now&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;time: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;now&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancellationError</span><span class="p">:</span>
@@ -1162,7 +1162,7 @@ to the <a href="../https/">https</a> tutorial.</p>
     
       <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../.."}})</script>
       
     
   </body>

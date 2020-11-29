@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -843,10 +843,10 @@
 
 <span class="o">...</span>
 
-<span class="n">config</span> <span class="o">=</span> <span class="n">hypercorn</span><span class="o">.</span><span class="n">Config</span><span class="p">()</span>
-<span class="n">config</span><span class="o">.</span><span class="n">bind</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;0.0.0.0:8008&#39;</span> <span class="p">]</span>
-<span class="n">config</span><span class="o">.</span><span class="n">keyfile</span> <span class="o">=</span> <span class="s1">&#39;foo.key&#39;</span>
-<span class="n">config</span><span class="o">.</span><span class="n">certfile</span> <span class="o">=</span> <span class="s1">&#39;foo.crt&#39;</span>
+<span class="n">web_config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="n">web_config</span><span class="o">.</span><span class="n">bind</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;0.0.0.0:8008&#39;</span> <span class="p">]</span>
+<span class="n">web_config</span><span class="o">.</span><span class="n">keyfile</span> <span class="o">=</span> <span class="s1">&#39;foo.key&#39;</span>
+<span class="n">web_config</span><span class="o">.</span><span class="n">certfile</span> <span class="o">=</span> <span class="s1">&#39;foo.crt&#39;</span>
 
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">serve</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">web_config</span><span class="p">))</span>
 </code></pre></div>
@@ -922,7 +922,7 @@
     
       <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../.."}})</script>
       
     
   </body>

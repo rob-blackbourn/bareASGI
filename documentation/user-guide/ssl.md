@@ -32,10 +32,10 @@ from hypercorn.config import Config
 
 ...
 
-config = hypercorn.Config()
-config.bind = [ '0.0.0.0:8008' ]
-config.keyfile = 'foo.key'
-config.certfile = 'foo.crt'
+web_config = Config()
+web_config.bind = [ '0.0.0.0:8008' ]
+web_config.keyfile = 'foo.key'
+web_config.certfile = 'foo.crt'
 
 asyncio.run(serve(app, web_config))
 ```

@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
     
     
       
@@ -873,7 +873,7 @@ decides to stop consuming the data, the remaining body need never be sent.</p>
 <p>We might use these functions in a handler in the following manner:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">set_info</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">matches</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
     <span class="n">text</span> <span class="o">=</span> <span class="k">await</span> <span class="n">text_reader</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">204</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">text_writer</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;You said &quot;</span><span class="si">{text}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">204</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">text_writer</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;You said &quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
 </code></pre></div>
 
 
@@ -961,7 +961,7 @@ unable to properly receive the response.</p>
     
       <script src="../../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.1",url:{base:"../.."}})</script>
+      <script>app.initialize({version:"1.1.2",url:{base:"../.."}})</script>
       
     
   </body>
