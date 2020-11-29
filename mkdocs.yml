@@ -28,6 +28,7 @@ nav:
     - user-guide/background-tasks.md
     - user-guide/decorators.md
     - user-guide/h2.md
+    - user-guide/h3.md
     - user-guide/server-sent-events.md
     - user-guide/ssl.md
   - Tutorial:
