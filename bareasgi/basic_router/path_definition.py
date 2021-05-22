@@ -18,7 +18,7 @@ from .path_segment import PathSegment
 class PathDefinition:
     """A class capturing a matchable path"""
 
-    NO_MATCH: Tuple[bool, Optional[RouteMatches]] = (False, None)
+    NO_MATCH: Tuple[bool, RouteMatches] = (False, {})
 
     def __init__(self, path: str) -> None:
         """Create a path definition."""
@@ -42,11 +42,17 @@ class PathDefinition:
         for segment in path.split('/'):
             self.segments.append(PathSegment(segment))
 
-    def match(self, path: str) -> Tuple[bool, Optional[RouteMatches]]:
+    def match(self, path: str) -> Tuple[bool, RouteMatches]:
         """Try to match the given path with this path definition
 
-        :param path: The path to match.
-        :return: A tuple of: is_match:bool, matches:dict.
+        Args:
+            path (str): The path to match
+
+        Raises:
+            Exception: If the path is not absolute.
+
+        Returns:
+            Tuple[bool, RouteMatches]: A tuple of is_match and matches.
         """
         if not path.startswith('/'):
             raise Exception('Paths must be absolute')

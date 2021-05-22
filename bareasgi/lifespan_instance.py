@@ -23,7 +23,7 @@ class LifespanInstance:
 
     def __init__(self, scope: Scope, context: Context, info: Info) -> None:
         """Initialise a lifespan instance.
-        
+
         Args:
             scope (Scope): The ASGI scope
             context (Context): The application context
@@ -42,8 +42,11 @@ class LifespanInstance:
             request = await receive()
             request_type = request['type']
 
-            LOGGER.debug('Handling request for "%s"',
-                         request_type, extra=request)
+            LOGGER.debug(
+                'Handling request for "%s"',
+                request_type,
+                extra={'request': request}
+            )
 
             try:
                 # Run the handlers for this action.

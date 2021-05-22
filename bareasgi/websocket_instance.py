@@ -49,7 +49,7 @@ class WebSocketImpl(WebSocket):
     async def receive(self) -> Optional[Union[bytes, str]]:
         request = await self._receive()
         request_type = request['type']
-        LOGGER.debug('Received "%s"', request_type, extra=request)
+        LOGGER.debug('Received "%s"', request_type, extra={'request': request})
 
         if request_type == 'websocket.receive':
             return request['bytes'] if 'bytes' in request and request['bytes'] else request['text']
@@ -57,8 +57,11 @@ class WebSocketImpl(WebSocket):
             self._code = request.get('code', 1000)
             return None
 
-        LOGGER.error('Failed to understand request type "%s"',
-                     request_type, extra=request)
+        LOGGER.error(
+            'Failed to understand request type "%s"',
+            request_type,
+            extra={'request': request}
+        )
         raise WebSocketInternalError(f'Unknown type: "{request_type}"')
 
     async def send(self, content: Union[bytes, str]) -> None:
@@ -97,17 +100,19 @@ class WebSocketInstance:
     def __init__(self, scope: Scope, web_socket_router: WebSocketRouter, info: Info) -> None:
         self.scope = scope
         self.info = info
-        self.request_handler, self.matches = web_socket_router.resolve(
-            scope['path'])
+        handler, matches = web_socket_router.resolve(scope['path'])
+        if handler is None:
+            raise ValueError(f"No handler for path {scope['path']}")
+        self.handler, self.matches = handler, matches
 
     async def __call__(self, receive: Receive, send: Send):
 
         request = await receive()
         request_type = request['type']
-        LOGGER.debug('Received "%s"', request_type, extra=request)
+        LOGGER.debug('Received "%s"', request_type, extra={'request': request})
 
         if request_type == 'websocket.connect':
-            await self.request_handler(
+            await self.handler(
                 self.scope,
                 self.info,
                 self.matches,
@@ -116,7 +121,11 @@ class WebSocketInstance:
         elif request_type == 'websocket.disconnect':
             pass
         else:
-            LOGGER.error('Failed to understand request type "%s"',
-                         request_type, extra=request)
+            LOGGER.error(
+                'Failed to understand request type "%s"',
+                request_type,
+                extra={'request': request}
+            )
             raise WebSocketInternalError(
-                f'Unknown request type "{request_type}')
+                f'Unknown request type "{request_type}'
+            )

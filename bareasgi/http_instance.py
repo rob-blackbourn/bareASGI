@@ -12,7 +12,8 @@ from typing import (
     Optional,
     Sequence,
     Set,
-    Tuple
+    Tuple,
+    cast
 )
 from urllib.error import HTTPError
 
@@ -21,6 +22,7 @@ from baretypes import (
     HttpDisconnectError,
     Scope,
     Info,
+    Content,
     Send,
     Receive,
     Headers,
@@ -77,7 +79,7 @@ class BodyIterator:
     async def _read(self) -> bytes:
         request = await self._receive()
         request_type = request['type']
-        LOGGER.debug('Received "%s"', request_type, extra=request)
+        LOGGER.debug('Received "%s"', request_type, extra={'request': request})
 
         if request_type == 'http.disconnect':
             raise HttpDisconnectError
@@ -86,7 +88,7 @@ class BodyIterator:
             LOGGER.error(
                 'Failed to understand request type "%s"',
                 request_type,
-                extra=request
+                extra={'request': request}
             )
             raise HttpInternalError
 
@@ -102,18 +104,16 @@ class BodyIterator:
 
 def _make_error_response(error: HTTPError) -> HttpResponse:
     if isinstance(error.reason, str):
-        content = text_writer(error.reason)
+        content: Optional[Content] = text_writer(error.reason)
     elif isinstance(error.reason, bytes):
         content = bytes_writer(error.reason)
     else:
-        content = error.reason
+        content = None
 
-    return error.code, error.headers, content, None
+    return error.code, cast(Optional[Headers], error.headers), content, None
 
 
 Middlewares = Sequence[HttpMiddlewareCallback]
-
-# pylint: disable=too-few-public-methods
 
 
 class HttpInstance:
@@ -129,17 +129,22 @@ class HttpInstance:
         """
         self.scope = scope
         self.info = info
+
         # Find the route.
         http_router: HttpRouter = context['router']
-        self.request_callback, self.matches = http_router.resolve(
-            scope['method'], scope['path']
-        )
+        handler, matches = http_router.resolve(scope['method'], scope['path'])
+        if handler is None:
+            raise ValueError(
+                f"Handler not found for {scope['method']} {scope['path']}"
+            )
+        self.handler, self.matches = handler, matches
+
         # Apply middleware.
         middleware: Optional[Middlewares] = context['middlewares']
         if middleware:
-            self.request_callback = mw(
+            self.handler = mw(
                 *middleware,
-                handler=self.request_callback
+                handler=self.handler
             )
 
     @property
@@ -238,7 +243,7 @@ class HttpInstance:
             request.get('more_body', False)
         )
         try:
-            response = await self.request_callback(
+            response = await self.handler(
                 self.scope,
                 self.info,
                 self.matches,

@@ -118,7 +118,7 @@ class Application:
     @property
     def info(self) -> MutableMapping[str, Any]:
         """A place to sto application specific data.
-        
+
         Returns:
             MutableMapping[str, Any]: A dictionary
         """
@@ -127,7 +127,7 @@ class Application:
     @property
     def middlewares(self) -> List[HttpMiddlewareCallback]:
         """The middlewares.
-        
+
         Returns:
             List[HttpMiddlewareCallback]: A list of the middleware to apply to
                 every route.
@@ -137,7 +137,7 @@ class Application:
     @property
     def http_router(self) -> HttpRouter:
         """Router for http routes
-        
+
         Returns:
             HttpRouter: The http router.
         """
@@ -146,7 +146,7 @@ class Application:
     @property
     def ws_router(self) -> WebSocketRouter:
         """Router for WebSocket routes
-        
+
         Returns:
             WebSocketRouter: The WebSocket router.
         """
@@ -155,7 +155,7 @@ class Application:
     @property
     def startup_handlers(self) -> List[LifespanHandler]:
         """Handlers run at startup
-        
+
         Returns:
             List[LifespanHandler]: The startup handlers
         """
@@ -164,7 +164,7 @@ class Application:
     @property
     def shutdown_handlers(self) -> List[LifespanHandler]:
         """Handlers run on shutdown
-        
+
         Returns:
             List[LifespanHandler]: The shutdown handlers.
         """
@@ -176,11 +176,11 @@ class Application:
             path: str
     ) -> Callable[[HttpRequestCallback], HttpRequestCallback]:
         """A decorator to add an http route handler to the application
-        
+
         Args:
             methods (AbstractSet[str]): The http methods, e.g. {{'POST', 'PUT'}
             path (str): The path
-        
+
         Returns:
             Callable[[HttpRequestCallback], HttpRequestCallback]: The decorated
                 request.
@@ -196,15 +196,17 @@ class Application:
             path: str
     ) -> Callable[[WebSocketRequestCallback], WebSocketRequestCallback]:
         """A decorator to add a websocket route handler to the application
-        
+
         Args:
             path (str): The path
-        
+
         Returns:
             Callable[[WebSocketRequestCallback], WebSocketRequestCallback]: The
                 decorated handler
         """
-        def decorator(callback: HttpRequestCallback) -> Callable:
+        def decorator(
+                callback: WebSocketRequestCallback
+        ) -> WebSocketRequestCallback:
             self.ws_router.add(path, callback)
             return callback
 
@@ -213,14 +215,14 @@ class Application:
     def on_startup(
             self,
             callback: LifespanHandler
-    ) -> Callable[[LifespanHandler], LifespanHandler]:
+    ) -> LifespanHandler:
         """A decorator to add a startup handler to the application
-        
+
         Args:
             callback (LifespanHandler): The startup handler.
-        
+
         Returns:
-            Callable[[LifespanHandler], LifespanHandler]: The decorated handler.
+            LifespanHandler: The decorated handler.
         """
         self.startup_handlers.append(callback)
         return callback
@@ -228,19 +230,19 @@ class Application:
     def on_shutdown(
             self,
             callback: LifespanHandler
-    ) -> Callable[[LifespanHandler], LifespanHandler]:
+    ) -> LifespanHandler:
         """A decorator to add a startup handler to the application
-        
+
         Args:
             callback (LifespanHandler): The shutdown handler.
-        
+
         Returns:
-            Callable[[LifespanHandler], LifespanHandler]: The decorated handler.
+            LifespanHandler: The decorated handler.
         """
         self.shutdown_handlers.append(callback)
         return callback
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        LOGGER.debug('Creating instance', extra=scope)
+        LOGGER.debug('Creating instance', extra={'scope': scope})
         instance = Instance(self._context, scope)
         await instance(receive, send)

@@ -3,11 +3,12 @@ Middleware utilities.
 """
 
 from functools import partial
-from typing import Optional, Tuple
+from typing import Optional
 
 from baretypes import (
     HttpRequestCallback,
     HttpMiddlewareCallback,
+    HttpFullResponse,
     Headers,
     Content,
     PushResponses,
@@ -22,7 +23,7 @@ def _unpack_response(
         headers: Optional[Headers] = None,
         content: Optional[Content] = None,
         pushes: Optional[PushResponses] = None
-) -> Tuple[int, Headers, Content, PushResponses]:
+) -> HttpFullResponse:
     return status, headers, content, pushes
 
 
@@ -32,9 +33,9 @@ async def _call_handler(
         info: Info,
         matches: RouteMatches,
         content: Content
-) -> Tuple[int, Headers, Content, PushResponses]:
+) -> HttpFullResponse:
     response = await handler(scope, info, matches, content)
-    if isinstance(response, int):
+    if not isinstance(response, tuple):
         response = (response,)
     return _unpack_response(*response)
 
@@ -45,11 +46,11 @@ def mw(
         handler: HttpRequestCallback
 ) -> HttpRequestCallback:
     """Create a handler from a chain of middleware.
-    
+
     Args:
         *handlers (HttpMiddlewareCallback): The middleware handlers.
         handler (HttpRequestCallback): The final response handler.
-    
+
     Returns:
         HttpRequestCallback: A handler which calls the middleware chain.
     """

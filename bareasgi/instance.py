@@ -33,7 +33,7 @@ class Instance:
 
     def __init__(self, context: Context, scope: Scope) -> None:
         """Initialise the instance provider
-        
+
         Args:
             context (Context): The application context
             scope (Scope): The ASGI scope

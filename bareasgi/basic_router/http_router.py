@@ -22,15 +22,16 @@ from baretypes import (
 )
 from .path_definition import PathDefinition
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
+
+Route = Tuple[PathDefinition, HttpRequestCallback]
 
 
 class BasicHttpRouter(HttpRouter):
     """A basic http routing implementation"""
 
     def __init__(self, not_found_response: HttpResponse) -> None:
-        self._routes: Dict[str,
-                           List[Tuple[PathDefinition, HttpRequestCallback]]] = {}
+        self._routes: Dict[str, List[Route]] = {}
         self._not_found_response = not_found_response
 
     @property
@@ -41,8 +42,13 @@ class BasicHttpRouter(HttpRouter):
     def not_found_response(self, value: HttpResponse) -> None:
         self._not_found_response = value
 
-    def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
-        logger.debug('Adding route for %s on "%s"', methods, path)
+    def add(
+            self,
+            methods: AbstractSet[str],
+            path: str,
+            callback: HttpRequestCallback
+    ) -> None:
+        LOGGER.debug('Adding route for %s on "%s"', methods, path)
         path_definition = PathDefinition(path)
         for method in methods:
             self.add_route(method, path_definition, callback)
@@ -54,7 +60,7 @@ class BasicHttpRouter(HttpRouter):
             callback: HttpRequestCallback
     ) -> None:
         """Add a route to a callback for a method and path definition
-        
+
         Args:
             method (str): The method.
             path_definition (PathDefinition): The path definition
@@ -77,13 +83,13 @@ class BasicHttpRouter(HttpRouter):
             self,
             method: str,
             path: str
-    ) -> Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]:
+    ) -> Tuple[Optional[HttpRequestCallback], RouteMatches]:
         path_definition_list = self._routes.get(method)
         if path_definition_list:
             for path_definition, handler in path_definition_list:
                 is_match, matches = path_definition.match(path)
                 if is_match:
-                    logger.debug(
+                    LOGGER.debug(
                         'Matched %s on "%s" for %s matching %s',
                         method,
                         path,
@@ -93,7 +99,7 @@ class BasicHttpRouter(HttpRouter):
                     )
                     return handler, matches
 
-        logger.warning(
+        LOGGER.warning(
             'Failed to find a match for %s on "%s"',
             method,
             path,
