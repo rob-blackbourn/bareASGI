@@ -17,7 +17,6 @@ from baretypes import (
 LOGGER = logging.getLogger(__name__)
 
 
-# pylint: disable=too-few-public-methods
 class LifespanInstance:
     """An instance factor for lifespan event requests"""
 

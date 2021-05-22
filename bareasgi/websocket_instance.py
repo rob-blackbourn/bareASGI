@@ -52,7 +52,10 @@ class WebSocketImpl(WebSocket):
         LOGGER.debug('Received "%s"', request_type, extra={'request': request})
 
         if request_type == 'websocket.receive':
-            return request['bytes'] if 'bytes' in request and request['bytes'] else request['text']
+            if 'bytes' in request and request['bytes']:
+                return request['bytes']
+            else:
+                return request['text']
         if request_type == 'websocket.disconnect':
             self._code = request.get('code', 1000)
             return None
@@ -91,16 +94,19 @@ class WebSocketImpl(WebSocket):
         """
         return "self._code"
 
-# pylint: disable=too-few-public-methods
-
 
 class WebSocketInstance:
     """Provides an instance to handle websocket event requests"""
 
-    def __init__(self, scope: Scope, web_socket_router: WebSocketRouter, info: Info) -> None:
+    def __init__(
+            self,
+            scope: Scope,
+            router: WebSocketRouter,
+            info: Info
+    ) -> None:
         self.scope = scope
         self.info = info
-        handler, matches = web_socket_router.resolve(scope['path'])
+        handler, matches = router.resolve(scope['path'])
         if handler is None:
             raise ValueError(f"No handler for path {scope['path']}")
         self.handler, self.matches = handler, matches

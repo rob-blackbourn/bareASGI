@@ -2,9 +2,11 @@
 A basic Websocket router.
 """
 
-from typing import Optional, Tuple, List
+from typing import Tuple, List
 import logging
+
 from baretypes import WebSocketRouter, RouteMatches, WebSocketRequestCallback
+
 from .path_definition import PathDefinition
 
 LOGGER = logging.getLogger(__name__)
@@ -24,7 +26,7 @@ class BasicWebSocketRouter(WebSocketRouter):
     def resolve(
             self,
             path: str
-    ) -> Tuple[Optional[WebSocketRequestCallback], RouteMatches]:
+    ) -> Tuple[WebSocketRequestCallback, RouteMatches]:
         for path_definition, handler in self._routes:
             is_match, matches = path_definition.match(path)
             if is_match:
@@ -43,4 +45,4 @@ class BasicWebSocketRouter(WebSocketRouter):
         )
 
         # TODO: Should we have a "route not found" handler?
-        return None, {}
+        raise ValueError(f"Unable to find route for {path}")

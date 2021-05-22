@@ -56,7 +56,7 @@ class BodyIterator:
         Args:
             receive (Receive): The receive callable
             body (bytes): The initial body
-            more_body (bool): Signifies if there is additional content to come. 
+            more_body (bool): Signifies if there is additional content to come.
         """
         self._receive = receive
         self._queue: Queue = Queue()

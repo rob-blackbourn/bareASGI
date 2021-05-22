@@ -20,12 +20,13 @@ from .websocket_instance import WebSocketInstance
 
 LOGGER = logging.getLogger(__name__)
 
+InstanceFactory = Callable[[Scope, Any, Info], ASGIInstance]
 
-# pylint: disable=too-few-public-methods
+
 class Instance:
     """An instance provider"""
 
-    INSTANCES_CLASSES: Mapping[str, Callable[[Scope, Any, Info], ASGIInstance]] = {
+    INSTANCES_CLASSES: Mapping[str, InstanceFactory] = {
         'lifespan': LifespanInstance,
         'http': HttpInstance,
         'websocket': WebSocketInstance

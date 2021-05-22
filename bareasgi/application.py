@@ -1,4 +1,5 @@
-"""ASGI Application
+"""
+ASGI Application
 """
 
 from typing import (

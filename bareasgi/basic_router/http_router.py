@@ -7,7 +7,6 @@ from typing import (
     AbstractSet,
     Dict,
     List,
-    Optional,
     Tuple
 )
 
@@ -83,7 +82,7 @@ class BasicHttpRouter(HttpRouter):
             self,
             method: str,
             path: str
-    ) -> Tuple[Optional[HttpRequestCallback], RouteMatches]:
+    ) -> Tuple[HttpRequestCallback, RouteMatches]:
         path_definition_list = self._routes.get(method)
         if path_definition_list:
             for path_definition, handler in path_definition_list:
