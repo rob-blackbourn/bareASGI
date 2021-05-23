@@ -47,7 +47,7 @@ toml = "*"
 
 [[package]]
 name = "baretypes"
-version = "3.5.0"
+version = "3.6.4"
 description = "Types for bareASGI and bareClient"
 category = "main"
 optional = false
@@ -55,7 +55,7 @@ python-versions = ">=3.7,<4.0"
 
 [[package]]
 name = "bareutils"
-version = "3.5.2"
+version = "3.6.0"
 description = "Utilities for bareASGI and bareClient"
 category = "main"
 optional = false
@@ -666,7 +666,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c827849c8e337bb6e2ba15a1e3f688ca2e8a16a9316ef8e0ce929a4c488d15cf"
+content-hash = "e26912d83b9e37310071214089b9a0da1c55072a2a36566196183f3ffc4b669a"
 
 [metadata.files]
 astroid = [
@@ -686,12 +686,12 @@ autopep8 = [
     {file = "autopep8-1.5.7.tar.gz", hash = "sha256:276ced7e9e3cb22e5d7c14748384a5cf5d9002257c0ed50c0e075b68011bb6d0"},
 ]
 baretypes = [
-    {file = "baretypes-3.5.0-py3-none-any.whl", hash = "sha256:0e141e795f2d723743a789c5d96167a36f03cd1a543f9c636d89e3de421a79aa"},
-    {file = "baretypes-3.5.0.tar.gz", hash = "sha256:0bcde19ed4d57762ac433cd2e4234685d8a466057af8c01259940d8d36af1c45"},
+    {file = "baretypes-3.6.4-py3-none-any.whl", hash = "sha256:563ebee21a2942f9fff6a7208a194fb3b6a68de86dff5dc31b144003badccc8d"},
+    {file = "baretypes-3.6.4.tar.gz", hash = "sha256:66339cbc1ce1fcae37848a56132a3929da93ba14530fe5fa3c3a1ca8da8ce04d"},
 ]
 bareutils = [
-    {file = "bareutils-3.5.2-py3-none-any.whl", hash = "sha256:abd4cd0c90046513200641bef308ef5a9cd9ac39901ea9d4e2cbccf444608163"},
-    {file = "bareutils-3.5.2.tar.gz", hash = "sha256:8488358193c2b94d1d27bd40c69a651b1b8efecf3220ff180eac52fd33fab645"},
+    {file = "bareutils-3.6.0-py3-none-any.whl", hash = "sha256:91503c87b7a08fa0929edfdf7de3057fabbf2cfad908dbc49fdbe62950da95a7"},
+    {file = "bareutils-3.6.0.tar.gz", hash = "sha256:7288fa31fd801675a895197d578e84d3798ce918597813a07de33280b8566d5f"},
 ]
 click = [
     {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bareasgi"
-version = "3.7.0"
+version = "3.7.1"
 description = "A lightweight ASGI framework"
 authors = ["Rob Blackbourn <rob.blackbourn@gmail.com>"]
 license = "Apache-2.0"
@@ -12,8 +12,8 @@ repository = "https://github.com/rob-blackbourn/bareasgi"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-bareutils = "^3.5"
-baretypes = "^3.5"
+bareutils = "^3.6"
+baretypes = "^3.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.0"
