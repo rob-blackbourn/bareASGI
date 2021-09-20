@@ -5,8 +5,8 @@ from asyncio.queues import Queue
 class MockIO:
 
     def __init__(self) -> None:
-        self._write_queue = Queue()
-        self._read_queue = Queue()
+        self._write_queue: Queue[Mapping[str, Any]] = Queue()
+        self._read_queue: Queue[Mapping[str, Any]] = Queue()
 
 
     async def write(self, message: Mapping[str, Any]) -> None:
@@ -21,5 +21,5 @@ class MockIO:
         await self._read_queue.put(message)
 
 
-    async def receive(self) -> Mapping[str, any]:
+    async def receive(self) -> Mapping[str, Any]:
         return await self._write_queue.get()
