@@ -3,7 +3,6 @@ A simple request handler that consumes content.
 """
 
 import asyncio
-import logging
 import os
 import socket
 
@@ -50,6 +49,6 @@ if __name__ == "__main__":
 
     config = Config()
     config.bind = [f"{hostname}:9005"]
-    config.certfile = os.path.expanduser(f"~/.keys/server.crt")
-    config.keyfile = os.path.expanduser(f"~/.keys/server.key")
-    asyncio.run(serve(app, config))
+    config.certfile = os.path.expanduser("~/.keys/server.crt")
+    config.keyfile = os.path.expanduser("~/.keys/server.key")
+    asyncio.run(serve(app, config))  # type: ignore
