@@ -16,19 +16,20 @@ bareutils = "^3.6"
 baretypes = "^3.6"
 
 [tool.poetry.dev-dependencies]
+autopep8 = "^1.5.4"
 pytest = "^5.0"
 pytest-asyncio = "^0.10"
 pytest-runner = "^5.1"
-uvicorn = "^0.9"
+uvicorn = "^0.11"
 hypercorn = "^0.11"
 uvloop = "^0.14.0"
 pylint = "^2.8"
 mypy = "^0.812"
 rope = "^0.14.0"
-mkdocs = "^1.0.4"
-mkdocs-material = "^4.6.0"
+mkdocs = "^1.2"
+mkdocs-material = "^7.2"
 jetblack-markdown = "^0.6"
-autopep8 = "^1.5.4"
+mike = "^1.1.1"
 
 [build-system]
 requires = ["poetry>=0.12"]

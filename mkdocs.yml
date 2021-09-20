@@ -9,51 +9,51 @@ repo_url: https://github.com/rob-blackbourn/bareASGI
 edit_uri: ""
 
 theme:
-    name: 'material'
-    logo: images/peach.svg
-    favicon: images/favicon.ico
+  name: "material"
+  logo: images/peach.svg
+  favicon: images/favicon.ico
 
 nav:
   - index.md
   - User Guide:
-    - user-guide/installation.md
-    - user-guide/getting-started.md
-    - user-guide/usage.md
-    - user-guide/optional-packages.md
-    - user-guide/asgi.md
-    - user-guide/application.md
-    - user-guide/io.md
-    - user-guide/routing.md
-    - user-guide/middleware.md
-    - user-guide/background-tasks.md
-    - user-guide/decorators.md
-    - user-guide/h2.md
-    - user-guide/h3.md
-    - user-guide/server-sent-events.md
-    - user-guide/ssl.md
+      - user-guide/installation.md
+      - user-guide/getting-started.md
+      - user-guide/usage.md
+      - user-guide/optional-packages.md
+      - user-guide/asgi.md
+      - user-guide/application.md
+      - user-guide/io.md
+      - user-guide/routing.md
+      - user-guide/middleware.md
+      - user-guide/background-tasks.md
+      - user-guide/decorators.md
+      - user-guide/h2.md
+      - user-guide/h3.md
+      - user-guide/server-sent-events.md
+      - user-guide/ssl.md
   - Tutorial:
-    - tutorial/index.md
-    - tutorial/getting-started.md
-    - tutorial/simple-rest.md
-    - tutorial/lifespan.md
-    - tutorial/background-tasks.md
-    - tutorial/headers.md
-    - tutorial/https.md
-    - tutorial/middleware.md
-    - tutorial/websockets.md
-    - tutorial/headers.md
-    - tutorial/cors.md
-    - tutorial/jinja2.md
-    - tutorial/static-files.md
-    - tutorial/server-sent-events.md
-    - tutorial/streaming-fetch.md
-    - tutorial/compression.md
-    - tutorial/controller-classes.md
-    - tutorial/exceptions.md
+      - tutorial/index.md
+      - tutorial/getting-started.md
+      - tutorial/simple-rest.md
+      - tutorial/lifespan.md
+      - tutorial/background-tasks.md
+      - tutorial/headers.md
+      - tutorial/https.md
+      - tutorial/middleware.md
+      - tutorial/websockets.md
+      - tutorial/headers.md
+      - tutorial/cors.md
+      - tutorial/jinja2.md
+      - tutorial/static-files.md
+      - tutorial/server-sent-events.md
+      - tutorial/streaming-fetch.md
+      - tutorial/compression.md
+      - tutorial/controller-classes.md
+      - tutorial/exceptions.md
   - API:
-    - bareasgi: api/bareasgi.md
-    - bareasgi.basic_router: api/bareasgi.basic_router.md
-  
+      - bareasgi: api/bareasgi.md
+      - bareasgi.basic_router: api/bareasgi.basic_router.md
+
 markdown_extensions:
   - admonition
   - codehilite:
@@ -70,4 +70,16 @@ markdown_extensions:
       permalink: true
 
 extra_css:
-    - css/custom.css
+  - css/custom.css
+
+extra:
+  version:
+    provider: mike
+    default: stable
+
+plugins:
+  - mike:
+      version_selector: true
+      css_dir: css
+      javascript_dir: js
+      canonical_version: null

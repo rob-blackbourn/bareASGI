@@ -1,40 +1,18 @@
 
-
-
-
 <!doctype html>
 <html lang="en" class="no-js">
   <head>
     
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
-      <meta http-equiv="x-ua-compatible" content="ie=edge">
       
         <meta name="description" content="A lightweight ASGI web framework">
       
       
       
       
-        <meta name="lang:clipboard.copy" content="Copy to clipboard">
-      
-        <meta name="lang:clipboard.copied" content="Copied to clipboard">
-      
-        <meta name="lang:search.language" content="en">
-      
-        <meta name="lang:search.pipeline.stopwords" content="True">
-      
-        <meta name="lang:search.pipeline.trimmer" content="True">
-      
-        <meta name="lang:search.result.none" content="No matching documents">
-      
-        <meta name="lang:search.result.one" content="1 matching document">
-      
-        <meta name="lang:search.result.other" content="# matching documents">
-      
-        <meta name="lang:search.tokenizer" content="[\s\-]+">
-      
-      <link rel="shortcut icon" href="../../images/favicon.ico">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-4.6.3">
+      <link rel="icon" href="../../images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.8">
     
     
       
@@ -42,168 +20,139 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.92558b1b.min.css">
       
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
       
     
     
-      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
-    
     
       
-        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
       
     
-    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
     
     
       <link rel="stylesheet" href="../../css/custom.css">
     
     
       
+
+
     
     
   </head>
   
-    <body dir="ltr">
   
-    <svg class="md-svg">
-      <defs>
-        
-        
-          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-        
-      </defs>
-    </svg>
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-    
-      <a href="#sslhttps" tabindex="0" class="md-skip">
-        Skip to content
-      </a>
-    
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sslhttps" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
     
       <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../.." title="bareASGI" aria-label="bareASGI" class="md-header-nav__button md-logo">
-          
-            <img alt="logo" src="../../images/peach.svg" width="24" height="24">
-          
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          
-            <span class="md-header-nav__topic">
-              bareASGI
-            </span>
-            <span class="md-header-nav__topic">
-              
-                SSL/HTTPS
-              
-            </span>
-          
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        
-          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-          
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-        
-      </div>
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bareASGI" class="md-header__button md-logo" aria-label="bareASGI" data-md-component="logo">
       
-        <div class="md-flex__cell md-flex__cell--shrink">
-          <div class="md-header-nav__source">
+  <img src="../../images/peach.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bareASGI
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
             
-
-
-  
-
-<a href="https://github.com/rob-blackbourn/bareASGI" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
+              SSL/HTTPS
+            
+          </span>
+        </div>
+      </div>
     </div>
-  
+    
+    
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/rob-blackbourn/bareASGI" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
   <div class="md-source__repository">
     rob-blackbourn/bareASGI
   </div>
 </a>
-          </div>
-        </div>
-      
-    </div>
+      </div>
+    
   </nav>
 </header>
     
-    <div class="md-container">
+    <div class="md-container" data-md-component="container">
+      
       
         
       
-      
-      <main class="md-main" role="main">
-        <div class="md-main__inner md-grid" data-md-component="container">
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
           
             
-              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../.." title="bareASGI" class="md-nav__button md-logo">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bareASGI" class="md-nav__button md-logo" aria-label="bareASGI" data-md-component="logo">
       
-        <img alt="logo" src="../../images/peach.svg" width="48" height="48">
-      
+  <img src="../../images/peach.svg" alt="logo">
+
     </a>
     bareASGI
   </label>
   
     <div class="md-nav__source">
       
-
-
-  
-
-<a href="https://github.com/rob-blackbourn/bareASGI" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
+<a href="https://github.com/rob-blackbourn/bareASGI" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
   <div class="md-source__repository">
     rob-blackbourn/bareASGI
   </div>
@@ -216,12 +165,15 @@
       
       
 
-
-  <li class="md-nav__item">
-    <a href="../.." title="Lightweight ASGI Web Framework" class="md-nav__link">
-      Lightweight ASGI Web Framework
-    </a>
-  </li>
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Lightweight ASGI Web Framework
+      </a>
+    </li>
+  
 
     
       
@@ -229,221 +181,231 @@
       
 
   
-
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+  
+  
     
-    <label class="md-nav__link" for="nav-2">
-      User Guide
-    </label>
-    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-2">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2">
         User Guide
+        <span class="md-nav__icon md-icon"></span>
       </label>
-      <ul class="md-nav__list" data-md-scrollfix>
-        
-        
+      <nav class="md-nav" aria-label="User Guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          User Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
           
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../installation/" title="Installation" class="md-nav__link">
-      Installation
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../getting-started/" title="Getting Started" class="md-nav__link">
-      Getting Started
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../usage/" title="Usage" class="md-nav__link">
-      Usage
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../optional-packages/" title="Optional Packages" class="md-nav__link">
-      Optional Packages
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../asgi/" title="ASGI" class="md-nav__link">
-      ASGI
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../application/" title="Application" class="md-nav__link">
-      Application
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../io/" title="Reading and Writing" class="md-nav__link">
-      Reading and Writing
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../routing/" title="Routing" class="md-nav__link">
-      Routing
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../middleware/" title="Middleware" class="md-nav__link">
-      Middleware
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../background-tasks/" title="Background Tasks" class="md-nav__link">
-      Background Tasks
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../decorators/" title="Decorators" class="md-nav__link">
-      Decorators
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../h2/" title="HTTP/2" class="md-nav__link">
-      HTTP/2
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../h3/" title="HTTP/3 - QUIC" class="md-nav__link">
-      HTTP/3 - QUIC
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../server-sent-events/" title="Server Sent Events" class="md-nav__link">
-      Server Sent Events
-    </a>
-  </li>
-
-        
-          
-          
-          
-
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
   
 
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
 
-  <li class="md-nav__item md-nav__item--active">
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        Usage
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../optional-packages/" class="md-nav__link">
+        Optional Packages
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../asgi/" class="md-nav__link">
+        ASGI
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../application/" class="md-nav__link">
+        Application
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../io/" class="md-nav__link">
+        Reading and Writing
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../middleware/" class="md-nav__link">
+        Middleware
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../background-tasks/" class="md-nav__link">
+        Background Tasks
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../decorators/" class="md-nav__link">
+        Decorators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../h2/" class="md-nav__link">
+        HTTP/2
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../h3/" class="md-nav__link">
+        HTTP/3 - QUIC
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-sent-events/" class="md-nav__link">
+        Server Sent Events
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
     
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
       
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SSL/HTTPS
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         SSL/HTTPS
-      </label>
-    
-    <a href="./" title="SSL/HTTPS" class="md-nav__link md-nav__link--active">
-      SSL/HTTPS
-    </a>
-    
+      </a>
       
-<nav class="md-nav md-nav--secondary">
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#overview" class="md-nav__link">
@@ -466,308 +428,318 @@
   
 </li>
       
-      
-      
-      
-      
     </ul>
   
 </nav>
-    
-  </li>
+      
+    </li>
+  
 
-        
-      </ul>
-    </nav>
-  </li>
+          
+        </ul>
+      </nav>
+    </li>
+  
 
     
       
       
       
 
-
-  <li class="md-nav__item md-nav__item--nested">
+  
+  
+  
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
-    
-    <label class="md-nav__link" for="nav-3">
-      Tutorial
-    </label>
-    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-3">
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
         Tutorial
+        <span class="md-nav__icon md-icon"></span>
       </label>
-      <ul class="md-nav__list" data-md-scrollfix>
-        
-        
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/" class="md-nav__link">
+        bareASGI-tutorial
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/getting-started/" class="md-nav__link">
+        Getting Started with bareASGI
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/simple-rest/" class="md-nav__link">
+        Simple REST
+      </a>
+    </li>
+  
 
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/" title="bareASGI-tutorial" class="md-nav__link">
-      bareASGI-tutorial
-    </a>
-  </li>
-
-        
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/lifespan/" class="md-nav__link">
+        Lifespan
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/background-tasks/" class="md-nav__link">
+        Background Tasks
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/headers/" class="md-nav__link">
+        None
+      </a>
+    </li>
+  
 
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/getting-started/" title="Getting Started with bareASGI" class="md-nav__link">
-      Getting Started with bareASGI
-    </a>
-  </li>
-
-        
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/https/" class="md-nav__link">
+        HTTPS
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/middleware/" class="md-nav__link">
+        Middleware
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/websockets/" class="md-nav__link">
+        Web Sockets
+      </a>
+    </li>
+  
 
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/simple-rest/" title="Simple REST" class="md-nav__link">
-      Simple REST
-    </a>
-  </li>
-
-        
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/headers/" class="md-nav__link">
+        Headers (including cookies)
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/cors/" class="md-nav__link">
+        Cross-Origin Resource Sharing
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/jinja2/" class="md-nav__link">
+        Jinja2 Templating
+      </a>
+    </li>
+  
 
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/lifespan/" title="Lifespan" class="md-nav__link">
-      Lifespan
-    </a>
-  </li>
-
-        
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/static-files/" class="md-nav__link">
+        Static Files
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/server-sent-events/" class="md-nav__link">
+        Server Sent Events
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/streaming-fetch/" class="md-nav__link">
+        Streaming Fetch
+      </a>
+    </li>
+  
 
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/background-tasks/" title="Background Tasks" class="md-nav__link">
-      Background Tasks
-    </a>
-  </li>
-
-        
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/compression/" class="md-nav__link">
+        Compression
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/controller-classes/" class="md-nav__link">
+        Controller Classes
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/exceptions/" class="md-nav__link">
+        Exceptions
+      </a>
+    </li>
+  
 
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/headers/" title="None" class="md-nav__link">
-      None
-    </a>
-  </li>
-
-        
           
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/https/" title="HTTPS" class="md-nav__link">
-      HTTPS
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/middleware/" title="Middleware" class="md-nav__link">
-      Middleware
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/websockets/" title="Web Sockets" class="md-nav__link">
-      Web Sockets
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/headers/" title="Headers (including cookies)" class="md-nav__link">
-      Headers (including cookies)
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/cors/" title="Cross-Origin Resource Sharing" class="md-nav__link">
-      Cross-Origin Resource Sharing
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/jinja2/" title="Jinja2 Templating" class="md-nav__link">
-      Jinja2 Templating
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/static-files/" title="Static Files" class="md-nav__link">
-      Static Files
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/server-sent-events/" title="Server Sent Events" class="md-nav__link">
-      Server Sent Events
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/streaming-fetch/" title="Streaming Fetch" class="md-nav__link">
-      Streaming Fetch
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/compression/" title="Compression" class="md-nav__link">
-      Compression
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/controller-classes/" title="Controller Classes" class="md-nav__link">
-      Controller Classes
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../tutorial/exceptions/" title="Exceptions" class="md-nav__link">
-      Exceptions
-    </a>
-  </li>
-
-        
-      </ul>
-    </nav>
-  </li>
+        </ul>
+      </nav>
+    </li>
+  
 
     
       
       
       
 
-
-  <li class="md-nav__item md-nav__item--nested">
+  
+  
+  
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
-    
-    <label class="md-nav__link" for="nav-4">
-      API
-    </label>
-    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-4">
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
         API
+        <span class="md-nav__icon md-icon"></span>
       </label>
-      <ul class="md-nav__list" data-md-scrollfix>
-        
-        
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bareasgi/" class="md-nav__link">
+        bareasgi
+      </a>
+    </li>
+  
+
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bareasgi.basic_router/" class="md-nav__link">
+        bareasgi.basic_router
+      </a>
+    </li>
+  
+
           
-
-
-  <li class="md-nav__item">
-    <a href="../../api/bareasgi/" title="bareasgi" class="md-nav__link">
-      bareasgi
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../api/bareasgi.basic_router/" title="bareasgi.basic_router" class="md-nav__link">
-      bareasgi.basic_router
-    </a>
-  </li>
-
-        
-      </ul>
-    </nav>
-  </li>
+        </ul>
+      </nav>
+    </li>
+  
 
     
   </ul>
@@ -777,18 +749,23 @@
               </div>
             
             
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
-<nav class="md-nav md-nav--secondary">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#overview" class="md-nav__link">
@@ -811,10 +788,6 @@
   
 </li>
       
-      
-      
-      
-      
     </ul>
   
 </nav>
@@ -823,7 +796,7 @@
               </div>
             
           
-          <div class="md-content">
+          <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
@@ -847,7 +820,6 @@
 <span class="p">)</span>
 </code></pre></div>
 
-
 <h2 id="hypercorn">Hypercorn<a class="headerlink" href="#hypercorn" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">hypercorn.asyncio</span> <span class="kn">import</span> <span class="n">serve</span>
@@ -863,9 +835,6 @@
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">serve</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">web_config</span><span class="p">))</span>
 </code></pre></div>
                 
-                  
-                
-                
               
               
                 
@@ -875,55 +844,56 @@
             </article>
           </div>
         </div>
+        
       </main>
       
         
 <footer class="md-footer">
   
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
         
-          <a href="../server-sent-events/" title="Server Sent Events" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-            </div>
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Server Sent Events
+        <a href="../server-sent-events/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Server Sent Events" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
               </span>
+              Server Sent Events
             </div>
-          </a>
+          </div>
+        </a>
+      
+      
         
-        
-          <a href="../../tutorial/" title="bareASGI-tutorial" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-              <span class="md-flex__ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                bareASGI-tutorial
+        <a href="../../tutorial/" class="md-footer__link md-footer__link--next" aria-label="Next: bareASGI-tutorial" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
               </span>
+              bareASGI-tutorial
             </div>
-            <div class="md-flex__cell md-flex__cell--shrink">
-              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
         
-        powered by
-        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
-        and
+        Made with
         <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-          Material for MkDocs</a>
+          Material for MkDocs
+        </a>
+        
       </div>
       
     </div>
@@ -931,10 +901,13 @@
 </footer>
       
     </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.94ec81fe.min.js", "version": {"provider": "mike", "default": "stable"}}</script>
     
-      <script src="../../assets/javascripts/application.c33a9706.js"></script>
-      
-      <script>app.initialize({version:"1.1.2",url:{base:"../.."}})</script>
+    
+      <script src="../../assets/javascripts/bundle.48dfec6c.min.js"></script>
       
     
   </body>
