@@ -6,47 +6,37 @@ import asyncio
 import logging
 import os
 import socket
+from typing import cast
 
 import bareutils.header as header
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
-    WebSocket,
+    WebSocketRequest,
     text_writer
 )
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def index_redirect(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def index_redirect(_request: HttpRequest) -> HttpResponse:
     """Redirect to the index page"""
-    return 303, [(b'Location', b'/test/index.html')]
+    return HttpResponse(303, [(b'Location', b'/test/index.html')])
 
 
-async def index(
-        scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def index(request: HttpRequest) -> HttpResponse:
     """The Websocket page"""
 
-    scheme = 'wss' if scope['scheme'] == 'https' else 'ws'
-    if scope['http_version'] in ('2', '2.0'):
-        authority = header.find(
-            b':authority', scope['headers']).decode('ascii')
+    scheme = 'wss' if request.scope['scheme'] == 'https' else 'ws'
+    if request.scope['http_version'] in ('2', '2.0'):
+        authority = cast(
+            bytes,
+            header.find(b':authority', request.scope['headers'])
+        ).decode('ascii')
     else:
-        host, port = scope['server']
+        host, port = request.scope['server']
         authority = f'{host}:{port}'
     web_socket_url = f"{scheme}://{authority}/test/websocket"
 
@@ -142,28 +132,27 @@ async def index(
   </body>
 </html>
 """.format(web_socket_url=web_socket_url)
-    return 200, [(b'content-type', b'text/html')], text_writer(html)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(html)
+    )
 
 
-async def websocket_callback(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        web_socket: WebSocket
-) -> None:  # pylint: disable=unused-argument
+async def websocket_callback(request: WebSocketRequest) -> None:
     """The websocket callback handler"""
-    await web_socket.accept()
+    await request.web_socket.accept()
 
     try:
         while True:
-            text = await web_socket.receive()
+            text = cast(str, await request.web_socket.receive())
             if text is None:
                 break
-            await web_socket.send('You said: ' + text)
+            await request.web_socket.send('You said: ' + text)
     except Exception as error:  # pylint: disable=broad-except
         print(error)
 
-    await web_socket.close()
+    await request.web_socket.close()
 
 
 if __name__ == "__main__":
@@ -193,4 +182,4 @@ if __name__ == "__main__":
         config.loglevel = 'debug'
         config.certfile = certfile
         config.keyfile = keyfile
-        asyncio.run(serve(app, config))
+        asyncio.run(serve(app, config))  # type: ignore

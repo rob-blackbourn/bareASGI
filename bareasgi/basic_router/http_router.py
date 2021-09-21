@@ -10,15 +10,14 @@ from typing import (
     Tuple
 )
 
-from baretypes import (
+from ..types import (
     HttpRouter,
     RouteMatches,
-    Scope,
-    Info,
-    Content,
+    HttpRequest,
     HttpResponse,
     HttpRequestCallback
 )
+
 from .path_definition import PathDefinition
 
 LOGGER = logging.getLogger(__name__)
@@ -71,10 +70,7 @@ class BasicHttpRouter(HttpRouter):
     # pylint: disable=unused-argument
     async def _not_found(
             self,
-            scope: Scope,
-            info: Info,
-            matches: RouteMatches,
-            content: Content
+            request: HttpRequest
     ) -> HttpResponse:
         return self._not_found_response
 

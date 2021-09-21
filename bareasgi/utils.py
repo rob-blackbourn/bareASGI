@@ -2,12 +2,20 @@
 Utilities
 """
 
-from collections.abc import AsyncIterable, AsyncIterator
-from typing import Optional, MutableMapping, Any, Pattern, Callable, Tuple
+from datetime import datetime
 from decimal import Decimal
 import json
 import re
-from datetime import datetime
+from typing import (
+    Any,
+    AsyncIterable,
+    AsyncIterator,
+    Optional,
+    MutableMapping,
+    Pattern,
+    Callable,
+    Tuple
+)
 
 
 async def aiter(*args):
@@ -122,7 +130,7 @@ def json_datetime_parser(
 class JSONEncoderEx(json.JSONEncoder):
     """A JSON encoder that supports datetime and decimal conversion"""
 
-    def default(self, obj):  # pylint: disable=method-hidden,arguments-differ
+    def default(self, obj):  # pylint: disable=arguments-renamed
         if isinstance(obj, datetime):
             return obj.isoformat() + ('Z' if not obj.tzinfo else '')
         elif isinstance(obj, Decimal):

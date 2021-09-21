@@ -21,10 +21,8 @@ import logging
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
     Content,
+    HttpRequest,
     HttpResponse
 )
 
@@ -44,80 +42,61 @@ async def chunking_writer(text: str, encoding: str = 'utf-8', bufsiz: int = 512)
         start, end = end, end + bufsiz
 
 
-# pylint: disable=unused-argument
-async def with_chunking(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def with_chunking(request: HttpRequest) -> HttpResponse:
     """A response handler which sends it's body in chunks"""
-    return 200, [(b'content-type', b'text/plain')], chunking_writer(info['text'], bufsiz=64)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        chunking_writer(request.info['text'], bufsiz=64)
+    )
 
 
-# pylint: disable=unused-argument
-async def without_chunking(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def without_chunking(request: HttpRequest) -> HttpResponse:
     """A response handler which sends it's body as a single chunk without content length"""
-    return 200, [(b'content-type', b'text/plain')], non_chunking_writer(info['text'])
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        non_chunking_writer(request.info['text'])
+    )
 
 
-# pylint: disable=unused-argument
-async def with_content_length(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def with_content_length(request: HttpRequest) -> HttpResponse:
     """A response handler which sends it's body without chunking and with content length"""
     headers = [
         (b'content-type', b'text/plain'),
-        (b'content-length', str(len(info['text'])).encode('ascii')),
+        (b'content-length', str(len(request.info['text'])).encode('ascii')),
     ]
-    return 200, headers, non_chunking_writer(info['text'])
+    return HttpResponse(
+        200,
+        headers,
+        non_chunking_writer(request.info['text'])
+    )
 
 
-# pylint: disable=unused-argument
-async def with_content_length_and_chunking(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def with_content_length_and_chunking(request: HttpRequest) -> HttpResponse:
     """A response handler which sends it's body in chunks with a content length"""
     headers = [
         (b'content-type', b'text/plain'),
-        (b'content-length', str(len(info['text'])).encode('ascii')),
+        (b'content-length', str(len(request.info['text'])).encode('ascii')),
     ]
-    return 200, headers, chunking_writer(info['text'])
+    return HttpResponse(
+        200,
+        headers,
+        chunking_writer(request.info['text'])
+    )
 
 
-# pylint: disable=unused-argument
-async def invalid_content_length_and_chunking(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def invalid_content_length_and_chunking(request: HttpRequest) -> HttpResponse:
     """A response handler which sends it's body in chunks with an invalid content length"""
     headers = [
         (b'content-type', b'text/plain'),
-        (b'content-length', str(int(len(info['text']) / 2)).encode('ascii')),
+        (b'content-length',
+         str(int(len(request.info['text']) / 2)).encode('ascii')),
     ]
-    return 200, headers, chunking_writer(info['text'])
+    return HttpResponse(200, headers, chunking_writer(request.info['text']))
 
 
-# pylint: disable=unused-argument
-async def index(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def index(_request: HttpRequest) -> HttpResponse:
     """A content handler providing an index of the chunking methods"""
     html = """
 <!DOCTYPE html>
@@ -133,7 +112,11 @@ async def index(
   </body>
 </html>
 """
-    return 200, [(b'content-type', b'text/html')], non_chunking_writer(html)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        non_chunking_writer(html)
+    )
 
 
 if __name__ == "__main__":

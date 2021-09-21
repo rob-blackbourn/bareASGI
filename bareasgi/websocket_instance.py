@@ -11,13 +11,14 @@ from typing import (
     Union
 )
 
-from baretypes import (
+from .types import (
     Scope,
     Info,
     Header,
     Send,
     Receive,
     WebSocket,
+    WebSocketRequest,
     WebSocketRouter,
     WebSocketInternalError
 )
@@ -119,10 +120,12 @@ class WebSocketInstance:
 
         if request_type == 'websocket.connect':
             await self.handler(
-                self.scope,
-                self.info,
-                self.matches,
-                WebSocketImpl(receive, send)
+                WebSocketRequest(
+                    self.scope,
+                    self.info,
+                    self.matches,
+                    WebSocketImpl(receive, send)
+                )
             )
         elif request_type == 'websocket.disconnect':
             pass

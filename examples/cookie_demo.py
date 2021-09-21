@@ -6,10 +6,7 @@ import logging
 import bareutils.header as header
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -53,37 +50,29 @@ COOKIES = """
 """
 
 
-# pylint: disable=unused-argument
-async def get_form(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def get_form(_request: HttpRequest) -> HttpResponse:
     """A response handler which returns a form and sets some cookies"""
     headers = [
         (b'content-type', b'text/html'),
         (b'set-cookie', b'first=first cookie'),
         (b'set-cookie', b'second=second cookie'),
     ]
-    return 200, headers, text_writer(FORM)
+    return HttpResponse(200, headers, text_writer(FORM))
 
 
-# pylint: disable=unused-argument
-async def post_form(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def post_form(request: HttpRequest) -> HttpResponse:
     """A response handler that reads the cookies from a posted form."""
-    cookies = header.cookie(scope['headers'])
+    cookies = header.cookie(request.scope['headers'])
     html_list = '<dl>'
     for name, values in cookies.items():
         for value in values:
             html_list += f'<dt>{name.decode()}</dt><dd>{value.decode()}</dd>'
     html_list += '</dl>'
-    return 200, [(b'content-type', b'text/html')], text_writer(COOKIES.format(cookies=html_list))
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(COOKIES.format(cookies=html_list))
+    )
 
 
 if __name__ == "__main__":

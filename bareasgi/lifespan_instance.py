@@ -5,12 +5,13 @@ A handler of lifecycle event requests
 import logging
 from typing import List
 
-from baretypes import (
+from .types import (
     Context,
     Info,
     Scope,
     Send,
     Receive,
+    LifespanRequest,
     LifespanHandler
 )
 
@@ -52,7 +53,12 @@ class LifespanInstance:
                 handlers: List[LifespanHandler] = self.context.get(
                     request_type, [])
                 for handler in handlers:
-                    await handler(self.scope, self.info, request)
+                    await handler(
+                        LifespanRequest(
+                            self.scope,
+                            self.info,
+                            request)
+                    )
 
                 # Send the response
                 await send({'type': f'{request_type}.complete'})

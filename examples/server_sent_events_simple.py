@@ -9,13 +9,10 @@ from typing import Any
 
 from bareasgi import (
     Application,
-    text_writer
-)
-from baretypes import (
+    text_writer,
     Scope,
     Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     Message
 )
@@ -34,21 +31,13 @@ async def on_shutdown(_scope: Scope, _info: Info, _request: Message) -> None:
     """Run on shutdown"""
     LOGGER.info("Running shutdown handler")
 
-# pylint: disable=unused-argument
 
-
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+async def index(_request: HttpRequest) -> HttpResponse:
     """Redirect to the index page"""
-    return 303, [(b'Location', b'/test')], None
+    return HttpResponse(303, [(b'Location', b'/test')], None)
 
 
-# pylint: disable=unused-argument
-async def test_page(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def test_page(_request: HttpRequest) -> HttpResponse:
     """A request handler which provides the page to respond to server sent events"""
     html = """
 <!DOCTYPE html>
@@ -73,16 +62,14 @@ async def test_page(
 </html>
 
 """
-    return 200, [(b'content-type', b'text/html')], text_writer(html)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(html)
+    )
 
 
-# pylint: disable=unused-argument
-async def test_events(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def test_events(_request: HttpRequest) -> HttpResponse:
     """A request handler which provides server sent events"""
 
     async def send_events():
@@ -106,7 +93,7 @@ async def test_events(
         (b'connection', b'keep-alive')
     ]
 
-    return 200, headers, send_events()
+    return HttpResponse(200, headers, send_events())
 
 
 if __name__ == "__main__":
@@ -144,7 +131,7 @@ if __name__ == "__main__":
         config.bind = ["0.0.0.0:9009"]
         loop.run_until_complete(
             serve(
-                app,
+                app,  # type: ignore
                 config,
                 shutdown_trigger=shutdown_event.wait  # type: ignore
             )

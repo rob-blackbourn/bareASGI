@@ -4,11 +4,10 @@ import asyncio
 import logging
 from typing import Any
 
-from baretypes import (
+from bareasgi import (
     Scope,
     Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     Message
 )
@@ -32,17 +31,14 @@ async def on_shutdown(_scope: Scope, _info: Info, _request: Message) -> None:
     """Run on shutdown"""
     LOGGER.info("Running shutdown handler")
 
-# pylint: disable=unused-argument
 
-
-async def http_request_callback(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def http_request_callback(_request: HttpRequest) -> HttpResponse:
     """A request handler which returns some text"""
-    return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer('This is not a test')
+    )
 
 
 if __name__ == "__main__":
@@ -77,7 +73,7 @@ if __name__ == "__main__":
         config.bind = ["0.0.0.0:9009"]
         loop.run_until_complete(
             serve(
-                app,
+                app,  # type: ignore
                 config,
                 shutdown_trigger=shutdown_event.wait  # type: ignore
             )
