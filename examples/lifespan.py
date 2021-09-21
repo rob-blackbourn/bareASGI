@@ -9,6 +9,7 @@ from bareasgi import (
     Info,
     HttpRequest,
     HttpResponse,
+    LifespanRequest,
     Message
 )
 
@@ -22,12 +23,12 @@ logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger(__name__)
 
 
-async def on_startup(_scope: Scope, _info: Info, _request: Message) -> None:
+async def on_startup(_request: LifespanRequest) -> None:
     """Run at startup"""
     LOGGER.info("Running startup handler")
 
 
-async def on_shutdown(_scope: Scope, _info: Info, _request: Message) -> None:
+async def on_shutdown(_request: LifespanRequest) -> None:
     """Run on shutdown"""
     LOGGER.info("Running shutdown handler")
 

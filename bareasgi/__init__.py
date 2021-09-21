@@ -17,7 +17,8 @@ from .types import (
     HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback,
-    Message
+    Message,
+    LifespanRequest
 )
 from .streaming import (
     text_reader,
@@ -57,6 +58,7 @@ __all__ = [
     "HttpRequestCallback",
     "HttpMiddlewareCallback",
     "Message",
+    "LifespanRequest",
 
     "text_writer",
     "text_reader",

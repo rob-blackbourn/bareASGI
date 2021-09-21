@@ -12,10 +12,7 @@ from bareutils import (
 )
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -23,13 +20,7 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-# pylint: disable=unused-argument
-async def gzip_compression(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def gzip_compression(_request: HttpRequest) -> HttpResponse:
     """A request handler that returns it's content compressed with gzip"""
     with open(__file__, 'rb') as file_pointer:
         buf = file_pointer.read()
@@ -38,16 +29,14 @@ async def gzip_compression(
         (b'content-encoding', b'gzip')
     ]
 
-    return 200, headers, compression_writer(buf, make_gzip_compressobj(), 512)
+    return HttpResponse(
+        200,
+        headers,
+        compression_writer(buf, make_gzip_compressobj(), 512)
+    )
 
 
-# pylint: disable=unused-argument
-async def deflate_compression(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def deflate_compression(_request: HttpRequest) -> HttpResponse:
     """A request handler which compresses it's content using the deflate method"""
     with open(__file__, 'rb') as file_pointer:
         buf = file_pointer.read()
@@ -56,16 +45,14 @@ async def deflate_compression(
         (b'content-encoding', b'deflate')
     ]
 
-    return 200, headers, compression_writer(buf, make_deflate_compressobj(), 512)
+    return HttpResponse(
+        200,
+        headers,
+        compression_writer(buf, make_deflate_compressobj(), 512)
+    )
 
 
-# pylint: disable=unused-argument
-async def compress_compression(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def compress_compression(_request: HttpRequest) -> HttpResponse:
     """A request handler which compresses it's content using the compress method"""
     with open(__file__, 'rb') as file_pointer:
         buf = file_pointer.read()
@@ -74,11 +61,14 @@ async def compress_compression(
         (b'content-encoding', b'compress')
     ]
 
-    return 200, headers, compression_writer(buf, make_compress_compressobj(), 512)
+    return HttpResponse(
+        200,
+        headers,
+        compression_writer(buf, make_compress_compressobj(), 512)
+    )
 
 
-# pylint: disable=unused-argument
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+async def index(_request: HttpRequest) -> HttpResponse:
     """A request handler which provides an index of the compression methods"""
     html = """
 <!DOCTYPE html>
@@ -92,7 +82,11 @@ async def index(scope: Scope, info: Info, matches: RouteMatches, content: Conten
   </body>
 </html>
 """
-    return 200, [(b'content-type', b'text/html')], text_writer(html)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(html)
+    )
 
 
 if __name__ == "__main__":

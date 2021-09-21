@@ -8,11 +8,9 @@ import uvicorn
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    Message,
     HttpRequest,
     HttpResponse,
+    LifespanRequest,
     text_writer
 )
 
@@ -22,13 +20,13 @@ app = Application()
 
 
 @app.on_startup
-async def my_startup_handler(_scope: Scope, _info: Info, _message: Message) -> None:
+async def my_startup_handler(_request: LifespanRequest) -> None:
     """A startup handler"""
     print('Starting up')
 
 
 @app.on_shutdown
-async def my_shutdown_handler(_scope: Scope, _info: Info, _message: Message) -> None:
+async def my_shutdown_handler(_request: LifespanRequest) -> None:
     """A shutdown handler"""
     print('Shutting down')
 
