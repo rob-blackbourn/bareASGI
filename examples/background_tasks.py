@@ -11,9 +11,8 @@ from bareasgi import (
     Application,
     Scope,
     Info,
-    RouteMatches,
-    Content,
     Message,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -46,8 +45,7 @@ async def time_ticker(shutdown_event: Event) -> None:
     LOGGER.debug('The time ticker has stopped')
 
 
-# pylint: disable=unused-argument
-async def time_ticker_startup_handler(scope: Scope, info: Info, request: Message) -> None:
+async def time_ticker_startup_handler(_scope: Scope, info: Info, _request: Message) -> None:
     """
     This handles starting the time ticker.
 
@@ -89,18 +87,16 @@ async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Messag
     LOGGER.debug('time_ticker shutdown')
 
 
-# pylint: disable=unused-argument
-async def http_request_callback(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def http_request_callback(_request: HttpRequest) -> HttpResponse:
     """
     A Simple endpoint to demonstrate that requests can still be serviced when
     a background task is running.
     """
-    return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer('This is not a test')
+    )
 
 
 if __name__ == "__main__":

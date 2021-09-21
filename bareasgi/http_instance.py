@@ -7,19 +7,18 @@ from asyncio import Queue
 import logging
 from typing import (
     Any,
-    AsyncIterable,
     Dict,
     Optional,
     Sequence,
     Set,
-    Tuple,
     cast
 )
 from urllib.error import HTTPError
 
-from baretypes import (
+from .types import (
     HttpInternalError,
     HttpDisconnectError,
+    HttpRequest,
     Scope,
     Info,
     Content,
@@ -31,7 +30,7 @@ from baretypes import (
     HttpMiddlewareCallback,
     HttpResponse
 )
-from bareutils import (
+from .streaming import (
     text_writer,
     bytes_writer
 )
@@ -103,14 +102,13 @@ class BodyIterator:
 
 
 def _make_error_response(error: HTTPError) -> HttpResponse:
+    body: Optional[Content] = None
     if isinstance(error.reason, str):
-        content: Optional[Content] = text_writer(error.reason)
+        body = text_writer(error.reason)
     elif isinstance(error.reason, bytes):
-        content = bytes_writer(error.reason)
-    else:
-        content = None
-
-    return error.code, cast(Optional[Headers], error.headers), content, None
+        body = bytes_writer(error.reason)
+    headers = cast(Optional[Headers], error.headers)
+    return HttpResponse(error.code, headers, body)
 
 
 Middlewares = Sequence[HttpMiddlewareCallback]
@@ -160,25 +158,28 @@ class HttpInstance:
     async def _send_response(
             self,
             send: Send,
-            status: int,
-            headers: Optional[Headers] = None,
-            body: Optional[AsyncIterable[bytes]] = None,
-            pushes: Optional[Sequence[Tuple[str, Headers]]] = None
+            response: HttpResponse
     ) -> None:
         # Create and send the start response.
-        response_start = {'type': 'http.response.start', 'status': status}
-        if headers:
-            response_start['headers'] = headers
+        response_start = {
+            'type': 'http.response.start',
+            'status': response.status
+        }
+        if response.headers:
+            response_start['headers'] = response.headers
         else:
             # Needed for Hypercorn 0.7.1
             response_start['headers'] = []
 
-        LOGGER.debug('Sending "http.response.start" with status %s',
-                     status, extra=response_start)
+        LOGGER.debug(
+            'Sending "http.response.start" with status %s',
+            response.status,
+            extra=response_start
+        )
         await send(response_start)
 
-        if pushes is not None and self._is_http_push_supported:
-            for push_path, push_headers in pushes:
+        if response.pushes is not None and self._is_http_push_supported:
+            for push_path, push_headers in response.pushes:
                 LOGGER.debug(
                     'sending "http.response.push" for path "%s"',
                     push_path
@@ -194,7 +195,7 @@ class HttpInstance:
 
         # If we don't get a body, just send the basic response.
         try:
-            buf = await anext(body) if body else None
+            buf = await anext(response.body) if response.body else None
         except StopAsyncIteration:
             buf = None
         if buf is None:
@@ -209,7 +210,7 @@ class HttpInstance:
         while buf is not None:
             response_body['body'] = buf
             try:
-                buf = await anext(body)
+                buf = await anext(response.body)
                 response_body['more_body'] = True
             except StopAsyncIteration:
                 buf = None
@@ -237,17 +238,19 @@ class HttpInstance:
             return
 
         # The next step is to call the handler.
-        content = BodyIterator(
+        body = BodyIterator(
             receive,
             request.get('body', b''),
             request.get('more_body', False)
         )
         try:
             response = await self.handler(
-                self.scope,
-                self.info,
-                self.matches,
-                content
+                HttpRequest(
+                    self.scope,
+                    self.info,
+                    self.matches,
+                    body
+                )
             )
         except asyncio.CancelledError:
             return
@@ -259,13 +262,10 @@ class HttpInstance:
             # Typically the request handler has already processed the request
             # body, but we flush all the "http.request" messages so we can catch
             # the final "http.disconnect".
-            await content.flush()
-
-            if isinstance(response, int):
-                response = (response,)
+            await body.flush()
 
             send_task = asyncio.create_task(
-                self._send_response(send, *response)
+                self._send_response(send, response)
             )
             receive_task = asyncio.create_task(receive())
             pending: Set[asyncio.Future] = {send_task, receive_task}

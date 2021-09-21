@@ -7,10 +7,7 @@ import logging
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_reader,
     text_writer
@@ -20,29 +17,22 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 # pylint: disable=unused-argument
-async def get_info(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def get_info(request: HttpRequest) -> HttpResponse:
     """Write out the info a dictionary as JSON"""
-    text = json.dumps(info)
-    return 200, [(b'content-type', b'application/json')], text_writer(text)
+    text = json.dumps(request.info)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'application/json')],
+        text_writer(text)
+    )
 
 
-# pylint: disable=unused-argument
-async def set_info(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def set_info(request: HttpRequest) -> HttpResponse:
     """Set the info dictionary to the posted JSON body"""
-    text = await text_reader(content)
+    text = await text_reader(request.body)
     data = json.loads(text)
-    info.update(data)
-    return 204
+    request.info.update(data)
+    return HttpResponse(204)
 
 
 if __name__ == "__main__":
@@ -79,4 +69,4 @@ if __name__ == "__main__":
         config.loglevel = 'debug'
         # config.certfile = certfile
         # config.keyfile = keyfile
-        asyncio.run(serve(app, config))
+        asyncio.run(serve(app, config))  # type: ignore

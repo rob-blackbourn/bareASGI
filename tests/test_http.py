@@ -3,10 +3,7 @@
 import pytest
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -16,13 +13,12 @@ from .mock_io import MockIO
 @pytest.mark.asyncio
 async def test_get_text_plain():
     # noinspection PyUnusedLocal
-    async def http_request_callback(
-            _scope: Scope,
-            _info: Info,
-            _matches: RouteMatches,
-            _content: Content
-    ) -> HttpResponse:
-        return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
+    async def http_request_callback(_request: HttpRequest) -> HttpResponse:
+        return HttpResponse(
+            200,
+            [(b'content-type', b'text/plain')],
+            text_writer('This is not a test')
+        )
 
     app = Application()
     app.http_router.add({'GET'}, '/{path}', http_request_callback)
@@ -37,7 +33,7 @@ async def test_get_text_plain():
         'type': 'http.disconnect',
     })
 
-    instance = await app(
+    _instance = await app(
         {
             'type': 'http',  # Optional but not empty: 'http' or 'https'.
             'http_version': '1.1',  # One of: '1.0', '1.1', '2'.

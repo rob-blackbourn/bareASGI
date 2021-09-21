@@ -13,7 +13,7 @@ from typing import (
 )
 import logging
 
-from baretypes import (
+from .types import (
     Scope,
     HttpRouter,
     WebSocketRouter,
@@ -25,16 +25,15 @@ from baretypes import (
     Send,
     Receive
 )
-from bareutils.streaming import text_writer
+from .streaming import text_writer
 
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
 
-DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (
+DEFAULT_NOT_FOUND_RESPONSE = HttpResponse(
     404,
     [(b'content-type', b'text/plain')],
-    text_writer('Not Found'),
-    None
+    text_writer('Not Found')
 )
 
 LOGGER = logging.getLogger(__name__)

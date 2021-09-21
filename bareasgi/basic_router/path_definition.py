@@ -10,7 +10,7 @@ from typing import (
     Tuple
 )
 
-from baretypes import RouteMatches
+from ..types import RouteMatches
 
 from .path_segment import PathSegment
 

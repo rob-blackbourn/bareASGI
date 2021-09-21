@@ -11,9 +11,8 @@ from hypercorn.config import Config
 
 from bareasgi import (
     Application,
+    HttpRequest,
     HttpResponse,
-)
-from baretypes import (
     Scope,
     Info,
     RouteMatches,
@@ -25,17 +24,16 @@ from bareutils.compression import make_default_compression_middleware
 # logging.basicConfig(level=logging.DEBUG)
 
 
-async def http_request_callback(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def http_request_callback(request: HttpRequest) -> HttpResponse:
     """consume content"""
-    async for item in content:
+    async for item in request.body:
         print(item)
     headers = [(b'content-type', b'text/plain')]
-    return response_code.OK, headers, text_writer('THis is not a test')
+    return HttpResponse(
+        response_code.OK,
+        headers,
+        text_writer('THis is not a test')
+    )
 
 
 if __name__ == "__main__":

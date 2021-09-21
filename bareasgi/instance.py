@@ -5,7 +5,7 @@ An instance provider.
 import logging
 from typing import Any, Callable, Mapping
 
-from baretypes import (
+from .types import (
     Scope,
     Context,
     Info,

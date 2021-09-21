@@ -2,7 +2,7 @@
 bareASGI exports
 """
 
-from baretypes import (
+from .types import (
     Scope,
     Header,
     Headers,
@@ -12,28 +12,30 @@ from baretypes import (
     PushResponse,
     PushResponses,
     WebSocket,
+    WebSocketRequest,
+    HttpRequest,
     HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback,
     Message
 )
-from bareutils.streaming import (
+from .streaming import (
     text_reader,
     text_writer,
     bytes_reader,
     bytes_writer
 )
-from bareutils.responses import (
-    bytes_response,
-    text_response,
-    json_response
-)
-from bareutils.cookies import (
-    encode_set_cookie,
-    decode_set_cookie,
-    encode_cookies,
-    decode_cookies
-)
+# from bareutils.responses import (
+#     bytes_response,
+#     text_response,
+#     json_response
+# )
+# from bareutils.cookies import (
+#     encode_set_cookie,
+#     decode_set_cookie,
+#     encode_cookies,
+#     decode_cookies
+# )
 
 from .application import Application
 
@@ -49,6 +51,8 @@ __all__ = [
     "PushResponse",
     "PushResponses",
     "WebSocket",
+    "WebSocketRequest",
+    "HttpRequest",
     "HttpResponse",
     "HttpRequestCallback",
     "HttpMiddlewareCallback",
@@ -59,12 +63,12 @@ __all__ = [
     "bytes_writer",
     "bytes_reader",
 
-    "bytes_response",
-    "text_response",
-    "json_response",
+    # "bytes_response",
+    # "text_response",
+    # "json_response",
 
-    "encode_set_cookie",
-    "decode_set_cookie",
-    "encode_cookies",
-    "decode_cookies"
+    # "encode_set_cookie",
+    # "decode_set_cookie",
+    # "encode_cookies",
+    # "decode_cookies"
 ]
