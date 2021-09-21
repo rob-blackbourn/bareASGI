@@ -7,6 +7,7 @@ from typing import (
     AsyncIterable,
     Awaitable,
     Callable,
+    Coroutine,
     Dict,
     Iterable,
     List,
@@ -58,6 +59,7 @@ class LifespanRequest:
         self.message = message
 
 
+# LifespanHandler = Callable[[LifespanRequest], Coroutine[Any, Any, None]]
 LifespanHandler = Callable[[LifespanRequest], Awaitable[None]]
 
 Header = Tuple[bytes, bytes]

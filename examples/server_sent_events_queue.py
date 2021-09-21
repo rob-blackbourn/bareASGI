@@ -15,11 +15,9 @@ from typing import List
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    Message,
     HttpRequest,
     HttpResponse,
+    LifespanRequest,
     text_writer
 )
 
@@ -65,7 +63,7 @@ class TimeTicker:
         self.listeners.remove(listener)
 
 
-async def start_time_ticker(_scope: Scope, info: Info, _request: Message) -> None:
+async def start_time_ticker(request: LifespanRequest) -> None:
     """A startup task that starts the time ticker.
 
     It is important that the task gets created by the startup task as the
@@ -73,16 +71,16 @@ async def start_time_ticker(_scope: Scope, info: Info, _request: Message) -> Non
     loop of the ASGI server.
     """
     time_ticker = TimeTicker()
-    info['time_ticker'] = time_ticker
-    info['time_ticker_task'] = asyncio.create_task(time_ticker.start())
+    request.info['time_ticker'] = time_ticker
+    request.info['time_ticker_task'] = asyncio.create_task(time_ticker.start())
 
 
-async def stop_time_ticker(_scope: Scope, info: Info, _request: Message) -> None:
+async def stop_time_ticker(request: LifespanRequest) -> None:
     """Stop the time ticker"""
-    time_ticker: TimeTicker = info['time_ticker']
+    time_ticker: TimeTicker = request.info['time_ticker']
     LOGGER.debug('Stopping time_ticker')
     time_ticker.stop()
-    time_ticker_task: asyncio.Task = info['time_ticker_task']
+    time_ticker_task: asyncio.Task = request.info['time_ticker_task']
     LOGGER.debug('Waiting for time_ticker')
     await time_ticker_task
     LOGGER.debug('time_ticker shutdown')
