@@ -5,21 +5,18 @@ An example of raising exceptions
 import logging
 from typing import List
 
+import pkg_resources
+import uvicorn
+
+
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
     HttpError,
     HttpRequest,
     HttpResponse,
     Headers,
     text_writer
 )
-import bareutils.header as header
-import pkg_resources
-import uvicorn
 
 logging.basicConfig(level=logging.DEBUG)
 

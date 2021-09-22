@@ -130,7 +130,7 @@ if __name__ == "__main__":
     import uvicorn
 
     # Use this file as the data to send.
-    with open(__file__, 'rt') as fp:
+    with open(__file__, 'rt', encoding='utf-8') as fp:
         file_text = fp.read()  # pylint: disable=invalid-name
 
     app = Application(info={'text': file_text})

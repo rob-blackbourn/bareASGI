@@ -13,8 +13,6 @@ from typing import (
     Set
 )
 
-from bareutils import text_writer
-
 from .middleware import mw
 from .types import (
     HttpInternalError,

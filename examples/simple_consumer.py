@@ -9,12 +9,12 @@ import socket
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 
+from bareutils import response_code, text_writer
 from bareasgi import (
     Application,
     HttpRequest,
     HttpResponse,
 )
-from bareutils import response_code, text_writer
 from bareasgi.middlewares import make_default_compression_middleware
 
 # logging.basicConfig(level=logging.DEBUG)
