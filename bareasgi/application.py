@@ -3,13 +3,14 @@ ASGI Application
 """
 
 from typing import (
-    Mapping,
-    Any,
-    Optional,
-    MutableMapping,
-    List,
     AbstractSet,
-    Callable
+    Any,
+    Callable,
+    Dict,
+    List,
+    Mapping,
+    MutableMapping,
+    Optional,
 )
 import logging
 
@@ -68,14 +69,13 @@ class Application:
             text_writer
         )
 
-        async def http_request_callback(
-            scope: Scope,
-            info: Info,
-            matches: RouteMatches,
-            content: Content
-        ) -> HttpResponse:
-            text = await text_reader(content)
-            return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test'), None
+        async def http_request_callback(request: HttpRequest) -> HttpResponse:
+            text = await text_reader(request.body)
+            return HttpResponse(
+                200,
+                [(b'content-type', b'text/plain')],
+                text_writer('This is not a test')
+            )
 
         import uvicorn
 
@@ -117,7 +117,7 @@ class Application:
         }
 
     @property
-    def info(self) -> MutableMapping[str, Any]:
+    def info(self) -> Dict[str, Any]:
         """A place to sto application specific data.
 
         Returns:
