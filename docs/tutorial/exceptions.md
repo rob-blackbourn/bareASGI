@@ -1,6 +1,6 @@
 # Exceptions
 
-The bareASGI framework handles the exception of type `urllib.error.HTTPError`.
+The bareASGI framework handles the exception of type `bareasgi.HttpError`.
 
 The source code for the following example can be found
 [here](../examples/exceptions_nt.py)
@@ -12,57 +12,47 @@ iterator yielding bytes, a string or a bytes.
 Here are some examples.
 
 ```python
-from urllib.error import HTTPError
-
-from bareasgi import Application, text_writer
+from bareasgi import Application, text_writer, HttpError
 import bareutils.header as header
 import pkg_resources
 import uvicorn
 
-def make_url(scope) -> str:
-    host = header.find(b'host', scope['headers'], b'unknown').decode()
-    return f"{scope['scheme']}://{host}{scope['path']}"
-
-async def index_handler(scope, info, matches, content):
+async def index_handler(request):
     headers = [
         (b'content-type', b'text/html')
     ]
     return 200, headers, text_writer(info['html'])
 
 
-async def raise_none_exception(scope, info, matches, content):
-    raise HTTPError(
-        make_url(scope),
+async def raise_none_exception(request):
+    raise HttpError(
         401,
-        None,
-        None,
-        None
+        url=request.url
     )
 
-async def raise_text_exception(scope, info, matches, content):
-    raise HTTPError(
-        make_url(scope),
+async def raise_text_exception(request):
+    raise HttpError(
         401,
         'Unauthorized - text',
+        url=request.url,
         [(b'content-type', b'text/plain')],
-        None
     )
 
-async def raise_bytes_exception(scope, info, matches, content):
-    raise HTTPError(
-        make_url(scope),
+async def raise_bytes_exception(request):
+    raise HttpError(
         401,
+        url=request.url,
         b'Unauthorized - bytes',
         [(b'content-type', b'text/plain')],
         None
     )
 
 
-async def raise_writer_exception(scope, info, matches, content):
-    raise HTTPError(
-        make_url(scope),
+async def raise_writer_exception(request):
+    raise HttpError(
         401,
         text_writer('Unauthorized - writer'),
+        url=request.url,
         [(b'content-type', b'text/plain')],
         None
     )

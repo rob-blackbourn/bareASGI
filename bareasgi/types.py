@@ -13,9 +13,13 @@ from typing import (
     List,
     Mapping,
     Optional,
+    Sequence,
     Tuple,
-    Union
+    Union,
+    cast
 )
+
+from bareutils import header, bytes_writer, text_writer
 
 
 class ParseError(Exception):
@@ -32,6 +36,38 @@ class HttpDisconnectError(Exception):
 
 class WebSocketInternalError(Exception):
     """Exception raised for a WebSocket internal error"""
+
+
+class HttpError(Exception):
+
+    def __init__(
+            self,
+            status: int,
+            message: Optional[Union[bytes, str, AsyncIterable[bytes]]] = None,
+            url: Optional[str] = None,
+            headers: Optional[List[Tuple[bytes, bytes]]] = None
+    ) -> None:
+        super().__init__()
+        self.status = status
+        self.url = url
+        self.message = message
+        self.headers = headers
+
+    @property
+    def body(self) -> Optional[AsyncIterable[bytes]]:
+        if self.message is None:
+            return None
+        if hasattr(self.message, '__aiter__'):
+            return cast(AsyncIterable[bytes], self.message)
+        elif isinstance(self.message, bytes):
+            return bytes_writer(self.message)
+        elif isinstance(self.message, str):
+            return text_writer(self.message)
+        else:
+            raise ValueError(
+                'message must be bytes, str or AsyncIterable[bytes]')
+
+        return self.message
 
 
 Scope = Mapping[str, Any]
@@ -66,7 +102,6 @@ Header = Tuple[bytes, bytes]
 Headers = List[Header]
 
 RouteMatches = Mapping[str, Any]
-Content = AsyncIterable[bytes]
 PushResponse = Tuple[str, Headers]
 PushResponses = Iterable[PushResponse]
 
@@ -124,12 +159,21 @@ class HttpRequest:
             scope: Scope,
             info: Info,
             matches: RouteMatches,
-            body: Content
+            body: AsyncIterable[bytes]
     ) -> None:
         self.scope = scope
         self.info = info
         self.matches = matches
         self.body = body
+
+    @property
+    def url(self) -> str:
+        """Make the url from the scope"""
+        scheme = self.scope['scheme']
+        host = header.find(b'host', self.scope['headers'], b'unknown')
+        assert host is not None
+        path = self.scope['path']
+        return f"{scheme}://{host.decode()}{path}"
 
 
 class HttpResponse:
@@ -138,7 +182,7 @@ class HttpResponse:
             self,
             status: int,
             headers: Optional[Headers] = None,
-            body: Optional[Content] = None,
+            body: Optional[AsyncIterable[bytes]] = None,
             pushes: Optional[PushResponses] = None
     ) -> None:
         self.status = status

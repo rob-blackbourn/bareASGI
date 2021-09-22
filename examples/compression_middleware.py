@@ -4,13 +4,13 @@ An example of using compression middleware for automatic compression
 
 import logging
 
-from bareutils.compression import make_default_compression_middleware
 from bareasgi import (
     Application,
     HttpRequest,
     HttpResponse,
     bytes_writer
 )
+from bareasgi.middlewares import make_default_compression_middleware
 
 logging.basicConfig(level=logging.DEBUG)
 

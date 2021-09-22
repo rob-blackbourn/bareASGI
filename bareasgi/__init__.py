@@ -8,11 +8,11 @@ from .types import (
     Headers,
     Info,
     RouteMatches,
-    Content,
     PushResponse,
     PushResponses,
     WebSocket,
     WebSocketRequest,
+    HttpError,
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,
@@ -20,23 +20,18 @@ from .types import (
     Message,
     LifespanRequest
 )
-from .streaming import (
+from bareutils import (
     text_reader,
     text_writer,
     bytes_reader,
     bytes_writer
 )
-# from bareutils.responses import (
-#     bytes_response,
-#     text_response,
-#     json_response
-# )
-# from bareutils.cookies import (
-#     encode_set_cookie,
-#     decode_set_cookie,
-#     encode_cookies,
-#     decode_cookies
-# )
+from bareutils.cookies import (
+    encode_set_cookie,
+    decode_set_cookie,
+    encode_cookies,
+    decode_cookies
+)
 
 from .application import Application
 
@@ -48,11 +43,11 @@ __all__ = [
     "Headers",
     "Info",
     "RouteMatches",
-    "Content",
     "PushResponse",
     "PushResponses",
     "WebSocket",
     "WebSocketRequest",
+    "HttpError",
     "HttpRequest",
     "HttpResponse",
     "HttpRequestCallback",
@@ -65,12 +60,8 @@ __all__ = [
     "bytes_writer",
     "bytes_reader",
 
-    # "bytes_response",
-    # "text_response",
-    # "json_response",
-
-    # "encode_set_cookie",
-    # "decode_set_cookie",
-    # "encode_cookies",
-    # "decode_cookies"
+    "encode_set_cookie",
+    "decode_set_cookie",
+    "encode_cookies",
+    "decode_cookies"
 ]

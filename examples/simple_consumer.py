@@ -13,13 +13,9 @@ from bareasgi import (
     Application,
     HttpRequest,
     HttpResponse,
-    Scope,
-    Info,
-    RouteMatches,
-    Content
 )
 from bareutils import response_code, text_writer
-from bareutils.compression import make_default_compression_middleware
+from bareasgi.middlewares import make_default_compression_middleware
 
 # logging.basicConfig(level=logging.DEBUG)
 

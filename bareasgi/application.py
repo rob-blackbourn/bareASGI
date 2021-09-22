@@ -13,6 +13,8 @@ from typing import (
 )
 import logging
 
+from bareutils import text_writer
+
 from .types import (
     Scope,
     HttpRouter,
@@ -25,7 +27,6 @@ from .types import (
     Send,
     Receive
 )
-from .streaming import text_writer
 
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter

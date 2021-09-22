@@ -4,7 +4,6 @@ An example of raising exceptions
 
 import logging
 from typing import List
-from urllib.error import HTTPError
 
 from bareasgi import (
     Application,
@@ -12,6 +11,8 @@ from bareasgi import (
     Info,
     RouteMatches,
     Content,
+    HttpError,
+    HttpRequest,
     HttpResponse,
     Headers,
     text_writer
@@ -23,100 +24,56 @@ import uvicorn
 logging.basicConfig(level=logging.DEBUG)
 
 
-def make_url(scope: Scope) -> str:
-    """Make the url from the scope"""
-    host = header.find(b'host', scope['headers'], b'unknown').decode()
-    return f"{scope['scheme']}://{host}{scope['path']}"
-
-
-async def index_handler(
-        _scope: Scope,
-        info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def index_handler(request: HttpRequest) -> HttpResponse:
     """The index page"""
     headers: List[Headers] = [
         (b'content-type', b'text/html')
     ]
-    return 200, headers, text_writer(info['html'])
+    return HttpResponse(200, headers, text_writer(request.info['html']))
 
 
-async def raise_none_exception(
-        scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def raise_none_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception no content"""
-    raise HTTPError(
-        make_url(scope),
+    raise HttpError(
         401,
-        None,
-        None,
-        None
+        url=request.url,
     )
-    # pylint: disable=unreachable
-    return 204
 
 
-async def raise_text_exception(
-        scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def raise_text_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with text content"""
-    raise HTTPError(
-        make_url(scope),
+    raise HttpError(
         401,
         'Unauthorized - text',
-        [(b'content-type', b'text/plain')],
-        None
+        request.url
+        [(b'content-type', b'text/plain')]
     )
-    # pylint: disable=unreachable
-    return 204
 
 
-async def raise_bytes_exception(
-        scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def raise_bytes_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with bytes content"""
-    raise HTTPError(
-        make_url(scope),
+    raise HttpError(
         401,
         b'Unauthorized - bytes',
-        [(b'content-type', b'text/plain')],
-        None
+        request.url,
+        [(b'content-type', b'text/plain')]
     )
-    # pylint: disable=unreachable
-    return 204
 
 
-async def raise_writer_exception(
-        scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def raise_writer_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with a writer content"""
-    raise HTTPError(
-        make_url(scope),
+    raise HttpError(
         401,
         text_writer('Unauthorized - writer'),
-        [(b'content-type', b'text/plain')],
-        None
+        request.url,
+        [(b'content-type', b'text/plain')]
     )
-    # pylint: disable=unreachable
-    return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
 
 
 if __name__ == "__main__":
-    html_filename = pkg_resources.resource_filename(__name__, "exceptions.html")
-    with open(html_filename, 'rt') as file_ptr:
+    html_filename = pkg_resources.resource_filename(
+        __name__, "exceptions.html")
+    with open(html_filename, 'rt', encoding='utf-8') as file_ptr:
         html = file_ptr.read()
 
     app = Application(info=dict(html=html))

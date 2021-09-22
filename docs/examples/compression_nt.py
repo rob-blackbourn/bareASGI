@@ -1,6 +1,7 @@
-from bareutils.compression import make_default_compression_middleware
-from bareasgi import Application, bytes_writer
+from bareutils import make_default_compression_middleware
 import uvicorn
+from bareasgi import Application, bytes_writer
+
 
 async def http_request_callback(scope, info, matches, content):
     with open(__file__, 'rb') as file_pointer:

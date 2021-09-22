@@ -3,26 +3,17 @@ A simple request handler.
 """
 
 import logging
-from urllib.error import HTTPError
-
-import bareutils.header as header
+from typing import List, Tuple
 
 from bareasgi import (
     Application,
-    Scope,
+    HttpError,
     HttpRequest,
     HttpResponse,
-    Headers,
     text_writer
 )
 
 logging.basicConfig(level=logging.DEBUG)
-
-
-def make_url(scope: Scope) -> str:
-    """Make the url from the scope"""
-    host = header.find(b'host', scope['headers'], b'unknown').decode()
-    return f"{scope['scheme']}://{host}{scope['path']}"
 
 
 async def index_handler(_request: HttpRequest) -> HttpResponse:
@@ -54,7 +45,7 @@ async def index_handler(_request: HttpRequest) -> HttpResponse:
   </body>
 </html>
 """
-    headers: Headers = [
+    headers: List[Tuple[bytes, bytes]] = [
         (b'content-type', b'text/html')
     ]
     return HttpResponse(200, headers, text_writer(html))
@@ -62,57 +53,39 @@ async def index_handler(_request: HttpRequest) -> HttpResponse:
 
 async def raise_none_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception no content"""
-    raise HTTPError(
-        make_url(request.scope),
+    raise HttpError(
         401,
-        None,
-        None,
-        None
+        url=request.url
     )
-    # pylint: disable=unreachable
-    return HttpResponse(204)
 
 
 async def raise_text_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with text content"""
-    raise HTTPError(
-        make_url(request.scope),
+    raise HttpError(
         401,
         'Unauthorized - text',
+        request.url,
         [(b'content-type', b'text/plain')],
-        None
     )
-    # pylint: disable=unreachable
-    return 204
 
 
 async def raise_bytes_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with bytes content"""
-    raise HTTPError(
-        make_url(request.scope),
+    raise HttpError(
         401,
         b'Unauthorized - bytes',
+        request.url,
         [(b'content-type', b'text/plain')],
-        None
     )
-    # pylint: disable=unreachable
-    return HttpResponse(204)
 
 
 async def raise_writer_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with a writer content"""
-    raise HTTPError(
-        make_url(request.scope),
+    raise HttpError(
         401,
         text_writer('Unauthorized - writer'),
-        [(b'content-type', b'text/plain')],
-        None
-    )
-    # pylint: disable=unreachable
-    return HttpResponse(
-        200,
-        [(b'content-type', b'text/plain')],
-        text_writer('This is not a test')
+        request.url,
+        [(b'content-type', b'text/plain')]
     )
 
 

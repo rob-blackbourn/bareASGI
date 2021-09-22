@@ -7,35 +7,30 @@ from asyncio import Queue
 import logging
 from typing import (
     Any,
+    AsyncIterable,
     Dict,
     Optional,
     Sequence,
-    Set,
-    cast
+    Set
 )
-from urllib.error import HTTPError
 
+from bareutils import text_writer
+
+from .middleware import mw
 from .types import (
     HttpInternalError,
     HttpDisconnectError,
+    HttpError,
     HttpRequest,
     Scope,
     Info,
-    Content,
     Send,
     Receive,
-    Headers,
     HttpRouter,
     Context,
     HttpMiddlewareCallback,
     HttpResponse
 )
-from .streaming import (
-    text_writer,
-    bytes_writer
-)
-
-from .middleware import mw
 from .utils import anext
 
 LOGGER = logging.getLogger(__name__)
@@ -99,16 +94,6 @@ class BodyIterator:
         """Flush all remaining http.request messages"""
         while self._more_body:
             await self._queue.put(await self._read())
-
-
-def _make_error_response(error: HTTPError) -> HttpResponse:
-    body: Optional[Content] = None
-    if isinstance(error.reason, str):
-        body = text_writer(error.reason)
-    elif isinstance(error.reason, bytes):
-        body = bytes_writer(error.reason)
-    headers = cast(Optional[Headers], error.headers)
-    return HttpResponse(error.code, headers, body)
 
 
 Middlewares = Sequence[HttpMiddlewareCallback]
@@ -254,8 +239,8 @@ class HttpInstance:
             )
         except asyncio.CancelledError:
             return
-        except HTTPError as error:
-            response = _make_error_response(error)
+        except HttpError as error:
+            response = HttpResponse(error.status, error.headers, error.body)
 
         # Finally handle sending the body and the disconnect.
         try:

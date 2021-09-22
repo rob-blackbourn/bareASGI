@@ -18,10 +18,10 @@ the "transfer-encoding" in the "Response Headers".
 """
 
 import logging
+from typing import AsyncIterable
 
 from bareasgi import (
     Application,
-    Content,
     HttpRequest,
     HttpResponse
 )
@@ -29,12 +29,19 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def non_chunking_writer(text: str, encoding: str = 'utf-8') -> Content:
+async def non_chunking_writer(
+        text: str,
+        encoding: str = 'utf-8'
+) -> AsyncIterable[bytes]:
     """A writer which yields the entire buffer"""
     yield text.encode(encoding=encoding)
 
 
-async def chunking_writer(text: str, encoding: str = 'utf-8', bufsiz: int = 512) -> Content:
+async def chunking_writer(
+        text: str,
+        encoding: str = 'utf-8',
+        bufsiz: int = 512
+) -> AsyncIterable[bytes]:
     """A writer which yields the buffer in multiple chunks"""
     start, end = 0, bufsiz
     while start < len(text):

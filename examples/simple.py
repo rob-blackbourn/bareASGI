@@ -3,6 +3,7 @@ A simple request handler.
 """
 
 import logging
+import uvicorn
 
 from bareasgi import (
     Application,
@@ -24,8 +25,6 @@ async def http_request_callback(_request: HttpRequest) -> HttpResponse:
 
 
 if __name__ == "__main__":
-    import uvicorn
-
     app = Application()
     app.http_router.add({'GET'}, '/{rest:path}', http_request_callback)
 
