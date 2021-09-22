@@ -11,11 +11,9 @@ from typing import List
 
 from bareasgi import (
     Application,
-    Scope,
     Info,
-    RouteMatches,
-    Content,
-    Message,
+    HttpRequest,
+    LifespanRequest,
     HttpResponse,
     Header,
     text_writer
@@ -50,38 +48,26 @@ async def time_ticker(info: Info, shutdown_event: Event) -> None:
     LOGGER.debug('The time ticker has stopped')
 
 
-async def time_ticker_startup_handler(
-        _scope: Scope,
-        info: Info,
-        _request: Message
-) -> None:
-    """
-    This handles starting the time ticker.
+async def time_ticker_startup_handler(request: LifespanRequest) -> None:
+    """This handles starting the time ticker.
 
     Note: the asyncio.Event object is created here. This ensures the object
     acquires the correct event loop.
 
-    :param scope: The ASGI information about the lifespan scope.
-    :param info: The application info object where data can be passed around
-         the application.
-    :param request: The lifespace request
+    Args:
+        request (LifespanRequest): The lifespan request.
     """
-
     # Create an event that can be set when the background task should shutdown.
     shutdown_event = Event()
-    info['shutdown_event'] = shutdown_event
+    request.info['shutdown_event'] = shutdown_event
 
     # Create the background task.
-    info['time_ticker_task'] = asyncio.create_task(
-        time_ticker(info, shutdown_event)
+    request.info['time_ticker_task'] = asyncio.create_task(
+        time_ticker(request.info, shutdown_event)
     )
 
 
-async def time_ticker_shutdown_handler(
-        _scope: Scope,
-        info: Info,
-        _request: Message
-) -> None:
+async def time_ticker_shutdown_handler(request: LifespanRequest) -> None:
     """
     This handles shutting down the time ticker.
 
@@ -92,23 +78,18 @@ async def time_ticker_shutdown_handler(
     """
 
     # Set the shutdown event so the background task can stop gracefully.
-    shutdown_event: Event = info['shutdown_event']
+    shutdown_event: Event = request.info['shutdown_event']
     LOGGER.debug('Stopping the time_ticker')
     shutdown_event.set()
 
     # Wait for the background task to finish.
-    time_ticker_task: asyncio.Task = info['time_ticker_task']
+    time_ticker_task: asyncio.Task = request.info['time_ticker_task']
     LOGGER.debug('Waiting for time_ticker')
     await time_ticker_task
     LOGGER.debug('time_ticker shutdown')
 
 
-async def http_request_callback(
-        _scope: Scope,
-        info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def http_request_callback(request: HttpRequest) -> HttpResponse:
     """
     A Simple endpoint to demonstrate that requests can still be serviced when
     a background task is running.
@@ -116,7 +97,11 @@ async def http_request_callback(
     headers: List[Header] = [
         (b'content-type', b'text/plain')
     ]
-    return 200, headers, text_writer(f"Last time tick: {info.get('now')}")
+    return HttpResponse(
+        200,
+        headers,
+        text_writer(f"Last time tick: {request.info.get('now')}")
+    )
 
 
 if __name__ == "__main__":

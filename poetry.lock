@@ -61,14 +61,6 @@ pycodestyle = ">=2.7.0"
 toml = "*"
 
 [[package]]
-name = "baretypes"
-version = "3.6.4"
-description = "Types for bareASGI and bareClient"
-category = "main"
-optional = false
-python-versions = ">=3.7,<4.0"
-
-[[package]]
 name = "bareutils"
 version = "4.0.0a0"
 description = "Utilities for bareASGI and bareClient"
@@ -693,7 +685,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "2b55c3012f5fd2f5cef55a95b3d4cb014cfbadf8df9fccc8d8e92588f4ac2174"
+content-hash = "9cc16334aae2fb8497f2e51350fe033bb79cf4df9716553e38f93d26ee62b3e2"
 
 [metadata.files]
 asgiref = [
@@ -715,10 +707,6 @@ attrs = [
 autopep8 = [
     {file = "autopep8-1.5.7-py2.py3-none-any.whl", hash = "sha256:aa213493c30dcdac99537249ee65b24af0b2c29f2e83cd8b3f68760441ed0db9"},
     {file = "autopep8-1.5.7.tar.gz", hash = "sha256:276ced7e9e3cb22e5d7c14748384a5cf5d9002257c0ed50c0e075b68011bb6d0"},
-]
-baretypes = [
-    {file = "baretypes-3.6.4-py3-none-any.whl", hash = "sha256:563ebee21a2942f9fff6a7208a194fb3b6a68de86dff5dc31b144003badccc8d"},
-    {file = "baretypes-3.6.4.tar.gz", hash = "sha256:66339cbc1ce1fcae37848a56132a3929da93ba14530fe5fa3c3a1ca8da8ce04d"},
 ]
 bareutils = [
     {file = "bareutils-4.0.0a0-py3-none-any.whl", hash = "sha256:1911042d030802965802b07f12f1142e60cf409b08310bb4819f276c77e463a4"},

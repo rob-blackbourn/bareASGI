@@ -4,17 +4,15 @@ import logging
 from typing import Dict
 from urllib.parse import parse_qsl
 
+from bareutils import header
+
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_reader,
     text_writer
 )
-import bareutils.header as header
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -43,23 +41,15 @@ FORM_HTML = """
 </html>
 """
 
-async def index(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
-    """Redirect to the test page"""
-    return 303, [(b'Location', b'/get_form')]
 
-async def get_form(
-        scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def index(_request: HttpRequest) -> HttpResponse:
+    """Redirect to the test page"""
+    return HttpResponse(303, [(b'Location', b'/get_form')])
+
+
+async def get_form(request: HttpRequest) -> HttpResponse:
     """A response handler which returns a form and sets some cookies"""
-    cookies = header.cookie(scope['headers'])
+    cookies = header.cookie(request.scope['headers'])
 
     first_name = cookies.get(b'first_name', [b'Micky'])[0]
     last_name = cookies.get(b'last_name', [b'Mouse'])[0]
@@ -78,20 +68,15 @@ async def get_form(
     headers = [
         (b'content-type', b'text/html'),
     ]
-    return 200, headers, text_writer(html)
+    return HttpResponse(200, headers, text_writer(html))
 
 
-async def post_form(
-        scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def post_form(request: HttpRequest) -> HttpResponse:
     """A response handler that reads the cookies from a posted form."""
-    content_type = header.find(b'content-type', scope['headers'])
+    content_type = header.find(b'content-type', request.scope['headers'])
     if content_type != b'application/x-www-form-urlencoded':
-        return 500
-    variables = await text_reader(content)
+        return HttpResponse(500)
+    variables = await text_reader(request.body)
     values: Dict[str, str] = dict(parse_qsl(variables))
     first_name = values['first_name']
     last_name = values['last_name']
@@ -101,7 +86,7 @@ async def post_form(
         (b'set-cookie', f'first_name={first_name}'.encode()),
         (b'set-cookie', f'last_name={last_name}'.encode()),
     ]
-    return 303, headers
+    return HttpResponse(303, headers)
 
 
 if __name__ == "__main__":
