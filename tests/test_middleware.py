@@ -9,7 +9,6 @@ from bareasgi import (
     text_writer
 )
 from bareasgi.middleware import make_middleware_chain
-from .mock_io import MockIO
 
 
 @pytest.mark.asyncio
