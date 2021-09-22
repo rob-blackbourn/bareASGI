@@ -3,7 +3,7 @@ An example of raising exceptions
 """
 
 import logging
-from typing import List
+from typing import List, Tuple
 
 import pkg_resources
 import uvicorn
@@ -14,7 +14,6 @@ from bareasgi import (
     HttpError,
     HttpRequest,
     HttpResponse,
-    Headers,
     text_writer
 )
 
@@ -23,7 +22,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 async def index_handler(request: HttpRequest) -> HttpResponse:
     """The index page"""
-    headers: List[Headers] = [
+    headers: List[Tuple[bytes, bytes]] = [
         (b'content-type', b'text/html')
     ]
     return HttpResponse(200, headers, text_writer(request.info['html']))

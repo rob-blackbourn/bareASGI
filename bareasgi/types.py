@@ -97,10 +97,9 @@ class LifespanRequest:
 LifespanHandler = Callable[[LifespanRequest], Awaitable[None]]
 
 Header = Tuple[bytes, bytes]
-Headers = List[Header]
 
 RouteMatches = Mapping[str, Any]
-PushResponse = Tuple[str, Headers]
+PushResponse = Tuple[str, List[Header]]
 PushResponses = Iterable[PushResponse]
 
 
@@ -179,7 +178,7 @@ class HttpResponse:
     def __init__(
             self,
             status: int,
-            headers: Optional[Headers] = None,
+            headers: Optional[List[Header]] = None,
             body: Optional[AsyncIterable[bytes]] = None,
             pushes: Optional[PushResponses] = None
     ) -> None:
