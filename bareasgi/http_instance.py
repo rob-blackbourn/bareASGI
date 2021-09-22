@@ -7,7 +7,6 @@ from asyncio import Queue
 import logging
 from typing import (
     Any,
-    AsyncIterable,
     Dict,
     Optional,
     Sequence,

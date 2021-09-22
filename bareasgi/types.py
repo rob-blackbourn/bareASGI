@@ -7,13 +7,11 @@ from typing import (
     AsyncIterable,
     Awaitable,
     Callable,
-    Coroutine,
     Dict,
     Iterable,
     List,
     Mapping,
     Optional,
-    Sequence,
     Tuple,
     Union,
     cast
