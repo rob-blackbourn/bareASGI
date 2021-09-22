@@ -5,12 +5,9 @@ import logging
 from typing import Any
 
 from bareasgi import (
-    Scope,
-    Info,
     HttpRequest,
     HttpResponse,
-    LifespanRequest,
-    Message
+    LifespanRequest
 )
 
 from bareasgi import (

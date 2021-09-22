@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     page_filename = pkg_resources.resource_filename(
         __name__, "streaming_fetch.html")
-    with open(page_filename, 'rt') as file_ptr:
+    with open(page_filename, 'rt', encoding='utf-8') as file_ptr:
         page = file_ptr.read()
 
     app = Application(info={'page_template': string.Template(page)})
