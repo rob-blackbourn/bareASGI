@@ -102,6 +102,7 @@ Second middleware - entry
 Second middleware - exit
 First middleware - exit
 ```
+
 ## Route local middleware
 
 We can also apply the middleware to a specific route.
@@ -109,7 +110,7 @@ We can also apply the middleware to a specific route.
 For example:
 
 ```python
-from bareasgi.middleware import mw
+from bareasgi.middleware import make_middleware_chain
 
 ...
 
@@ -117,7 +118,7 @@ app = Application(info={'message': 'Unmodified'})
 app.http_router.add(
     {'GET', 'POST', 'PUT', 'DELETE'},
     '/with',
-    mw(first_middleware, second_middleware, handler=http_request_callback)
+    make_middleware_chain(first_middleware, second_middleware, handler=http_request_callback)
 )
 app.http_router.add(
     {'GET', 'POST', 'PUT', 'DELETE'},

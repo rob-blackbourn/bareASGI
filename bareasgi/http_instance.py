@@ -13,7 +13,7 @@ from typing import (
     Set
 )
 
-from .middleware import mw
+from .middleware import make_middleware_chain
 from .types import (
     HttpInternalError,
     HttpDisconnectError,
@@ -122,7 +122,7 @@ class HttpInstance:
         # Apply middleware.
         middleware: Optional[Middlewares] = context['middlewares']
         if middleware:
-            self.handler = mw(
+            self.handler = make_middleware_chain(
                 *middleware,
                 handler=self.handler
             )

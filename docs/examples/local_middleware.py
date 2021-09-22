@@ -12,7 +12,7 @@ from bareasgi import (
     HttpResponse,
     HttpRequestCallback
 )
-from bareasgi.middleware import mw
+from bareasgi.middleware import make_middleware_chain
 
 
 async def first_middleware(
@@ -67,7 +67,8 @@ if __name__ == "__main__":
     app.http_router.add(
         {'GET', 'POST', 'PUT', 'DELETE'},
         '/with',
-        mw(first_middleware, second_middleware, handler=http_request_callback)
+        make_middleware_chain(
+            first_middleware, second_middleware, handler=http_request_callback)
     )
     app.http_router.add(
         {'GET', 'POST', 'PUT', 'DELETE'},

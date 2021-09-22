@@ -19,7 +19,7 @@ async def _call_handler(
     return await handler(request)
 
 
-def mw(
+def make_middleware_chain(
         *handlers: HttpMiddlewareCallback,
         handler: HttpRequestCallback
 ) -> HttpRequestCallback:

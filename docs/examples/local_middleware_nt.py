@@ -1,6 +1,6 @@
 import uvicorn
 from bareasgi import Application, text_writer
-from bareasgi.middleware import mw
+from bareasgi.middleware import make_middleware_chain
 
 
 async def first_middleware(scope, info, matches, content, handler):
@@ -32,7 +32,8 @@ app = Application(info={'message': 'Unmodified'})
 app.http_router.add(
     {'GET', 'POST', 'PUT', 'DELETE'},
     '/with',
-    mw(first_middleware, second_middleware, handler=http_request_callback)
+    make_middleware_chain(first_middleware, second_middleware,
+                          handler=http_request_callback)
 )
 app.http_router.add(
     {'GET', 'POST', 'PUT', 'DELETE'},
