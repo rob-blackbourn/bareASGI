@@ -41,7 +41,7 @@ async def raise_text_exception(request: HttpRequest) -> HttpResponse:
     raise HttpError(
         401,
         'Unauthorized - text',
-        request.url
+        request.url,
         [(b'content-type', b'text/plain')]
     )
 
