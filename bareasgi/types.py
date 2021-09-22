@@ -68,8 +68,8 @@ class HttpError(Exception):
         return self.message
 
 
-Scope = Mapping[str, Any]
-Message = Mapping[str, Any]
+Scope = Dict[str, Any]
+Message = Dict[str, Any]
 Context = Mapping[str, Any]
 Info = Dict[str, Any]
 
