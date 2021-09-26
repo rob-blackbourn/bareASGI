@@ -122,6 +122,7 @@ class WebSocketInstance:
                 WebSocketRequest(
                     self.scope,
                     self.info,
+                    {},
                     self.matches,
                     WebSocketImpl(receive, send)
                 )
