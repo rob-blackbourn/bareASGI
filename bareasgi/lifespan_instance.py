@@ -3,18 +3,38 @@ A handler of lifecycle event requests
 """
 
 import logging
-from typing import Any, Dict, List, Mapping
+from typing import Any, Awaitable, Callable, Dict, List, Mapping
 
 from .types import (
     Scope,
     Send,
-    Receive,
-    LifespanRequest,
-    LifespanHandler
+    Receive
 )
 
 LOGGER = logging.getLogger(__name__)
 
+class LifespanRequest:
+    """A class holding a lifespan request"""
+
+    def __init__(
+            self,
+            scope: Scope,
+            info: Dict[str, Any],
+            message: Dict[str, Any]
+    ) -> None:
+        """Initialise a class holding a lifespan request
+
+        Args:
+            scope (Scope): The ASGI lifespan scope.
+            info (Dict[str, Any]): The global info dictionary.
+            message (Dict[str, Any]): The lifespan details.
+        """
+        self.scope = scope
+        self.info = info
+        self.message = message
+
+# LifespanHandler = Callable[[LifespanRequest], Coroutine[Any, Any, None]]
+LifespanHandler = Callable[[LifespanRequest], Awaitable[None]]
 
 class LifespanInstance:
     """An instance factor for lifespan event requests"""

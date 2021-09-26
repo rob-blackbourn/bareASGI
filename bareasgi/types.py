@@ -28,21 +28,8 @@ ASGIInstance = Callable[[Receive, Send], Awaitable[None]]
 ASGIApp = Callable[[Scope], ASGIInstance]
 
 
-class LifespanRequest:
-
-    def __init__(
-            self,
-            scope: Scope,
-            info: Dict[str, Any],
-            message: Dict[str, Any]
-    ) -> None:
-        self.scope = scope
-        self.info = info
-        self.message = message
 
 
-# LifespanHandler = Callable[[LifespanRequest], Coroutine[Any, Any, None]]
-LifespanHandler = Callable[[LifespanRequest], Awaitable[None]]
 
 PushResponse = Tuple[str, List[Tuple[bytes, bytes]]]
 PushResponses = Iterable[PushResponse]

@@ -16,11 +16,11 @@ import logging
 
 from bareutils import text_writer
 
+from .lifespan_instance import LifespanHandler
 from .types import (
     Scope,
     HttpRouter,
     WebSocketRouter,
-    LifespanHandler,
     HttpResponse,
     HttpMiddlewareCallback,
     HttpRequestCallback,

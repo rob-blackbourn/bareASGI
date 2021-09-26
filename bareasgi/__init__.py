@@ -19,6 +19,7 @@ from .application import Application
 from .errors import (
     HttpError,
 )
+from .lifespan_instance import LifespanRequest
 from .types import (
     Scope,
     PushResponse,
@@ -28,8 +29,7 @@ from .types import (
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,
-    HttpMiddlewareCallback,
-    LifespanRequest
+    HttpMiddlewareCallback
 )
 
 __all__ = [
