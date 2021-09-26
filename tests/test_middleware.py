@@ -1,6 +1,6 @@
 """Tests for middleware"""
 
-from bareasgi.types import HttpChainedCallback
+from bareasgi.http import HttpChainedCallback
 import pytest
 from bareasgi import (
     HttpRequest,
@@ -8,7 +8,7 @@ from bareasgi import (
     text_reader,
     text_writer
 )
-from bareasgi.middleware import make_middleware_chain
+from bareasgi.http import make_middleware_chain
 
 
 @pytest.mark.asyncio

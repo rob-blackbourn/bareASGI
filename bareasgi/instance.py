@@ -12,8 +12,8 @@ from .types import (
     ASGIInstance
 )
 
+from .http import HttpInstance
 from .lifespan import LifespanInstance
-from .http_instance import HttpInstance
 from .websockets import WebSocketInstance
 
 LOGGER = logging.getLogger(__name__)

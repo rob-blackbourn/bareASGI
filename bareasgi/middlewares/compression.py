@@ -14,7 +14,7 @@ from bareutils import (
     make_deflate_decompressobj,
 )
 
-from ..types import (
+from ..http import (
     HttpChainedCallback,
     HttpRequest,
     HttpResponse

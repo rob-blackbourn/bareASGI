@@ -19,15 +19,17 @@ from .application import Application
 from .errors import (
     HttpError,
 )
-from .lifespan import LifespanRequest
-from .types import (
-    Scope,
-    PushResponse,
-    PushResponses,
+from .http import (
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback
+)
+from .lifespan import LifespanRequest
+from .types import (
+    Scope,
+    PushResponse,
+    PushResponses
 )
 from .websockets import WebSocket, WebSocketRequest
 

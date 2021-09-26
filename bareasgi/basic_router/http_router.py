@@ -12,7 +12,7 @@ from typing import (
     Tuple
 )
 
-from ..types import (
+from ..http import (
     HttpRouter,
     HttpRequest,
     HttpResponse,

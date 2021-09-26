@@ -1,15 +1,10 @@
-"""
-Middleware utilities.
-"""
+"""The http middleware"""
 
 from functools import partial
 
-from .types import (
-    HttpRequestCallback,
-    HttpMiddlewareCallback,
-    HttpRequest,
-    HttpResponse
-)
+from .http_callbacks import HttpRequestCallback, HttpMiddlewareCallback
+from .http_request import HttpRequest
+from .http_response import HttpResponse
 
 
 async def _call_handler(

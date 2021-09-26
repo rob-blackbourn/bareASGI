@@ -16,13 +16,15 @@ import logging
 
 from bareutils import text_writer
 
-from .lifespan import LifespanRequestHandler
-from .types import (
-    Scope,
+from .http import (
     HttpRouter,
     HttpResponse,
     HttpMiddlewareCallback,
-    HttpRequestCallback,
+    HttpRequestCallback
+)
+from .lifespan import LifespanRequestHandler
+from .types import (
+    Scope,
     Send,
     Receive
 )
