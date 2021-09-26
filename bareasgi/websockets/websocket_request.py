@@ -29,6 +29,7 @@ class WebSocketRequest:
         self.matches = matches
         self.web_socket = web_socket
 
+
 WebSocketRequestCallback = Callable[
     [WebSocketRequest],
     Awaitable[None]

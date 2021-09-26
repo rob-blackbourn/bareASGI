@@ -4,6 +4,7 @@ from typing import AsyncIterable, Iterable, List, Optional, Tuple
 
 PushResponse = Tuple[str, List[Tuple[bytes, bytes]]]
 
+
 class HttpResponse:
 
     def __init__(

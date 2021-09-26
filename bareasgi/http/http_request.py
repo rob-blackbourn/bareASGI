@@ -6,6 +6,7 @@ from bareutils import header
 
 from ..types import Scope
 
+
 class HttpRequest:
 
     def __init__(

@@ -64,7 +64,6 @@ async def time_ticker_startup_handler(request: LifespanRequest) -> None:
         time_ticker(shutdown_event))
 
 
-# pylint: disable=unused-argument
 async def time_ticker_shutdown_handler(request: LifespanRequest) -> None:
     """
     This handles shutting down the time ticker.
