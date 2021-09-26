@@ -21,8 +21,6 @@ from .errors import (
 )
 from .types import (
     Scope,
-    Header,
-    RouteMatches,
     PushResponse,
     PushResponses,
     WebSocket,
@@ -31,7 +29,6 @@ from .types import (
     HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback,
-    Message,
     LifespanRequest
 )
 
@@ -39,8 +36,6 @@ __all__ = [
     "Application",
 
     "Scope",
-    "Header",
-    "RouteMatches",
     "PushResponse",
     "PushResponses",
     "WebSocket",
@@ -50,7 +45,6 @@ __all__ = [
     "HttpResponse",
     "HttpRequestCallback",
     "HttpMiddlewareCallback",
-    "Message",
     "LifespanRequest",
 
     "text_writer",

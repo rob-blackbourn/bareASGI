@@ -21,7 +21,7 @@ class HttpRouter:
     def add(self, methods: AbstractSet[str], path: str, callback: HttpRequestCallback) -> None:
         ...
 
-    def __call__(self, scope: Scope) -> Tuple[Optional[HttpRequestCallback], Optional[RouteMatches]]:
+    def __call__(self, scope: Scope) -> Tuple[Optional[HttpRequestCallback], Optional[Mapping[str, Any]]]:
         ...
 ```
 
@@ -35,7 +35,7 @@ class WebSocketRouter(metaclass=ABCMeta):
     def add(self, path: str, callback: WebSocketRequestCallback) -> None:
         ...
 
-    def __call__(self, scope: Scope) -> Tuple[Optional[WebSocketRequestCallback], Optional[RouteMatches]]:
+    def __call__(self, scope: Scope) -> Tuple[Optional[WebSocketRequestCallback], Optional[Mapping[str, Any]]]:
         ...
 ```
 

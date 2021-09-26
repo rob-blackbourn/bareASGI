@@ -3,10 +3,9 @@ A handler of lifecycle event requests
 """
 
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Mapping
 
 from .types import (
-    Context,
     Scope,
     Send,
     Receive,
@@ -23,14 +22,14 @@ class LifespanInstance:
     def __init__(
             self,
             scope: Scope,
-            context: Context,
+            context: Mapping[str, Any],
             info: Dict[str, Any]
     ) -> None:
         """Initialise a lifespan instance.
 
         Args:
             scope (Scope): The ASGI scope
-            context (Context): The application context
+            context (Mapping[str, Any]): The application context
             info (Dict[str, Any]): The user provided dict
         """
         self.scope = scope

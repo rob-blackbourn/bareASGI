@@ -7,7 +7,6 @@ from typing import Any, Callable, Dict, Mapping
 
 from .types import (
     Scope,
-    Context,
     Send,
     Receive,
     ASGIInstance
@@ -31,11 +30,11 @@ class Instance:
         'websocket': WebSocketInstance
     }
 
-    def __init__(self, context: Context, scope: Scope) -> None:
+    def __init__(self, context: Mapping[str, Any], scope: Scope) -> None:
         """Initialise the instance provider
 
         Args:
-            context (Context): The application context
+            context (Mapping[str, Any]): The application context
             scope (Scope): The ASGI scope
         """
         scope_type = scope['type']

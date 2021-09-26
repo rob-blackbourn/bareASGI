@@ -20,11 +20,9 @@ from bareutils import header
 
 
 Scope = Dict[str, Any]
-Message = Dict[str, Any]
-Context = Mapping[str, Any]
 
-Receive = Callable[[], Awaitable[Message]]
-Send = Callable[[Message], Awaitable[None]]
+Receive = Callable[[], Awaitable[Dict[str, Any]]]
+Send = Callable[[Dict[str, Any]], Awaitable[None]]
 
 ASGIInstance = Callable[[Receive, Send], Awaitable[None]]
 ASGIApp = Callable[[Scope], ASGIInstance]
@@ -36,7 +34,7 @@ class LifespanRequest:
             self,
             scope: Scope,
             info: Dict[str, Any],
-            message: Message
+            message: Dict[str, Any]
     ) -> None:
         self.scope = scope
         self.info = info
@@ -46,10 +44,7 @@ class LifespanRequest:
 # LifespanHandler = Callable[[LifespanRequest], Coroutine[Any, Any, None]]
 LifespanHandler = Callable[[LifespanRequest], Awaitable[None]]
 
-Header = Tuple[bytes, bytes]
-
-RouteMatches = Mapping[str, Any]
-PushResponse = Tuple[str, List[Header]]
+PushResponse = Tuple[str, List[Tuple[bytes, bytes]]]
 PushResponses = Iterable[PushResponse]
 
 
@@ -60,7 +55,7 @@ class WebSocket(metaclass=ABCMeta):
     async def accept(
             self,
             subprotocol: Optional[str] = None,
-            headers: Optional[List[Header]] = None
+            headers: Optional[List[Tuple[bytes, bytes]]] = None
     ) -> None:
         """Accept the socket.
 
@@ -69,8 +64,8 @@ class WebSocket(metaclass=ABCMeta):
         Args:
             subprotocol (Optional[str], optional): An optional subprotocol sent
                 by the client. Defaults to None.
-            headers (Optional[List[Header]], optional): Optional headers to
-                send. Defaults to None.
+            headers (Optional[List[Tuple[bytes, bytes]]], optional): Optional
+                headers to send. Defaults to None.
         """
 
     @abstractmethod
@@ -106,7 +101,7 @@ class HttpRequest:
             scope: Scope,
             info: Dict[str, Any],
             context: Dict[str, Any],
-            matches: RouteMatches,
+            matches: Mapping[str, Any],
             body: AsyncIterable[bytes]
     ) -> None:
         self.scope = scope
@@ -130,7 +125,7 @@ class HttpResponse:
     def __init__(
             self,
             status: int,
-            headers: Optional[List[Header]] = None,
+            headers: Optional[List[Tuple[bytes, bytes]]] = None,
             body: Optional[AsyncIterable[bytes]] = None,
             pushes: Optional[PushResponses] = None
     ) -> None:
@@ -146,7 +141,7 @@ class WebSocketRequest:
             self,
             scope: Scope,
             info: Dict[str, Any],
-            matches: RouteMatches,
+            matches: Mapping[str, Any],
             web_socket: WebSocket
     ) -> None:
         self.scope = scope
@@ -210,7 +205,7 @@ class HttpRouter(metaclass=ABCMeta):
             self,
             method: str,
             path: str
-    ) -> Tuple[HttpRequestCallback, RouteMatches]:
+    ) -> Tuple[HttpRequestCallback, Mapping[str, Any]]:
         """Resolve a request to a handler with the route matches
 
         Args:
@@ -218,7 +213,7 @@ class HttpRouter(metaclass=ABCMeta):
             path (str): The path.
 
         Returns:
-            Tuple[HttpRequestCallback, RouteMatches]: A handler and the route
+            Tuple[HttpRequestCallback, Mapping[str, Any]]: A handler and the route
                 matches.
         """
 
@@ -243,13 +238,13 @@ class WebSocketRouter(metaclass=ABCMeta):
     def resolve(
             self,
             path: str
-    ) -> Tuple[WebSocketRequestCallback, RouteMatches]:
+    ) -> Tuple[WebSocketRequestCallback, Mapping[str, Any]]:
         """Resolve a route to a handler
 
         Args:
             path (str): The path
 
         Returns:
-            Tuple[WebSocketRequestCallback, RouteMatches]: A handler and the
+            Tuple[WebSocketRequestCallback, Mapping[str, Any]]: A handler and the
                 route matches
         """

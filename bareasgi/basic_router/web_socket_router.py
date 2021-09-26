@@ -2,10 +2,10 @@
 A basic Websocket router.
 """
 
-from typing import Tuple, List
+from typing import Any, Tuple, List, Mapping
 import logging
 
-from ..types import WebSocketRouter, RouteMatches, WebSocketRequestCallback
+from ..types import WebSocketRouter, WebSocketRequestCallback
 
 from .path_definition import PathDefinition
 
@@ -26,7 +26,7 @@ class BasicWebSocketRouter(WebSocketRouter):
     def resolve(
             self,
             path: str
-    ) -> Tuple[WebSocketRequestCallback, RouteMatches]:
+    ) -> Tuple[WebSocketRequestCallback, Mapping[str, Any]]:
         for path_definition, handler in self._routes:
             is_match, matches = path_definition.match(path)
             if is_match:

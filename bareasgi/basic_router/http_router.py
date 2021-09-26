@@ -5,14 +5,15 @@ Http Routing
 import logging
 from typing import (
     AbstractSet,
+    Any,
     Dict,
     List,
+    Mapping,
     Tuple
 )
 
 from ..types import (
     HttpRouter,
-    RouteMatches,
     HttpRequest,
     HttpResponse,
     HttpRequestCallback
@@ -78,7 +79,7 @@ class BasicHttpRouter(HttpRouter):
             self,
             method: str,
             path: str
-    ) -> Tuple[HttpRequestCallback, RouteMatches]:
+    ) -> Tuple[HttpRequestCallback, Mapping[str, Any]]:
         path_definition_list = self._routes.get(method)
         if path_definition_list:
             for path_definition, handler in path_definition_list:

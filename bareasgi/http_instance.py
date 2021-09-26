@@ -8,6 +8,7 @@ import logging
 from typing import (
     Any,
     Dict,
+    Mapping,
     Optional,
     Sequence,
     Set
@@ -21,7 +22,6 @@ from .types import (
     Send,
     Receive,
     HttpRouter,
-    Context,
     HttpMiddlewareCallback,
     HttpResponse
 )
@@ -99,14 +99,14 @@ class HttpInstance:
     def __init__(
             self,
             scope: Scope,
-            context: Context,
+            context: Mapping[str, Any],
             info: Dict[str, Any]
     ) -> None:
         """Initialise an HTTP instance
 
         Args:
             scope (Scope): The ASGI connection scope
-            context (Context): The application context
+            context (Mapping[str, Any]): The application context
             info (Dict[str, Any]): The user provided dictionary
         """
         self.scope = scope

@@ -8,13 +8,13 @@ from typing import (
     Dict,
     List,
     Optional,
+    Tuple,
     Union
 )
 
 from .errors import WebSocketInternalError
 from .types import (
     Scope,
-    Header,
     Send,
     Receive,
     WebSocket,
@@ -36,7 +36,7 @@ class WebSocketImpl(WebSocket):
     async def accept(
             self,
             subprotocol: Optional[str] = None,
-            headers: Optional[List[Header]] = None
+            headers: Optional[List[Tuple[bytes, bytes]]] = None
     ) -> None:
         response: Dict[str, Any] = {'type': 'websocket.accept'}
         if subprotocol:

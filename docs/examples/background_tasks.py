@@ -7,14 +7,13 @@ import asyncio
 from asyncio import Event
 from datetime import datetime
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from bareasgi import (
     Application,
     HttpRequest,
     LifespanRequest,
     HttpResponse,
-    Header,
     text_writer
 )
 
@@ -93,7 +92,7 @@ async def http_request_callback(request: HttpRequest) -> HttpResponse:
     A Simple endpoint to demonstrate that requests can still be serviced when
     a background task is running.
     """
-    headers: List[Header] = [
+    headers: List[Tuple[bytes, bytes]] = [
         (b'content-type', b'text/plain')
     ]
     return HttpResponse(
