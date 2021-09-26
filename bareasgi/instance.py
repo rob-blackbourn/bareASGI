@@ -14,7 +14,7 @@ from .types import (
 
 from .lifespan_instance import LifespanInstance
 from .http_instance import HttpInstance
-from .websocket_instance import WebSocketInstance
+from .websockets import WebSocketInstance
 
 LOGGER = logging.getLogger(__name__)
 

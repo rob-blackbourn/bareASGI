@@ -5,7 +5,7 @@ A basic Websocket router.
 from typing import Any, Tuple, List, Mapping
 import logging
 
-from ..types import WebSocketRouter, WebSocketRequestCallback
+from ..websockets import WebSocketRouter, WebSocketRequestCallback
 
 from .path_definition import PathDefinition
 

@@ -20,14 +20,13 @@ from .lifespan_instance import LifespanHandler
 from .types import (
     Scope,
     HttpRouter,
-    WebSocketRouter,
     HttpResponse,
     HttpMiddlewareCallback,
     HttpRequestCallback,
-    WebSocketRequestCallback,
     Send,
     Receive
 )
+from .websockets import WebSocketRouter, WebSocketRequestCallback
 
 from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter

@@ -24,13 +24,12 @@ from .types import (
     Scope,
     PushResponse,
     PushResponses,
-    WebSocket,
-    WebSocketRequest,
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback
 )
+from .websockets import WebSocket, WebSocketRequest
 
 __all__ = [
     "Application",
@@ -38,14 +37,15 @@ __all__ = [
     "Scope",
     "PushResponse",
     "PushResponses",
-    "WebSocket",
-    "WebSocketRequest",
     "HttpError",
     "HttpRequest",
     "HttpResponse",
     "HttpRequestCallback",
     "HttpMiddlewareCallback",
     "LifespanRequest",
+
+    "WebSocket",
+    "WebSocketRequest",
 
     "text_writer",
     "text_reader",

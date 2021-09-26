@@ -12,15 +12,16 @@ from typing import (
     Union
 )
 
-from .errors import WebSocketInternalError
-from .types import (
+from ..errors import WebSocketInternalError
+from ..types import (
     Scope,
     Send,
     Receive,
-    WebSocket,
-    WebSocketRequest,
-    WebSocketRouter
 )
+
+from .websocket import WebSocket
+from .websocket_request import WebSocketRequest
+from .websocket_router import WebSocketRouter
 
 LOGGER = logging.getLogger(__name__)
 

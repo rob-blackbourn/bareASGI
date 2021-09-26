@@ -31,52 +31,6 @@ PushResponse = Tuple[str, List[Tuple[bytes, bytes]]]
 PushResponses = Iterable[PushResponse]
 
 
-class WebSocket(metaclass=ABCMeta):
-    """The interface for a server side WebSocket."""
-
-    @abstractmethod
-    async def accept(
-            self,
-            subprotocol: Optional[str] = None,
-            headers: Optional[List[Tuple[bytes, bytes]]] = None
-    ) -> None:
-        """Accept the socket.
-
-        This must be done before any other action is taken.
-
-        Args:
-            subprotocol (Optional[str], optional): An optional subprotocol sent
-                by the client. Defaults to None.
-            headers (Optional[List[Tuple[bytes, bytes]]], optional): Optional
-                headers to send. Defaults to None.
-        """
-
-    @abstractmethod
-    async def receive(self) -> Optional[Union[bytes, str]]:
-        """Receive data from the WebSocket.
-
-        Returns:
-            Optional[Union[bytes, str]]: Either bytes of a string depending on
-                the client.
-        """
-
-    @abstractmethod
-    async def send(self, content: Union[bytes, str]) -> None:
-        """Send data to the client.
-
-        Args:
-            content (Union[bytes, str]): Either bytes or a string.
-        """
-
-    @abstractmethod
-    async def close(self, code: int = 1000) -> None:
-        """Close the WebSocket.
-
-        Args:
-            code (int, optional): The reason code. Defaults to 1000.
-        """
-
-
 class HttpRequest:
 
     def __init__(
@@ -118,30 +72,9 @@ class HttpResponse:
         self.pushes = pushes
 
 
-class WebSocketRequest:
-
-    def __init__(
-            self,
-            scope: Scope,
-            info: Dict[str, Any],
-            context: Dict[str, Any],
-            matches: Mapping[str, Any],
-            web_socket: WebSocket
-    ) -> None:
-        self.scope = scope
-        self.info = info
-        self.context = context
-        self.matches = matches
-        self.web_socket = web_socket
-
-
 HttpRequestCallback = Callable[
     [HttpRequest],
     Awaitable[HttpResponse]
-]
-WebSocketRequestCallback = Callable[
-    [WebSocketRequest],
-    Awaitable[None]
 ]
 HttpChainedCallback = Callable[
     [HttpRequest],
@@ -200,36 +133,4 @@ class HttpRouter(metaclass=ABCMeta):
         Returns:
             Tuple[HttpRequestCallback, Mapping[str, Any]]: A handler and the route
                 matches.
-        """
-
-
-class WebSocketRouter(metaclass=ABCMeta):
-    """The interface for a WebSocket router"""
-
-    @abstractmethod
-    def add(
-            self,
-            path: str,
-            callback: WebSocketRequestCallback
-    ) -> None:
-        """Add the WebSocket handler for a route
-
-        Args:
-            path (str): The path.
-            callback (WebSocketRequestCallback): The handler
-        """
-
-    @abstractmethod
-    def resolve(
-            self,
-            path: str
-    ) -> Tuple[WebSocketRequestCallback, Mapping[str, Any]]:
-        """Resolve a route to a handler
-
-        Args:
-            path (str): The path
-
-        Returns:
-            Tuple[WebSocketRequestCallback, Mapping[str, Any]]: A handler and the
-                route matches
         """
