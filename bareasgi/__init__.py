@@ -16,6 +16,9 @@ from bareutils.cookies import (
 )
 
 from .application import Application
+from .errors import (
+    HttpError,
+)
 from .types import (
     Scope,
     Header,
@@ -24,7 +27,6 @@ from .types import (
     PushResponses,
     WebSocket,
     WebSocketRequest,
-    HttpError,
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,

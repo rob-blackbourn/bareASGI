@@ -11,6 +11,7 @@ from typing import (
     Union
 )
 
+from .errors import WebSocketInternalError
 from .types import (
     Scope,
     Header,
@@ -18,8 +19,7 @@ from .types import (
     Receive,
     WebSocket,
     WebSocketRequest,
-    WebSocketRouter,
-    WebSocketInternalError
+    WebSocketRouter
 )
 
 LOGGER = logging.getLogger(__name__)

@@ -5,7 +5,7 @@ A segment of a path.
 from typing import Optional, Tuple, Any, Callable, Mapping
 from datetime import datetime
 
-from ..types import ParseError
+from ..errors import ParseError
 
 from ..utils import parse_json_datetime
 

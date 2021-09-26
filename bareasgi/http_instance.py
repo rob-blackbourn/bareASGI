@@ -13,11 +13,9 @@ from typing import (
     Set
 )
 
+from .errors import HttpInternalError, HttpDisconnectError, HttpError
 from .middleware import make_middleware_chain
 from .types import (
-    HttpInternalError,
-    HttpDisconnectError,
-    HttpError,
     HttpRequest,
     Scope,
     Send,
