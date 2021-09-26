@@ -1,14 +1,6 @@
 """Types for bareASGI and bareClient"""
 
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Tuple,
-)
+from typing import Any, Awaitable, Callable, Dict
 
 
 Scope = Dict[str, Any]
@@ -18,8 +10,3 @@ Send = Callable[[Dict[str, Any]], Awaitable[None]]
 
 ASGIInstance = Callable[[Receive, Send], Awaitable[None]]
 ASGIApp = Callable[[Scope], ASGIInstance]
-
-PushResponse = Tuple[str, List[Tuple[bytes, bytes]]]
-PushResponses = Iterable[PushResponse]
-
-

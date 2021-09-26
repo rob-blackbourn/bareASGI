@@ -1,9 +1,8 @@
 """The http response"""
 
-from typing import AsyncIterable, List, Optional, Tuple
+from typing import AsyncIterable, Iterable, List, Optional, Tuple
 
-from ..types import PushResponses
-
+PushResponse = Tuple[str, List[Tuple[bytes, bytes]]]
 
 class HttpResponse:
 
@@ -12,7 +11,7 @@ class HttpResponse:
             status: int,
             headers: Optional[List[Tuple[bytes, bytes]]] = None,
             body: Optional[AsyncIterable[bytes]] = None,
-            pushes: Optional[PushResponses] = None
+            pushes: Optional[Iterable[PushResponse]] = None
     ) -> None:
         self.status = status
         self.headers = headers

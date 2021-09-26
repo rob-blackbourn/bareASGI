@@ -23,14 +23,11 @@ from .http import (
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,
-    HttpMiddlewareCallback
+    HttpMiddlewareCallback,
+    PushResponse
 )
 from .lifespan import LifespanRequest
-from .types import (
-    Scope,
-    PushResponse,
-    PushResponses
-)
+from .types import Scope
 from .websockets import WebSocket, WebSocketRequest
 
 __all__ = [
@@ -38,7 +35,6 @@ __all__ = [
 
     "Scope",
     "PushResponse",
-    "PushResponses",
     "HttpError",
     "HttpRequest",
     "HttpResponse",

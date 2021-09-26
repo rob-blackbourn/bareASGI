@@ -45,7 +45,7 @@ async def test_middleware():
     )
 
     data = {'path': []}
-    response = await chain(HttpRequest({}, data, {}, None))
+    response = await chain(HttpRequest({}, data, {}, {}, None))
     assert response.status == 200
     assert data['path'] == ['first', 'second', 'handler']
     assert response.headers == [(b'content-type', b'text/plain')]
