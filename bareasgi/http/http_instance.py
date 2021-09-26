@@ -14,7 +14,6 @@ from typing import (
     Set
 )
 
-from ..errors import HttpInternalError, HttpDisconnectError, HttpError
 from ..types import (
     Scope,
     Send,
@@ -23,6 +22,7 @@ from ..types import (
 from ..utils import anext
 
 from .http_callbacks import HttpMiddlewareCallback
+from .http_errors import HttpInternalError, HttpDisconnectError, HttpError
 from .http_request import HttpRequest
 from .http_response import HttpResponse
 from .http_router import HttpRouter

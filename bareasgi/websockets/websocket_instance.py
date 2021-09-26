@@ -12,7 +12,6 @@ from typing import (
     Union
 )
 
-from ..errors import WebSocketInternalError
 from ..types import (
     Scope,
     Send,
@@ -20,6 +19,7 @@ from ..types import (
 )
 
 from .websocket import WebSocket
+from .websocket_errors import WebSocketInternalError
 from .websocket_request import WebSocketRequest
 from .websocket_router import WebSocketRouter
 

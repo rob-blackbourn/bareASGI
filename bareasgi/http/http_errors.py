@@ -12,20 +12,12 @@ from typing import (
 from bareutils import bytes_writer, text_writer
 
 
-class ParseError(Exception):
-    """Exception raised on a parse error"""
-
-
 class HttpInternalError(Exception):
     """Exception raised for an internal error"""
 
 
 class HttpDisconnectError(Exception):
     """Exception raise on HTTP disconnect"""
-
-
-class WebSocketInternalError(Exception):
-    """Exception raised for a WebSocket internal error"""
 
 
 class HttpError(Exception):

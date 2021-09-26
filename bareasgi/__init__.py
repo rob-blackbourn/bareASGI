@@ -16,10 +16,8 @@ from bareutils.cookies import (
 )
 
 from .application import Application
-from .errors import (
-    HttpError,
-)
 from .http import (
+    HttpError,
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,
