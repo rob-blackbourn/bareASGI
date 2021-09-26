@@ -184,6 +184,7 @@ class CompressionMiddleware:
                     request = HttpRequest(
                         request.scope,
                         request.info,
+                        request.context,
                         request.matches,
                         decompressed_body
                     )

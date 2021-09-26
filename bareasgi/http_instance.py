@@ -20,7 +20,6 @@ from .types import (
     HttpError,
     HttpRequest,
     Scope,
-    Info,
     Send,
     Receive,
     HttpRouter,
@@ -99,13 +98,18 @@ Middlewares = Sequence[HttpMiddlewareCallback]
 class HttpInstance:
     """An HTTP instance services an HTTP request."""
 
-    def __init__(self, scope: Scope, context: Context, info: Info) -> None:
+    def __init__(
+            self,
+            scope: Scope,
+            context: Context,
+            info: Dict[str, Any]
+    ) -> None:
         """Initialise an HTTP instance
 
         Args:
             scope (Scope): The ASGI connection scope
             context (Context): The application context
-            info (Info): The user provided dictionary
+            info (Dict[str, Any]): The user provided dictionary
         """
         self.scope = scope
         self.info = info
@@ -230,6 +234,7 @@ class HttpInstance:
                 HttpRequest(
                     self.scope,
                     self.info,
+                    {},
                     self.matches,
                     body
                 )

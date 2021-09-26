@@ -1,8 +1,7 @@
 # Web Sockets
 
-The bareASGI framework has full support for 
+The bareASGI framework has full support for
 [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket).
-
 
 You can find the ASGI documentation
 [here](https://asgi.readthedocs.io/en/latest/specs/www.html#websocket).
@@ -19,33 +18,28 @@ handler.
 Here's the handler from our example program.
 
 ```python
-async def websocket_handler(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        web_socket: WebSocket
-) -> None:
+async def websocket_handler(request: WebSocketRequest) -> None:
     """The websocket callback handler"""
-    await web_socket.accept()
+    await request.web_socket.accept()
 
     try:
         while True:
-            text = await web_socket.receive()
+            text = await request.web_socket.receive()
             if text is None:
                 break
-            await web_socket.send('You said: ' + text)
+            await request.web_socket.send('You said: ' + text)
     except Exception as error:
         print(error)
 
-    await web_socket.close()
+    await request.web_socket.close()
 ```
 
-As you can see the difference is the last parameter, the `web_socket` itself.
+As you can see the difference is the request includes the `web_socket` itself.
 
 The first thing we need to do is accept the connection (assuming we want to).
-Then we wait for a message to be sent from the client, 
-`text = await web_socket.receive()`, then send it back,
-`await web_socket.send('You said: ' + text)`.
+Then we wait for a message to be sent from the client,
+`text = await request.web_socket.receive()`, then send it back,
+`await request.web_socket.send('You said: ' + text)`.
 
 ## API
 
@@ -84,7 +78,7 @@ class WebSocket:
     @property
     def code(self) -> Optional[int]:
         """The close code
-        
+
         :return: The code returned when the WebSocket was closed otherwise None
         :rtype: Optional[int]
         """
@@ -110,7 +104,6 @@ you will have to clamp your haproxy to HTTP/1.1.
 
 If you don't require the two way facility that WebSockets offer you can use
 server sent events or a streaming.
-
 
 ## What next?
 

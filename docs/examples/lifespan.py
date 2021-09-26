@@ -3,25 +3,19 @@
 import asyncio
 import logging
 import signal
-from typing import Any, List
+from typing import Any, List, Tuple
 
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 import uvicorn
 
-from baretypes import (
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
-    HttpResponse,
-    Message,
-    Header
-)
 
 from bareasgi import (
     Application,
     text_writer,
+    LifespanRequest,
+    HttpRequest,
+    HttpResponse
 )
 
 logging.basicConfig(level=logging.DEBUG)
@@ -29,35 +23,22 @@ logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger(__name__)
 
 
-async def on_startup(
-        _scope: Scope,
-        _info: Info,
-        _request: Message
-) -> None:
+async def on_startup(_request: LifespanRequest) -> None:
     """Run at startup"""
     LOGGER.info("Running startup handler")
 
 
-async def on_shutdown(
-        _scope: Scope,
-        _info: Info,
-        _request: Message
-) -> None:
+async def on_shutdown(_request: LifespanRequest) -> None:
     """Run on shutdown"""
     LOGGER.info("Running shutdown handler")
 
 
-async def http_request_callback(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def http_request_callback(_request: HttpRequest) -> HttpResponse:
     """A request handler which returns some text"""
-    headers: List[Header] = [
+    headers: List[Tuple[bytes, bytes]] = [
         (b'content-type', b'text/plain')
     ]
-    return 200, headers, text_writer('This is not a test')
+    return HttpResponse(200, headers, text_writer('This is not a test'))
 
 
 app = Application(
@@ -86,7 +67,7 @@ elif HTTP_SERVER == "hypercorn":
     config.bind = ["0.0.0.0:9009"]
     loop.run_until_complete(
         serve(
-            app,
+            app, # type: ignore
             config,
             shutdown_trigger=shutdown_event.wait  # type: ignore
         )

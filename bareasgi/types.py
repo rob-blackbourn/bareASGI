@@ -71,7 +71,6 @@ class HttpError(Exception):
 Scope = Dict[str, Any]
 Message = Dict[str, Any]
 Context = Mapping[str, Any]
-Info = Dict[str, Any]
 
 Receive = Callable[[], Awaitable[Message]]
 Send = Callable[[Message], Awaitable[None]]
@@ -85,7 +84,7 @@ class LifespanRequest:
     def __init__(
             self,
             scope: Scope,
-            info: Info,
+            info: Dict[str, Any],
             message: Message
     ) -> None:
         self.scope = scope
@@ -154,12 +153,14 @@ class HttpRequest:
     def __init__(
             self,
             scope: Scope,
-            info: Info,
+            info: Dict[str, Any],
+            context: Dict[str, Any],
             matches: RouteMatches,
             body: AsyncIterable[bytes]
     ) -> None:
         self.scope = scope
         self.info = info
+        self.context = context
         self.matches = matches
         self.body = body
 
@@ -193,7 +194,7 @@ class WebSocketRequest:
     def __init__(
             self,
             scope: Scope,
-            info: Info,
+            info: Dict[str, Any],
             matches: RouteMatches,
             web_socket: WebSocket
     ) -> None:

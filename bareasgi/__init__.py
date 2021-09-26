@@ -19,7 +19,6 @@ from .application import Application
 from .types import (
     Scope,
     Header,
-    Info,
     RouteMatches,
     PushResponse,
     PushResponses,
@@ -39,7 +38,6 @@ __all__ = [
 
     "Scope",
     "Header",
-    "Info",
     "RouteMatches",
     "PushResponse",
     "PushResponses",

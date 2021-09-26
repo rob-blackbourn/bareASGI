@@ -3,11 +3,10 @@ A handler of lifecycle event requests
 """
 
 import logging
-from typing import List
+from typing import Any, Dict, List
 
 from .types import (
     Context,
-    Info,
     Scope,
     Send,
     Receive,
@@ -21,13 +20,18 @@ LOGGER = logging.getLogger(__name__)
 class LifespanInstance:
     """An instance factor for lifespan event requests"""
 
-    def __init__(self, scope: Scope, context: Context, info: Info) -> None:
+    def __init__(
+            self,
+            scope: Scope,
+            context: Context,
+            info: Dict[str, Any]
+    ) -> None:
         """Initialise a lifespan instance.
 
         Args:
             scope (Scope): The ASGI scope
             context (Context): The application context
-            info (Info): The user provided dict
+            info (Dict[str, Any]): The user provided dict
         """
         self.scope = scope
         self.context = context

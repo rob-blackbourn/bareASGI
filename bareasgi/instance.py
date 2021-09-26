@@ -3,12 +3,11 @@ An instance provider.
 """
 
 import logging
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Dict, Mapping
 
 from .types import (
     Scope,
     Context,
-    Info,
     Send,
     Receive,
     ASGIInstance
@@ -20,7 +19,7 @@ from .websocket_instance import WebSocketInstance
 
 LOGGER = logging.getLogger(__name__)
 
-InstanceFactory = Callable[[Scope, Any, Info], ASGIInstance]
+InstanceFactory = Callable[[Scope, Any, Dict[str, Any]], ASGIInstance]
 
 
 class Instance:
@@ -42,7 +41,7 @@ class Instance:
         scope_type = scope['type']
         klass = self.INSTANCES_CLASSES[scope_type]
         klass_context = context.get(scope_type)
-        info: Info = context['info']
+        info: Dict[str, Any] = context['info']
         LOGGER.debug(
             'Creating instance for "%s"',
             scope_type,

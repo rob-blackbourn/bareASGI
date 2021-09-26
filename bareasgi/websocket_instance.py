@@ -13,7 +13,6 @@ from typing import (
 
 from .types import (
     Scope,
-    Info,
     Header,
     Send,
     Receive,
@@ -103,7 +102,7 @@ class WebSocketInstance:
             self,
             scope: Scope,
             router: WebSocketRouter,
-            info: Info
+            info: Dict[str, Any]
     ) -> None:
         self.scope = scope
         self.info = info

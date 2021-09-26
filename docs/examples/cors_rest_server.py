@@ -5,10 +5,7 @@ import logging
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_reader,
     text_writer
@@ -18,28 +15,22 @@ from bareasgi_cors import CORSMiddleware
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def get_info(
-        _scope: Scope,
-        info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def get_info(request: HttpRequest) -> HttpResponse:
     """GET handler"""
-    text = json.dumps(info)
-    return 200, [(b'content-type', b'application/json')], text_writer(text)
+    text = json.dumps(request.info)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'application/json')],
+        text_writer(text)
+    )
 
 
-async def set_info(
-        _scope: Scope,
-        info: Info,
-        _matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def set_info(request: HttpRequest) -> HttpResponse:
     """POST handler"""
-    text = await text_reader(content)
+    text = await text_reader(request.body)
     data = json.loads(text)
-    info.update(data)
-    return 204
+    request.info.update(data)
+    return HttpResponse(204)
 
 
 if __name__ == "__main__":

@@ -61,10 +61,8 @@ class Application:
         from bareasgi import (
             Application,
             Scope,
-            Info,
-            RouteMatches,
-            Content,
-            WebSocket,
+            HttpRequest,
+            HttpResponse,
             text_reader,
             text_writer
         )

@@ -7,11 +7,10 @@ import asyncio
 from asyncio import Event
 from datetime import datetime
 import logging
-from typing import List
+from typing import Any, Dict, List
 
 from bareasgi import (
     Application,
-    Info,
     HttpRequest,
     LifespanRequest,
     HttpResponse,
@@ -24,7 +23,7 @@ logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger('background_tasks')
 
 
-async def time_ticker(info: Info, shutdown_event: Event) -> None:
+async def time_ticker(info: Dict[str, Any], shutdown_event: Event) -> None:
     """
     This is the background task. It prints the time every second until the
     cancellation event is set.
