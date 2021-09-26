@@ -16,7 +16,7 @@ import logging
 
 from bareutils import text_writer
 
-from .lifespan_instance import LifespanHandler
+from .lifespan import LifespanRequestHandler
 from .types import (
     Scope,
     HttpRouter,
@@ -49,8 +49,8 @@ class Application:
             middlewares: Optional[List[HttpMiddlewareCallback]] = None,
             http_router: Optional[HttpRouter] = None,
             web_socket_router: Optional[WebSocketRouter] = None,
-            startup_handlers: Optional[List[LifespanHandler]] = None,
-            shutdown_handlers: Optional[List[LifespanHandler]] = None,
+            startup_handlers: Optional[List[LifespanRequestHandler]] = None,
+            shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
             not_found_response: Optional[HttpResponse] = None,
             info: Optional[MutableMapping[str, Any]] = None
     ) -> None:
@@ -151,20 +151,20 @@ class Application:
         return self._context['websocket']
 
     @property
-    def startup_handlers(self) -> List[LifespanHandler]:
+    def startup_handlers(self) -> List[LifespanRequestHandler]:
         """Handlers run at startup
 
         Returns:
-            List[LifespanHandler]: The startup handlers
+            List[LifespanRequestHandler]: The startup handlers
         """
         return self._context['lifespan']['lifespan.startup']
 
     @property
-    def shutdown_handlers(self) -> List[LifespanHandler]:
+    def shutdown_handlers(self) -> List[LifespanRequestHandler]:
         """Handlers run on shutdown
 
         Returns:
-            List[LifespanHandler]: The shutdown handlers.
+            List[LifespanRequestHandler]: The shutdown handlers.
         """
         return self._context['lifespan']['lifespan.shutdown']
 
@@ -212,30 +212,30 @@ class Application:
 
     def on_startup(
             self,
-            callback: LifespanHandler
-    ) -> LifespanHandler:
+            callback: LifespanRequestHandler
+    ) -> LifespanRequestHandler:
         """A decorator to add a startup handler to the application
 
         Args:
-            callback (LifespanHandler): The startup handler.
+            callback (LifespanRequestHandler): The startup handler.
 
         Returns:
-            LifespanHandler: The decorated handler.
+            LifespanRequestHandler: The decorated handler.
         """
         self.startup_handlers.append(callback)
         return callback
 
     def on_shutdown(
             self,
-            callback: LifespanHandler
-    ) -> LifespanHandler:
+            callback: LifespanRequestHandler
+    ) -> LifespanRequestHandler:
         """A decorator to add a startup handler to the application
 
         Args:
-            callback (LifespanHandler): The shutdown handler.
+            callback (LifespanRequestHandler): The shutdown handler.
 
         Returns:
-            LifespanHandler: The decorated handler.
+            LifespanRequestHandler: The decorated handler.
         """
         self.shutdown_handlers.append(callback)
         return callback

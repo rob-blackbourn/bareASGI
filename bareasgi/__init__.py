@@ -19,7 +19,7 @@ from .application import Application
 from .errors import (
     HttpError,
 )
-from .lifespan_instance import LifespanRequest
+from .lifespan import LifespanRequest
 from .types import (
     Scope,
     PushResponse,

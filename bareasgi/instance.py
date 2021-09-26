@@ -12,7 +12,7 @@ from .types import (
     ASGIInstance
 )
 
-from .lifespan_instance import LifespanInstance
+from .lifespan import LifespanInstance
 from .http_instance import HttpInstance
 from .websockets import WebSocketInstance
 
