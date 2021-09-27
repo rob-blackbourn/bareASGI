@@ -3,7 +3,6 @@
 from .http_callbacks import (
     HttpRequestCallback,
     HttpMiddlewareCallback,
-    HttpChainedCallback
 )
 from .http_errors import HttpError
 from .http_instance import HttpInstance
@@ -20,7 +19,6 @@ __all__ = [
     'HttpRouter',
     'HttpRequestCallback',
     'HttpMiddlewareCallback',
-    'HttpChainedCallback',
     'PushResponse',
     'make_middleware_chain'
 ]

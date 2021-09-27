@@ -8,7 +8,6 @@ from typing import (
     Callable,
     Dict,
     List,
-    MutableMapping,
     Optional,
     cast
 )
@@ -24,7 +23,6 @@ from asgi_typing import (
     WebSocketScope,
     ASGIWebSocketReceiveCallable,
     ASGIWebSocketSendCallable,
-    ASGIWebSocketReceiveEvent,
     Scope,
     ASGISendCallable,
     ASGIReceiveCallable
@@ -74,8 +72,8 @@ class CoreApplication:
         )
         self.middlewares = middlewares or []
         self.ws_router = web_socket_router or BasicWebSocketRouter()
-        self.startup_handlers = startup_handlers
-        self.shutdown_handlers = shutdown_handlers
+        self.startup_handlers = startup_handlers or []
+        self.shutdown_handlers = shutdown_handlers or []
 
     async def _handle_http_request(
             self,
@@ -118,7 +116,7 @@ class CoreApplication:
         )
         await instance(receive, send)
 
-    async def __call__(
+    async def asgi(
             self,
             scope: Scope,
             receive: ASGIReceiveCallable,
@@ -139,11 +137,19 @@ class CoreApplication:
         elif scope['type'] == 'websocket':
             await self._handle_websocket_request(
                 cast(WebSocketScope, scope),
-                cast(ASGIWebSocketReceiveEvent, receive),
+                cast(ASGIWebSocketReceiveCallable, receive),
                 cast(ASGIWebSocketSendCallable, send)
             )
         else:
             raise ValueError('Unknown scope type: ' + scope['type'])
+
+    async def __call__(
+            self,
+            scope: Scope,
+            receive: ASGIReceiveCallable,
+            send: ASGISendCallable
+    ) -> None:
+        await self.asgi(scope, receive, send)
 
 
 class Application(CoreApplication):
@@ -158,7 +164,7 @@ class Application(CoreApplication):
             startup_handlers: Optional[List[LifespanRequestHandler]] = None,
             shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
             not_found_response: Optional[HttpResponse] = None,
-            info: Optional[MutableMapping[str, Any]] = None
+            info: Optional[Dict[str, Any]] = None
     ) -> None:
         """Construct the application
 
@@ -201,7 +207,7 @@ class Application(CoreApplication):
                 handlers to run at shutdown. Defaults to None.
             not_found_response (Optional[HttpResponse], optional): Optional not
                 found (404) response. Defaults to None.
-            info (Optional[MutableMapping[str, Any]], optional): Optional
+            info (Optional[Dict[str, Any]], optional): Optional
                 dictionary for user data. Defaults to None.
         """
         super().__init__(

@@ -9,11 +9,7 @@ HttpRequestCallback = Callable[
     [HttpRequest],
     Awaitable[HttpResponse]
 ]
-HttpChainedCallback = Callable[
-    [HttpRequest],
-    Awaitable[HttpResponse]
-]
 HttpMiddlewareCallback = Callable[
-    [HttpRequest, HttpChainedCallback],
+    [HttpRequest, HttpRequestCallback],
     Awaitable[HttpResponse]
 ]

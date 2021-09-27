@@ -4,7 +4,9 @@ An example of HTTP/2 server push.
 
 import asyncio
 import logging
+from typing import cast
 
+from asgi_typing import ASGI3Application
 from bareasgi import (
     Application,
     HttpRequest,
@@ -86,7 +88,7 @@ if __name__ == "__main__":
         uvicorn.run(app, port=9009)
     else:
         config = Config()
-        config.bind = ["ugsb-rbla01.bhdgsystematic.com:9009"]
-        config.certfile = "/home/BHDGSYSTEMATIC.COM/rblackbourn/.keys/ugsb-rbla01.crt"
-        config.keyfile = "/home/BHDGSYSTEMATIC.COM/rblackbourn/.keys/ugsb-rbla01.key"
-        asyncio.run(serve(app, config))
+        config.bind = ["example.com:9009"]
+        config.certfile = "~/.keys/ugsb-rbla01.crt"
+        config.keyfile = "~/.keys/ugsb-rbla01.key"
+        asyncio.run(serve(app.asgi, config))  # type: ignore

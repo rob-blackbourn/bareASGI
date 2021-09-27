@@ -15,7 +15,7 @@ from bareutils import (
 )
 
 from ..http import (
-    HttpChainedCallback,
+    HttpRequestCallback,
     HttpRequest,
     HttpResponse
 )
@@ -160,13 +160,13 @@ class CompressionMiddleware:
     async def __call__(
             self,
             request: HttpRequest,
-            handler: HttpChainedCallback
+            handler: HttpRequestCallback
     ) -> HttpResponse:
         """Call the handler and compress the body if appropriate.
 
         Args:
             request (HttpRequest): The request.
-            handler (HttpChainedCallback): The handler to call and possibly
+            handler (HttpRequestCallback): The handler to call and possibly
                 compress the output of.
 
         Returns:

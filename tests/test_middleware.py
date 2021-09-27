@@ -1,10 +1,11 @@
 """Tests for middleware"""
 
-from bareasgi.http import HttpChainedCallback
 import pytest
+
 from bareasgi import (
     HttpRequest,
     HttpResponse,
+    HttpRequestCallback,
     text_reader,
     text_writer
 )
@@ -16,7 +17,7 @@ async def test_middleware():
 
     async def first_middleware(
         request: HttpRequest,
-        handler: HttpChainedCallback,
+        handler: HttpRequestCallback,
     ) -> HttpResponse:
         request.info['path'].append('first')
         response = await handler(request)
@@ -24,7 +25,7 @@ async def test_middleware():
 
     async def second_middleware(
             request: HttpRequest,
-            handler: HttpChainedCallback,
+            handler: HttpRequestCallback,
     ) -> HttpResponse:
         request.info['path'].append('second')
         response = await handler(request)
