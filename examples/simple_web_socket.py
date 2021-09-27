@@ -36,6 +36,7 @@ async def index(request: HttpRequest) -> HttpResponse:
             header.find(b':authority', request.scope['headers'])
         ).decode('ascii')
     else:
+        assert request.scope['server'] is not None, 'server is None in scope'
         host, port = request.scope['server']
         authority = f'{host}:{port}'
     web_socket_url = f"{scheme}://{authority}/test/websocket"
@@ -180,6 +181,6 @@ if __name__ == "__main__":
         config = Config()
         config.bind = ["0.0.0.0:9009"]
         config.loglevel = 'debug'
-        config.certfile = certfile
-        config.keyfile = keyfile
+        # config.certfile = certfile
+        # config.keyfile = keyfile
         asyncio.run(serve(app, config))  # type: ignore

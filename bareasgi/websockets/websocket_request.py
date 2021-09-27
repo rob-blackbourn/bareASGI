@@ -8,7 +8,7 @@ from typing import (
     Mapping,
 )
 
-from ..types import Scope
+from asgi_typing import WebSocketScope
 
 from .websocket import WebSocket
 
@@ -17,7 +17,7 @@ class WebSocketRequest:
 
     def __init__(
             self,
-            scope: Scope,
+            scope: WebSocketScope,
             info: Dict[str, Any],
             context: Dict[str, Any],
             matches: Mapping[str, Any],

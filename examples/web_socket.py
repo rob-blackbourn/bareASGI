@@ -35,6 +35,7 @@ async def test_page(request: HttpRequest) -> HttpResponse:
             header.find(b':authority', request.scope['headers'])
         ).decode('ascii')
     else:
+        assert request.scope['server'] is not None, "scope missing server"
         host, port = request.scope['server']
         authority = f'{host}:{port}'
     web_socket_url = f"{scheme}://{authority}/test"

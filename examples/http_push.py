@@ -89,4 +89,4 @@ if __name__ == "__main__":
         config.bind = ["ugsb-rbla01.bhdgsystematic.com:9009"]
         config.certfile = "/home/BHDGSYSTEMATIC.COM/rblackbourn/.keys/ugsb-rbla01.crt"
         config.keyfile = "/home/BHDGSYSTEMATIC.COM/rblackbourn/.keys/ugsb-rbla01.key"
-        asyncio.run(serve(app, config))  # type: ignore
+        asyncio.run(serve(app, config))

@@ -11,8 +11,9 @@ packages = [
 repository = "https://github.com/rob-blackbourn/bareasgi"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 bareutils = "^4.0.0-alpha.0"
+jetblack-asgi-typing = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.4"

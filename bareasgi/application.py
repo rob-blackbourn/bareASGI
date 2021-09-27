@@ -8,29 +8,43 @@ from typing import (
     Callable,
     Dict,
     List,
-    Mapping,
     MutableMapping,
     Optional,
+    cast
 )
 import logging
 
+from asgi_typing import (
+    HTTPScope,
+    ASGIHTTPReceiveCallable,
+    ASGIHTTPSendCallable,
+    LifespanScope,
+    ASGILifespanReceiveCallable,
+    ASGILifespanSendCallable,
+    WebSocketScope,
+    ASGIWebSocketReceiveCallable,
+    ASGIWebSocketSendCallable,
+    ASGIWebSocketReceiveEvent,
+    Scope,
+    ASGISendCallable,
+    ASGIReceiveCallable
+)
 from bareutils import text_writer
 
 from .http import (
+    HttpInstance,
     HttpRouter,
     HttpResponse,
     HttpMiddlewareCallback,
     HttpRequestCallback
 )
-from .lifespan import LifespanRequestHandler
-from .types import (
-    Scope,
-    Send,
-    Receive
+from .lifespan import LifespanRequestHandler, LifespanInstance
+from .websockets import (
+    WebSocketRouter,
+    WebSocketRequestCallback,
+    WebSocketInstance
 )
-from .websockets import WebSocketRouter, WebSocketRequestCallback
 
-from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
 
 DEFAULT_NOT_FOUND_RESPONSE = HttpResponse(
@@ -42,7 +56,97 @@ DEFAULT_NOT_FOUND_RESPONSE = HttpResponse(
 LOGGER = logging.getLogger(__name__)
 
 
-class Application:
+class CoreApplication:
+
+    def __init__(
+            self,
+            middlewares: Optional[List[HttpMiddlewareCallback]] = None,
+            http_router: Optional[HttpRouter] = None,
+            web_socket_router: Optional[WebSocketRouter] = None,
+            startup_handlers: Optional[List[LifespanRequestHandler]] = None,
+            shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
+            not_found_response: Optional[HttpResponse] = None,
+            info: Optional[Dict[str, Any]] = None
+    ) -> None:
+        self.info: Dict[str, Any] = {} if info is None else info
+        self.http_router = http_router or BasicHttpRouter(
+            not_found_response or DEFAULT_NOT_FOUND_RESPONSE
+        )
+        self.middlewares = middlewares or []
+        self.ws_router = web_socket_router or BasicWebSocketRouter()
+        self.startup_handlers = startup_handlers
+        self.shutdown_handlers = shutdown_handlers
+
+    async def _handle_http_request(
+            self,
+            scope: HTTPScope,
+            receive: ASGIHTTPReceiveCallable,
+            send: ASGIHTTPSendCallable
+    ) -> None:
+        instance = HttpInstance(
+            scope,
+            self.http_router,
+            self.middlewares,
+            self.info
+        )
+        await instance(receive, send)
+
+    async def _handle_lifespan_request(
+            self,
+            scope: LifespanScope,
+            receive: ASGILifespanReceiveCallable,
+            send: ASGILifespanSendCallable
+    ) -> None:
+        instance = LifespanInstance(
+            scope,
+            self.startup_handlers,
+            self.shutdown_handlers,
+            self.info
+        )
+        await instance(receive, send)
+
+    async def _handle_websocket_request(
+            self,
+            scope: WebSocketScope,
+            receive: ASGIWebSocketReceiveCallable,
+            send: ASGIWebSocketSendCallable
+    ) -> None:
+        instance = WebSocketInstance(
+            scope,
+            self.ws_router,
+            self.info
+        )
+        await instance(receive, send)
+
+    async def __call__(
+            self,
+            scope: Scope,
+            receive: ASGIReceiveCallable,
+            send: ASGISendCallable
+    ) -> None:
+        if scope['type'] == 'http':
+            await self._handle_http_request(
+                cast(HTTPScope, scope),
+                cast(ASGIHTTPReceiveCallable, receive),
+                cast(ASGIHTTPSendCallable, send)
+            )
+        elif scope['type'] == 'lifespan':
+            await self._handle_lifespan_request(
+                cast(LifespanScope, scope),
+                cast(ASGILifespanReceiveCallable, receive),
+                cast(ASGILifespanSendCallable, send)
+            )
+        elif scope['type'] == 'websocket':
+            await self._handle_websocket_request(
+                cast(WebSocketScope, scope),
+                cast(ASGIWebSocketReceiveEvent, receive),
+                cast(ASGIWebSocketSendCallable, send)
+            )
+        else:
+            raise ValueError('Unknown scope type: ' + scope['type'])
+
+
+class Application(CoreApplication):
     """A class to hold the application."""
 
     def __init__(
@@ -100,75 +204,15 @@ class Application:
             info (Optional[MutableMapping[str, Any]], optional): Optional
                 dictionary for user data. Defaults to None.
         """
-        self._context: Mapping[str, Any] = {
-            'info': dict() if info is None else info,
-            'lifespan': {
-                'lifespan.startup': startup_handlers or [],
-                'lifespan.shutdown': shutdown_handlers or []
-            },
-            'http': {
-                'router': http_router or BasicHttpRouter(
-                    not_found_response or DEFAULT_NOT_FOUND_RESPONSE
-                ),
-                'middlewares': middlewares or []
-            },
-            'websocket': web_socket_router or BasicWebSocketRouter()
-        }
-
-    @property
-    def info(self) -> Dict[str, Any]:
-        """A place to sto application specific data.
-
-        Returns:
-            MutableMapping[str, Any]: A dictionary
-        """
-        return self._context['info']
-
-    @property
-    def middlewares(self) -> List[HttpMiddlewareCallback]:
-        """The middlewares.
-
-        Returns:
-            List[HttpMiddlewareCallback]: A list of the middleware to apply to
-                every route.
-        """
-        return self._context['http']['middlewares']
-
-    @property
-    def http_router(self) -> HttpRouter:
-        """Router for http routes
-
-        Returns:
-            HttpRouter: The http router.
-        """
-        return self._context['http']['router']
-
-    @property
-    def ws_router(self) -> WebSocketRouter:
-        """Router for WebSocket routes
-
-        Returns:
-            WebSocketRouter: The WebSocket router.
-        """
-        return self._context['websocket']
-
-    @property
-    def startup_handlers(self) -> List[LifespanRequestHandler]:
-        """Handlers run at startup
-
-        Returns:
-            List[LifespanRequestHandler]: The startup handlers
-        """
-        return self._context['lifespan']['lifespan.startup']
-
-    @property
-    def shutdown_handlers(self) -> List[LifespanRequestHandler]:
-        """Handlers run on shutdown
-
-        Returns:
-            List[LifespanRequestHandler]: The shutdown handlers.
-        """
-        return self._context['lifespan']['lifespan.shutdown']
+        super().__init__(
+            middlewares,
+            http_router,
+            web_socket_router,
+            startup_handlers,
+            shutdown_handlers,
+            not_found_response,
+            info
+        )
 
     def on_http_request(
             self,
@@ -241,8 +285,3 @@ class Application:
         """
         self.shutdown_handlers.append(callback)
         return callback
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        LOGGER.debug('Creating instance', extra={'scope': scope})
-        instance = Instance(self._context, scope)
-        await instance(receive, send)

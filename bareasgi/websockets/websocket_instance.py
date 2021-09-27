@@ -9,13 +9,19 @@ from typing import (
     List,
     Optional,
     Tuple,
-    Union
+    Union,
+    cast
 )
 
-from ..types import (
-    Scope,
-    Send,
-    Receive,
+from asgi_typing import (
+    WebSocketScope,
+    WebSocketAcceptEvent,
+    WebSocketCloseEvent,
+    WebSocketDisconnectEvent,
+    WebSocketReceiveEvent,
+    WebSocketSendEvent,
+    ASGIWebSocketReceiveCallable,
+    ASGIWebSocketSendCallable
 )
 
 from .websocket import WebSocket
@@ -29,7 +35,7 @@ LOGGER = logging.getLogger(__name__)
 class WebSocketImpl(WebSocket):
     """A concrete WebSocket implementation"""
 
-    def __init__(self, receive: Receive, send: Send):
+    def __init__(self, receive: ASGIWebSocketReceiveCallable, send: ASGIWebSocketSendCallable):
         self._receive = receive
         self._send = send
         self._code: Optional[int] = None
@@ -39,51 +45,64 @@ class WebSocketImpl(WebSocket):
             subprotocol: Optional[str] = None,
             headers: Optional[List[Tuple[bytes, bytes]]] = None
     ) -> None:
-        response: Dict[str, Any] = {'type': 'websocket.accept'}
-        if subprotocol:
-            response['subprotocol'] = subprotocol
-        if headers:
-            response['headers'] = headers
-        LOGGER.debug('Accepting', extra=response)
+        response: WebSocketAcceptEvent = {
+            'type': 'websocket.accept',
+            'subprotocol': subprotocol,
+            'headers': headers or []
+        }
+        LOGGER.debug('Accepting', extra=cast(Dict[str, Any], response))
         await self._send(response)
 
     async def receive(self) -> Optional[Union[bytes, str]]:
-        request = await self._receive()
-        request_type = request['type']
-        LOGGER.debug('Received "%s"', request_type, extra={'request': request})
+        event = await self._receive()
+        LOGGER.debug(
+            'Received "%s"',
+            event['type'],
+            extra=cast(Dict[str, Any], event)
+        )
 
-        if request_type == 'websocket.receive':
-            if 'bytes' in request and request['bytes']:
-                return request['bytes']
+        if event['type'] == 'websocket.receive':
+            receive_event = cast(WebSocketReceiveEvent, event)
+            if 'bytes' in receive_event and receive_event['bytes']:
+                return receive_event['bytes']
             else:
-                return request['text']
-        if request_type == 'websocket.disconnect':
-            self._code = request.get('code', 1000)
+                return receive_event['text']
+        if event['type'] == 'websocket.disconnect':
+            disconnect_event = cast(WebSocketDisconnectEvent, event)
+            self._code = disconnect_event.get('code', 1000)
             return None
 
         LOGGER.error(
             'Failed to understand request type "%s"',
-            request_type,
-            extra={'request': request}
+            event['type'],
+            extra=cast(Dict[str, Any], event)
         )
-        raise WebSocketInternalError(f'Unknown type: "{request_type}"')
+        raise WebSocketInternalError('Unknown type: ' + event['type'])
 
     async def send(self, content: Union[bytes, str]) -> None:
-        response: Dict[str, Any] = {'type': 'websocket.send'}
+        response: WebSocketSendEvent = {
+            'type': 'websocket.send',
+            'bytes': content if isinstance(content, bytes) else None,
+            'text': content if isinstance(content, str) else None
+        }
 
-        if isinstance(content, bytes):
-            response['bytes'] = content
-        elif isinstance(content, str):
-            response['text'] = content
-        else:
-            raise ValueError('Content must be bytes or str')
-
-        LOGGER.debug('Sending "%s"', response["type"], extra=response)
+        LOGGER.debug(
+            'Sending "%s"',
+            response["type"],
+            extra=cast(Dict[str, Any], response)
+        )
         await self._send(response)
 
     async def close(self, code: int = 1000) -> None:
-        response = {'type': 'websocket.close', 'code': code}
-        LOGGER.debug('Closing with code %d', code, extra=response)
+        response: WebSocketCloseEvent = {
+            'type': 'websocket.close',
+            'code': code
+        }
+        LOGGER.debug(
+            'Closing with code %d',
+            code,
+            extra=cast(Dict[str, Any], response)
+        )
         await self._send(response)
 
     @property
@@ -101,7 +120,7 @@ class WebSocketInstance:
 
     def __init__(
             self,
-            scope: Scope,
+            scope: WebSocketScope,
             router: WebSocketRouter,
             info: Dict[str, Any]
     ) -> None:
@@ -112,8 +131,11 @@ class WebSocketInstance:
             raise ValueError(f"No handler for path {scope['path']}")
         self.handler, self.matches = handler, matches
 
-    async def __call__(self, receive: Receive, send: Send):
-
+    async def __call__(
+            self,
+            receive: ASGIWebSocketReceiveCallable,
+            send: ASGIWebSocketSendCallable
+    ) -> None:
         request = await receive()
         request_type = request['type']
         LOGGER.debug('Received "%s"', request_type, extra={'request': request})

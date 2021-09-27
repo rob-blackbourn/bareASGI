@@ -2,16 +2,15 @@
 
 from typing import Any, AsyncIterable, Dict, Mapping
 
+from asgi_typing import HTTPScope
 from bareutils import header
-
-from ..types import Scope
 
 
 class HttpRequest:
 
     def __init__(
             self,
-            scope: Scope,
+            scope: HTTPScope,
             info: Dict[str, Any],
             context: Dict[str, Any],
             matches: Mapping[str, Any],

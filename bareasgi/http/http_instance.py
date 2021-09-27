@@ -8,17 +8,21 @@ import logging
 from typing import (
     Any,
     Dict,
-    Mapping,
-    Optional,
     Sequence,
-    Set
+    Set,
+    cast
 )
 
-from ..types import (
-    Scope,
-    Send,
-    Receive,
+from asgi_typing import (
+    HTTPResponseBodyEvent,
+    HTTPScope,
+    ASGIHTTPReceiveCallable,
+    ASGIHTTPSendCallable,
+    HTTPRequestEvent,
+    HTTPResponseStartEvent,
+    HTTPServerPushEvent
 )
+
 from ..utils import anext
 
 from .http_callbacks import HttpMiddlewareCallback
@@ -36,7 +40,7 @@ class BodyIterator:
 
     def __init__(
             self,
-            receive: Receive,
+            receive: ASGIHTTPReceiveCallable,
             body: bytes,
             more_body: bool
     ) -> None:
@@ -81,8 +85,9 @@ class BodyIterator:
             )
             raise HttpInternalError
 
-        body = request.get('body', b'')
-        self._more_body = request.get('more_body', False)
+        http_request_event = cast(HTTPRequestEvent, request)
+        body = http_request_event.get('body', b'')
+        self._more_body = http_request_event.get('more_body', False)
         return body
 
     async def flush(self) -> None:
@@ -99,23 +104,16 @@ class HttpInstance:
 
     def __init__(
             self,
-            scope: Scope,
-            context: Mapping[str, Any],
+            scope: HTTPScope,
+            router: HttpRouter,
+            middleware: Middlewares,
             info: Dict[str, Any]
     ) -> None:
-        """Initialise an HTTP instance
-
-        Args:
-            scope (Scope): The ASGI connection scope
-            context (Mapping[str, Any]): The application context
-            info (Dict[str, Any]): The user provided dictionary
-        """
         self.scope = scope
         self.info = info
 
         # Find the route.
-        http_router: HttpRouter = context['router']
-        handler, matches = http_router.resolve(scope['method'], scope['path'])
+        handler, matches = router.resolve(scope['method'], scope['path'])
         if handler is None:
             raise ValueError(
                 f"Handler not found for {scope['method']} {scope['path']}"
@@ -123,7 +121,6 @@ class HttpInstance:
         self.handler, self.matches = handler, matches
 
         # Apply middleware.
-        middleware: Optional[Middlewares] = context['middlewares']
         if middleware:
             self.handler = make_middleware_chain(
                 *middleware,
@@ -137,29 +134,29 @@ class HttpInstance:
     @property
     def _is_http_push_supported(self) -> bool:
         extensions = self.scope.get('extensions', {})
-        return self._is_http_2 and 'http.response.push' in extensions
+        return (
+            self._is_http_2 and
+            extensions is not None and
+            'http.response.push' in extensions
+        )
 
     # pylint: disable=too-many-arguments
     async def _send_response(
             self,
-            send: Send,
+            send: ASGIHTTPSendCallable,
             response: HttpResponse
     ) -> None:
         # Create and send the start response.
-        response_start = {
+        response_start: HTTPResponseStartEvent = {
             'type': 'http.response.start',
-            'status': response.status
+            'status': response.status,
+            'headers': response.headers if response.headers else []
         }
-        if response.headers:
-            response_start['headers'] = response.headers
-        else:
-            # Needed for Hypercorn 0.7.1
-            response_start['headers'] = []
 
         LOGGER.debug(
             'Sending "http.response.start" with status %s',
             response.status,
-            extra=response_start
+            extra=cast(Dict[str, Any], response_start)
         )
         await send(response_start)
 
@@ -169,14 +166,14 @@ class HttpInstance:
                     'sending "http.response.push" for path "%s"',
                     push_path
                 )
-                await send({
+                http_push_response: HTTPServerPushEvent = {
                     'type': 'http.response.push',
                     'path': push_path,
                     'headers': push_headers
-                })
+                }
+                await send(http_push_response)
 
         # Create and send the response body.
-        response_body: Dict[str, Any] = {'type': 'http.response.body'}
 
         # If we don't get a body, just send the basic response.
         try:
@@ -184,31 +181,45 @@ class HttpInstance:
         except StopAsyncIteration:
             buf = None
         if buf is None:
+            http_response_body: HTTPResponseBodyEvent = {
+                'type': 'http.response.body',
+                'body': b'',
+                'more_body': False
+            }
             LOGGER.debug(
                 'Sending "http.response.body" with empty body',
-                extra=response_body
+                extra=cast(Dict[str, Any], http_response_body)
             )
-            await send(response_body)
+            await send(http_response_body)
             return
 
         # Continue to get and send the body until exhausted.
         while buf is not None:
-            response_body['body'] = buf
+            body = buf
             try:
                 buf = await anext(response.body)
-                response_body['more_body'] = True
+                more_body = True
             except StopAsyncIteration:
                 buf = None
-                response_body['more_body'] = False
-            LOGGER.debug(
-                'Sending "http.response.body" with more_body="%s',
-                response_body["more_body"],
-                extra=response_body
-            )
-            if response_body['body']:
-                await send(response_body)
+                more_body = False
+            if body:
+                http_response_body = {
+                    'type': 'http.response.body',
+                    'body': body,
+                    'more_body': more_body
+                }
+                LOGGER.debug(
+                    'Sending "http.response.body" with more_body="%s',
+                    more_body,
+                    extra=cast(Dict[str, Any], http_response_body)
+                )
+                await send(http_response_body)
 
-    async def __call__(self, receive: Receive, send: Send) -> None:
+    async def __call__(
+            self,
+            receive: ASGIHTTPReceiveCallable,
+            send: ASGIHTTPSendCallable
+    ) -> None:
 
         LOGGER.debug('start handling request')
 
