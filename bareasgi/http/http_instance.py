@@ -8,7 +8,7 @@ import logging
 from typing import (
     Any,
     Dict,
-    Sequence,
+    Iterable,
     Set,
     cast
 )
@@ -70,33 +70,33 @@ class BodyIterator:
         return await self._read()
 
     async def _read(self) -> bytes:
-        request = await self._receive()
-        request_type = request['type']
-        LOGGER.debug('Received "%s"', request_type, extra={'request': request})
+        event = await self._receive()
+        LOGGER.debug(
+            'Received "%s"',
+            event['type'],
+            extra=cast(Dict[str, Any], event)
+        )
 
-        if request_type == 'http.disconnect':
+        if event['type'] == 'http.disconnect':
             raise HttpDisconnectError
 
-        if request_type != 'http.request':
+        if event['type'] != 'http.request':
             LOGGER.error(
                 'Failed to understand request type "%s"',
-                request_type,
-                extra={'request': request}
+                event['type'],
+                extra=cast(Dict[str, Any], event)
             )
             raise HttpInternalError
 
-        http_request_event = cast(HTTPRequestEvent, request)
-        body = http_request_event.get('body', b'')
-        self._more_body = http_request_event.get('more_body', False)
+        request_event = cast(HTTPRequestEvent, event)
+        body = request_event.get('body', b'')
+        self._more_body = request_event.get('more_body', False)
         return body
 
     async def flush(self) -> None:
         """Flush all remaining http.request messages"""
         while self._more_body:
             await self._queue.put(await self._read())
-
-
-Middlewares = Sequence[HttpMiddlewareCallback]
 
 
 class HttpInstance:
@@ -106,21 +106,23 @@ class HttpInstance:
             self,
             scope: HTTPScope,
             router: HttpRouter,
-            middleware: Middlewares,
+            middleware: Iterable[HttpMiddlewareCallback],
             info: Dict[str, Any]
     ) -> None:
         self.scope = scope
         self.info = info
 
         # Find the route.
-        handler, matches = router.resolve(scope['method'], scope['path'])
-        if handler is None:
+        self.handler, self.matches = router.resolve(
+            scope['method'],
+            scope['path']
+        )
+        if self.handler is None:
             raise ValueError(
                 f"Handler not found for {scope['method']} {scope['path']}"
             )
-        self.handler, self.matches = handler, matches
 
-        # Apply middleware.
+        # Assemble any middleware.
         if middleware:
             self.handler = make_middleware_chain(
                 *middleware,
@@ -140,25 +142,24 @@ class HttpInstance:
             'http.response.push' in extensions
         )
 
-    # pylint: disable=too-many-arguments
     async def _send_response(
             self,
             send: ASGIHTTPSendCallable,
             response: HttpResponse
     ) -> None:
         # Create and send the start response.
-        response_start: HTTPResponseStartEvent = {
+        response_start_event: HTTPResponseStartEvent = {
             'type': 'http.response.start',
             'status': response.status,
-            'headers': response.headers if response.headers else []
+            'headers': response.headers or []
         }
 
         LOGGER.debug(
             'Sending "http.response.start" with status %s',
             response.status,
-            extra=cast(Dict[str, Any], response_start)
+            extra=cast(Dict[str, Any], response_start_event)
         )
-        await send(response_start)
+        await send(response_start_event)
 
         if response.pushes is not None and self._is_http_push_supported:
             for push_path, push_headers in response.pushes:
@@ -166,12 +167,12 @@ class HttpInstance:
                     'sending "http.response.push" for path "%s"',
                     push_path
                 )
-                http_push_response: HTTPServerPushEvent = {
+                server_push_event: HTTPServerPushEvent = {
                     'type': 'http.response.push',
                     'path': push_path,
                     'headers': push_headers
                 }
-                await send(http_push_response)
+                await send(server_push_event)
 
         # Create and send the response body.
 
@@ -181,16 +182,16 @@ class HttpInstance:
         except StopAsyncIteration:
             buf = None
         if buf is None:
-            http_response_body: HTTPResponseBodyEvent = {
+            response_body_event: HTTPResponseBodyEvent = {
                 'type': 'http.response.body',
                 'body': b'',
                 'more_body': False
             }
             LOGGER.debug(
                 'Sending "http.response.body" with empty body',
-                extra=cast(Dict[str, Any], http_response_body)
+                extra=cast(Dict[str, Any], response_body_event)
             )
-            await send(http_response_body)
+            await send(response_body_event)
             return
 
         # Continue to get and send the body until exhausted.
@@ -203,7 +204,7 @@ class HttpInstance:
                 buf = None
                 more_body = False
             if body:
-                http_response_body = {
+                response_body_event = {
                     'type': 'http.response.body',
                     'body': body,
                     'more_body': more_body
@@ -211,9 +212,9 @@ class HttpInstance:
                 LOGGER.debug(
                     'Sending "http.response.body" with more_body="%s',
                     more_body,
-                    extra=cast(Dict[str, Any], http_response_body)
+                    extra=cast(Dict[str, Any], response_body_event)
                 )
-                await send(http_response_body)
+                await send(response_body_event)
 
     async def __call__(
             self,
@@ -225,8 +226,8 @@ class HttpInstance:
 
         # The first step is to receive the ASGI request.
         try:
-            request = await receive()
-            if request['type'] != 'http.request':
+            event = await receive()
+            if event['type'] != 'http.request':
                 raise HttpInternalError('Expected http.request')
         except asyncio.CancelledError:
             # At this stage we only handle a cancellation. All
@@ -236,8 +237,8 @@ class HttpInstance:
         # The next step is to call the handler.
         body = BodyIterator(
             receive,
-            request.get('body', b''),
-            request.get('more_body', False)
+            event.get('body', b''),
+            event.get('more_body', False)
         )
         try:
             response = await self.handler(
@@ -277,8 +278,8 @@ class HttpInstance:
                 )
 
                 if receive_task in done:
-                    request = receive_task.result()
-                    LOGGER.debug('request: %s', request)
+                    event = receive_task.result()
+                    LOGGER.debug('event: %s', event)
 
                     # Cancel pending tasks.
                     for task in pending:
@@ -289,9 +290,9 @@ class HttpInstance:
                             pass
 
                     # Check for abnormal disconnection.
-                    if request['type'] != 'http.disconnect':
+                    if event['type'] != 'http.disconnect':
                         raise HttpInternalError(
-                            'Unexpected request type "{request["type"]}"'
+                            f'Unexpected request type "{event["type"]}"'
                         )
 
                     LOGGER.debug('disconnecting')

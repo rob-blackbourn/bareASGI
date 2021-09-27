@@ -2,6 +2,8 @@
 bareASGI exports
 """
 
+from asgi_typing import Scope
+
 from bareutils import (
     text_reader,
     text_writer,
@@ -25,7 +27,6 @@ from .http import (
     PushResponse
 )
 from .lifespan import LifespanRequest
-from .types import Scope
 from .websockets import WebSocket, WebSocketRequest
 
 __all__ = [

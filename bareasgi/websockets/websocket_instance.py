@@ -45,13 +45,13 @@ class WebSocketImpl(WebSocket):
             subprotocol: Optional[str] = None,
             headers: Optional[List[Tuple[bytes, bytes]]] = None
     ) -> None:
-        response: WebSocketAcceptEvent = {
+        accept_event: WebSocketAcceptEvent = {
             'type': 'websocket.accept',
             'subprotocol': subprotocol,
             'headers': headers or []
         }
-        LOGGER.debug('Accepting', extra=cast(Dict[str, Any], response))
-        await self._send(response)
+        LOGGER.debug('Accepting', extra=cast(Dict[str, Any], accept_event))
+        await self._send(accept_event)
 
     async def receive(self) -> Optional[Union[bytes, str]]:
         event = await self._receive()
@@ -136,11 +136,14 @@ class WebSocketInstance:
             receive: ASGIWebSocketReceiveCallable,
             send: ASGIWebSocketSendCallable
     ) -> None:
-        request = await receive()
-        request_type = request['type']
-        LOGGER.debug('Received "%s"', request_type, extra={'request': request})
+        event = await receive()
+        LOGGER.debug(
+            'Received "%s"',
+            event['type'],
+            extra=cast(Dict[str, Any], event)
+        )
 
-        if request_type == 'websocket.connect':
+        if event['type'] == 'websocket.connect':
             await self.handler(
                 WebSocketRequest(
                     self.scope,
@@ -150,14 +153,14 @@ class WebSocketInstance:
                     WebSocketImpl(receive, send)
                 )
             )
-        elif request_type == 'websocket.disconnect':
+        elif event['type'] == 'websocket.disconnect':
             pass
         else:
             LOGGER.error(
-                'Failed to understand request type "%s"',
-                request_type,
-                extra={'request': request}
+                'Failed to understand event type "%s"',
+                event['type'],
+                extra=cast(Dict[str, Any], event)
             )
             raise WebSocketInternalError(
-                f'Unknown request type "{request_type}'
+                f'Unknown request type "{event["type"]}'
             )

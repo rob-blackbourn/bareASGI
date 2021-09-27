@@ -95,16 +95,16 @@ class LifespanInstance:
         has_shutdown = False
         while has_shutdown:
             # Fetch the lifespan request
-            request = await receive()
+            event = await receive()
 
             LOGGER.debug(
-                'Handling request for "%s"',
-                request['type'],
-                extra=cast(Dict[str, Any], request)
+                'Handling event for "%s"',
+                event['type'],
+                extra=cast(Dict[str, Any], event)
             )
 
-            if request['type'] == 'lifespan.startup':
+            if event['type'] == 'lifespan.startup':
                 await self._handle_startup_event(send)
-            elif request['type'] == 'lifespan.shutdown':
+            elif event['type'] == 'lifespan.shutdown':
                 await self._handle_shutdown_event(send)
                 has_shutdown = True

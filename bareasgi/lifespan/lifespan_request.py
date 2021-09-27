@@ -25,5 +25,4 @@ class LifespanRequest:
         self.info = info
 
 
-# LifespanRequestHandler = Callable[[LifespanRequest], Coroutine[Any, Any, None]]
 LifespanRequestHandler = Callable[[LifespanRequest], Awaitable[None]]
