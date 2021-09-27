@@ -3,7 +3,6 @@ An example of raising exceptions
 """
 
 import logging
-from typing import List, Tuple
 
 import pkg_resources
 import uvicorn
