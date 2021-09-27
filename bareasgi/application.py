@@ -1,155 +1,36 @@
-"""
-ASGI Application
-"""
+"""ASGI Application"""
 
+import logging
 from typing import (
     AbstractSet,
     Any,
     Callable,
     Dict,
     List,
-    Optional,
-    cast
+    Optional
 )
-import logging
 
-from asgi_typing import (
-    HTTPScope,
-    ASGIHTTPReceiveCallable,
-    ASGIHTTPSendCallable,
-    LifespanScope,
-    ASGILifespanReceiveCallable,
-    ASGILifespanSendCallable,
-    WebSocketScope,
-    ASGIWebSocketReceiveCallable,
-    ASGIWebSocketSendCallable,
-    Scope,
-    ASGISendCallable,
-    ASGIReceiveCallable
-)
 from bareutils import text_writer
 
 from .http import (
-    HttpInstance,
     HttpRouter,
     HttpResponse,
     HttpMiddlewareCallback,
     HttpRequestCallback
 )
-from .lifespan import LifespanRequestHandler, LifespanInstance
-from .websockets import (
-    WebSocketRouter,
-    WebSocketRequestCallback,
-    WebSocketInstance
-)
+from .lifespan import LifespanRequestHandler
+from .websockets import WebSocketRouter, WebSocketRequestCallback
 
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
+from .core_application import CoreApplication
+
+LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NOT_FOUND_RESPONSE = HttpResponse(
     404,
     [(b'content-type', b'text/plain')],
     text_writer('Not Found')
 )
-
-LOGGER = logging.getLogger(__name__)
-
-
-class CoreApplication:
-
-    def __init__(
-            self,
-            middlewares: Optional[List[HttpMiddlewareCallback]] = None,
-            http_router: Optional[HttpRouter] = None,
-            web_socket_router: Optional[WebSocketRouter] = None,
-            startup_handlers: Optional[List[LifespanRequestHandler]] = None,
-            shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
-            not_found_response: Optional[HttpResponse] = None,
-            info: Optional[Dict[str, Any]] = None
-    ) -> None:
-        self.info: Dict[str, Any] = {} if info is None else info
-        self.http_router = http_router or BasicHttpRouter(
-            not_found_response or DEFAULT_NOT_FOUND_RESPONSE
-        )
-        self.middlewares = middlewares or []
-        self.ws_router = web_socket_router or BasicWebSocketRouter()
-        self.startup_handlers = startup_handlers or []
-        self.shutdown_handlers = shutdown_handlers or []
-
-    async def _handle_http_request(
-            self,
-            scope: HTTPScope,
-            receive: ASGIHTTPReceiveCallable,
-            send: ASGIHTTPSendCallable
-    ) -> None:
-        instance = HttpInstance(
-            scope,
-            self.http_router,
-            self.middlewares,
-            self.info
-        )
-        await instance(receive, send)
-
-    async def _handle_lifespan_request(
-            self,
-            scope: LifespanScope,
-            receive: ASGILifespanReceiveCallable,
-            send: ASGILifespanSendCallable
-    ) -> None:
-        instance = LifespanInstance(
-            scope,
-            self.startup_handlers,
-            self.shutdown_handlers,
-            self.info
-        )
-        await instance(receive, send)
-
-    async def _handle_websocket_request(
-            self,
-            scope: WebSocketScope,
-            receive: ASGIWebSocketReceiveCallable,
-            send: ASGIWebSocketSendCallable
-    ) -> None:
-        instance = WebSocketInstance(
-            scope,
-            self.ws_router,
-            self.info
-        )
-        await instance(receive, send)
-
-    async def asgi(
-            self,
-            scope: Scope,
-            receive: ASGIReceiveCallable,
-            send: ASGISendCallable
-    ) -> None:
-        if scope['type'] == 'http':
-            await self._handle_http_request(
-                cast(HTTPScope, scope),
-                cast(ASGIHTTPReceiveCallable, receive),
-                cast(ASGIHTTPSendCallable, send)
-            )
-        elif scope['type'] == 'lifespan':
-            await self._handle_lifespan_request(
-                cast(LifespanScope, scope),
-                cast(ASGILifespanReceiveCallable, receive),
-                cast(ASGILifespanSendCallable, send)
-            )
-        elif scope['type'] == 'websocket':
-            await self._handle_websocket_request(
-                cast(WebSocketScope, scope),
-                cast(ASGIWebSocketReceiveCallable, receive),
-                cast(ASGIWebSocketSendCallable, send)
-            )
-        else:
-            raise ValueError('Unknown scope type: ' + scope['type'])
-
-    async def __call__(
-            self,
-            scope: Scope,
-            receive: ASGIReceiveCallable,
-            send: ASGISendCallable
-    ) -> None:
-        await self.asgi(scope, receive, send)
 
 
 class Application(CoreApplication):
@@ -163,7 +44,7 @@ class Application(CoreApplication):
             web_socket_router: Optional[WebSocketRouter] = None,
             startup_handlers: Optional[List[LifespanRequestHandler]] = None,
             shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
-            not_found_response: Optional[HttpResponse] = None,
+            not_found_response: HttpResponse = DEFAULT_NOT_FOUND_RESPONSE,
             info: Optional[Dict[str, Any]] = None
     ) -> None:
         """Construct the application
@@ -206,18 +87,17 @@ class Application(CoreApplication):
             shutdown_handlers (Optional[List[LifespanHandler]], optional): Optional
                 handlers to run at shutdown. Defaults to None.
             not_found_response (Optional[HttpResponse], optional): Optional not
-                found (404) response. Defaults to None.
+                found (404) response. Defaults to DEFAULT_NOT_FOUND_RESPONSE.
             info (Optional[Dict[str, Any]], optional): Optional
                 dictionary for user data. Defaults to None.
         """
         super().__init__(
-            middlewares,
-            http_router,
-            web_socket_router,
-            startup_handlers,
-            shutdown_handlers,
-            not_found_response,
-            info
+            middlewares or [],
+            http_router or BasicHttpRouter(not_found_response),
+            web_socket_router or BasicWebSocketRouter(),
+            startup_handlers or [],
+            shutdown_handlers or [],
+            info or {}
         )
 
     def on_http_request(
