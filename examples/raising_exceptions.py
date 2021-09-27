@@ -41,6 +41,9 @@ async def index_handler(_request: HttpRequest) -> HttpResponse:
         <li><a href="/raise_writer_exception">
             Raise a 401 exception with a writer providing content
         </li>
+        <li><a href="/raise_value_error">
+            Raise a ValueError exception
+        </li>
     </ul>
   </body>
 </html>
@@ -53,19 +56,15 @@ async def index_handler(_request: HttpRequest) -> HttpResponse:
 
 async def raise_none_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception no content"""
-    raise HttpError(
-        401,
-        url=request.url
-    )
+    raise HttpError(401)
 
 
 async def raise_text_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with text content"""
     raise HttpError(
         401,
-        'Unauthorized - text',
-        request.url,
         [(b'content-type', b'text/plain')],
+        'Unauthorized - text',
     )
 
 
@@ -73,9 +72,8 @@ async def raise_bytes_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with bytes content"""
     raise HttpError(
         401,
-        b'Unauthorized - bytes',
-        request.url,
         [(b'content-type', b'text/plain')],
+        b'Unauthorized - bytes',
     )
 
 
@@ -83,10 +81,14 @@ async def raise_writer_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with a writer content"""
     raise HttpError(
         401,
+        [(b'content-type', b'text/plain')],
         text_writer('Unauthorized - writer'),
-        request.url,
-        [(b'content-type', b'text/plain')]
     )
+
+
+async def raise_value_error(request: HttpRequest) -> HttpResponse:
+    """A request handler which raises a ValueError exception"""
+    raise ValueError('A ValueError exception')
 
 
 if __name__ == "__main__":
@@ -117,6 +119,11 @@ if __name__ == "__main__":
         {'GET'},
         '/raise_writer_exception',
         raise_writer_exception
+    )
+    app.http_router.add(
+        {'GET'},
+        '/raise_value_error',
+        raise_value_error
     )
 
     uvicorn.run(app, port=9009)

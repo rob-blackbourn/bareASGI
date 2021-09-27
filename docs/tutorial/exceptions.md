@@ -18,33 +18,28 @@ import pkg_resources
 import uvicorn
 
 async def index_handler(request):
-    headers = [
-        (b'content-type', b'text/html')
-    ]
-    return 200, headers, text_writer(info['html'])
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(info['html'])
+    )
 
 
 async def raise_none_exception(request):
-    raise HttpError(
-        401,
-        url=request.url
-    )
+    raise HttpError(401)
 
 async def raise_text_exception(request):
     raise HttpError(
         401,
         'Unauthorized - text',
-        url=request.url,
         [(b'content-type', b'text/plain')],
     )
 
 async def raise_bytes_exception(request):
     raise HttpError(
         401,
-        url=request.url,
         b'Unauthorized - bytes',
-        [(b'content-type', b'text/plain')],
-        None
+        [(b'content-type', b'text/plain')]
     )
 
 
@@ -52,13 +47,15 @@ async def raise_writer_exception(request):
     raise HttpError(
         401,
         text_writer('Unauthorized - writer'),
-        url=request.url,
-        [(b'content-type', b'text/plain')],
-        None
+        [(b'content-type', b'text/plain')]
     )
 
-html_filename = pkg_resources.resource_filename(__name__, "server_sent_events.html")
-with open(html_filename, 'rt') as file_ptr:
+html_filename = pkg_resources.resource_filename(
+    __name__,
+    "server_sent_events.html"
+)
+
+with open(html_filename, 'rt', encoding='utf-8') as file_ptr:
     html = file_ptr.read()
 
 app = Application(info=dict(html=html))

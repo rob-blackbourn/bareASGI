@@ -25,15 +25,13 @@ class HttpError(Exception):
     def __init__(
             self,
             status: int,
-            message: Optional[Union[bytes, str, AsyncIterable[bytes]]] = None,
-            url: Optional[str] = None,
-            headers: Optional[List[Tuple[bytes, bytes]]] = None
+            headers: Optional[List[Tuple[bytes, bytes]]] = None,
+            message: Optional[Union[bytes, str, AsyncIterable[bytes]]] = None
     ) -> None:
         super().__init__()
         self.status = status
-        self.url = url
-        self.message = message
         self.headers = headers
+        self.message = message
 
     @property
     def body(self) -> Optional[AsyncIterable[bytes]]:

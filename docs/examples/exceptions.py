@@ -22,27 +22,24 @@ logging.basicConfig(level=logging.DEBUG)
 
 async def index_handler(request: HttpRequest) -> HttpResponse:
     """The index page"""
-    headers: List[Tuple[bytes, bytes]] = [
-        (b'content-type', b'text/html')
-    ]
-    return HttpResponse(200, headers, text_writer(request.info['html']))
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(request.info['html'])
+    )
 
 
 async def raise_none_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception no content"""
-    raise HttpError(
-        401,
-        url=request.url,
-    )
+    raise HttpError(401)
 
 
 async def raise_text_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with text content"""
     raise HttpError(
         401,
+        [(b'content-type', b'text/plain')],
         'Unauthorized - text',
-        request.url,
-        [(b'content-type', b'text/plain')]
     )
 
 
@@ -50,9 +47,8 @@ async def raise_bytes_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with bytes content"""
     raise HttpError(
         401,
+        [(b'content-type', b'text/plain')],
         b'Unauthorized - bytes',
-        request.url,
-        [(b'content-type', b'text/plain')]
     )
 
 
@@ -60,9 +56,8 @@ async def raise_writer_exception(request: HttpRequest) -> HttpResponse:
     """A request handler which raises an exception with a writer content"""
     raise HttpError(
         401,
+        [(b'content-type', b'text/plain')],
         text_writer('Unauthorized - writer'),
-        request.url,
-        [(b'content-type', b'text/plain')]
     )
 
 
