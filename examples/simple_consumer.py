@@ -39,7 +39,7 @@ if __name__ == "__main__":
     app = Application(middlewares=[compression_middleware])
     app.http_router.add({'GET'}, '/consume', http_request_callback)
 
-    hostname = socket.getfqdn()  # pylint: disable=invalid-name
+    hostname = socket.getfqdn()
 
     config = Config()
     config.bind = [f"{hostname}:9005"]

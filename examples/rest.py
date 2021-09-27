@@ -16,7 +16,6 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-# pylint: disable=unused-argument
 async def get_info(request: HttpRequest) -> HttpResponse:
     """Write out the info a dictionary as JSON"""
     text = json.dumps(request.info)

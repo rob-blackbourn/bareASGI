@@ -31,9 +31,9 @@ async def http_request_callback(_request: HttpRequest) -> HttpResponse:
 if __name__ == "__main__":
     import uvicorn
 
-    # pylint: disable=invalid-name
     compression_middleware = make_default_compression_middleware(
-        minimum_size=1024)
+        minimum_size=1024
+    )
 
     app = Application(middlewares=[compression_middleware])
 

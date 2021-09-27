@@ -46,7 +46,6 @@ class InfoController:
 if __name__ == "__main__":
     import uvicorn
 
-    # pylint: disable=invalid-name
     application = Application(info={'name': 'Michael Caine'})
 
     info_controller = InfoController()

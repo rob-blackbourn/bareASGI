@@ -6,6 +6,7 @@ from typing import AbstractSet, Any, Mapping, Tuple
 from .http_callbacks import HttpRequestCallback
 from .http_response import HttpResponse
 
+
 class HttpRouter(metaclass=ABCMeta):
     """The interface for an HTTP router"""
 

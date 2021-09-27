@@ -35,7 +35,6 @@ class InfoController:
             text_writer(text)
         )
 
-    # pylint: disable=unused-argument
     async def set_info(self, request: HttpRequest) -> HttpResponse:
         """A response handle which updates the info property with a json payload"""
         text = await text_reader(request.body)
@@ -47,7 +46,6 @@ class InfoController:
 if __name__ == "__main__":
     import uvicorn
 
-    # pylint: disable=invalid-name
     application = Application(info={'name': 'Michael Caine'})
 
     info_controller = InfoController()

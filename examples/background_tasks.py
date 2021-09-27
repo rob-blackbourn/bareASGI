@@ -101,7 +101,6 @@ if __name__ == "__main__":
     import uvicorn
 
     # Create the application with startup and shutdown handlers.
-    # pylint: disable=invalid-name
     app = Application(
         startup_handlers=[time_ticker_startup_handler],
         shutdown_handlers=[time_ticker_shutdown_handler]

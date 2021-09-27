@@ -68,10 +68,9 @@ class BasicHttpRouter(HttpRouter):
         path_definition_list = self._routes.setdefault(method, [])
         path_definition_list.append((path_definition, callback))
 
-    # pylint: disable=unused-argument
     async def _not_found(
             self,
-            request: HttpRequest
+            _request: HttpRequest
     ) -> HttpResponse:
         return self._not_found_response
 

@@ -313,7 +313,7 @@ if __name__ == "__main__":
     from hypercorn.config import Config
 
     USE_UVICORN = False
-    hostname = socket.getfqdn()  # pylint: disable=invalid-name
+    hostname = socket.getfqdn()
 
     if USE_UVICORN:
         uvicorn.run(app, port=9009)
