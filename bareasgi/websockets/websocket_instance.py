@@ -50,16 +50,12 @@ class WebSocketImpl(WebSocket):
             'subprotocol': subprotocol,
             'headers': headers or []
         }
-        LOGGER.debug('Accepting', extra=cast(Dict[str, Any], accept_event))
+        LOGGER.debug('Accepting.')
         await self._send(accept_event)
 
     async def receive(self) -> Optional[Union[bytes, str]]:
         event = await self._receive()
-        LOGGER.debug(
-            'Received "%s"',
-            event['type'],
-            extra=cast(Dict[str, Any], event)
-        )
+        LOGGER.debug('Received event type "%s".', event['type'])
 
         if event['type'] == 'websocket.receive':
             receive_event = cast(WebSocketReceiveEvent, event)
@@ -72,37 +68,25 @@ class WebSocketImpl(WebSocket):
             self._code = disconnect_event.get('code', 1000)
             return None
 
-        LOGGER.error(
-            'Failed to understand request type "%s"',
-            event['type'],
-            extra=cast(Dict[str, Any], event)
-        )
+        LOGGER.error('Failed to understand event type "%s".', event['type'])
         raise WebSocketInternalError('Unknown type: ' + event['type'])
 
     async def send(self, content: Union[bytes, str]) -> None:
-        response: WebSocketSendEvent = {
+        send_event: WebSocketSendEvent = {
             'type': 'websocket.send',
             'bytes': content if isinstance(content, bytes) else None,
             'text': content if isinstance(content, str) else None
         }
 
-        LOGGER.debug(
-            'Sending "%s"',
-            response["type"],
-            extra=cast(Dict[str, Any], response)
-        )
-        await self._send(response)
+        LOGGER.debug('Sending event type "%s".', send_event["type"])
+        await self._send(send_event)
 
     async def close(self, code: int = 1000) -> None:
         response: WebSocketCloseEvent = {
             'type': 'websocket.close',
             'code': code
         }
-        LOGGER.debug(
-            'Closing with code %d',
-            code,
-            extra=cast(Dict[str, Any], response)
-        )
+        LOGGER.debug('Closing with code %d.', code)
         await self._send(response)
 
     @property
@@ -137,11 +121,7 @@ class WebSocketInstance:
             send: ASGIWebSocketSendCallable
     ) -> None:
         event = await receive()
-        LOGGER.debug(
-            'Received "%s"',
-            event['type'],
-            extra=cast(Dict[str, Any], event)
-        )
+        LOGGER.debug('Received event type "%s".', event['type'])
 
         if event['type'] == 'websocket.connect':
             await self.handler(
@@ -157,9 +137,8 @@ class WebSocketInstance:
             pass
         else:
             LOGGER.error(
-                'Failed to understand event type "%s"',
-                event['type'],
-                extra=cast(Dict[str, Any], event)
+                'Failed to understand event type "%s".',
+                event['type']
             )
             raise WebSocketInternalError(
                 f'Unknown request type "{event["type"]}'

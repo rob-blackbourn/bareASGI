@@ -3,7 +3,7 @@ A handler of lifecycle event requests
 """
 
 import logging
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List
 
 from asgi_typing import (
     LifespanScope,
@@ -47,11 +47,7 @@ class LifespanInstance:
             # Fetch the lifespan request
             event = await receive()
 
-            LOGGER.debug(
-                'Handling event for "%s"',
-                event['type'],
-                extra=cast(Dict[str, Any], event)
-            )
+            LOGGER.debug('Handling event type "%s".', event['type'])
 
             if event['type'] == 'lifespan.startup':
                 await self._handle_startup_event(send)

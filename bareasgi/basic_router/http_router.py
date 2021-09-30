@@ -47,7 +47,7 @@ class BasicHttpRouter(HttpRouter):
             path: str,
             callback: HttpRequestCallback
     ) -> None:
-        LOGGER.debug('Adding route for %s on "%s"', methods, path)
+        LOGGER.debug('Adding route for %s on "%s".', methods, path)
         path_definition = PathDefinition(path)
         for method in methods:
             self.add_route(method, path_definition, callback)
@@ -85,7 +85,7 @@ class BasicHttpRouter(HttpRouter):
                 is_match, matches = path_definition.match(path)
                 if is_match:
                     LOGGER.debug(
-                        'Matched %s on "%s" for %s matching %s',
+                        'Matched %s on "%s" for %s matching %s.',
                         method,
                         path,
                         path_definition,
@@ -95,7 +95,7 @@ class BasicHttpRouter(HttpRouter):
                     return handler, matches
 
         LOGGER.warning(
-            'Failed to find a match for %s on "%s"',
+            'Failed to find a match for %s on "%s".',
             method,
             path,
             extra={'method': method, 'path': path}

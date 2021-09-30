@@ -31,7 +31,7 @@ class BasicWebSocketRouter(WebSocketRouter):
             is_match, matches = path_definition.match(path)
             if is_match:
                 LOGGER.debug(
-                    'Matched "%s"" with %s',
+                    'Matched "%s"" with %s.',
                     path,
                     path_definition,
                     extra={'path': path}
@@ -39,7 +39,7 @@ class BasicWebSocketRouter(WebSocketRouter):
                 return handler, matches
 
         LOGGER.warning(
-            'Failed to find a match for "%s"',
+            'Failed to find a match for "%s".',
             path,
             extra={'path': path}
         )
