@@ -128,16 +128,128 @@ class HttpInstance:
                 handler=self.handler
             )
 
-    @property
-    def _is_http_push_supported(self) -> bool:
-        extensions = self.scope.get('extensions', {})
-        return (
-            self.scope['http_version'] in ('2', '2.0') and
-            extensions is not None and
-            'http.response.push' in extensions
+    async def __call__(
+            self,
+            receive: ASGIHTTPReceiveCallable,
+            send: ASGIHTTPSendCallable
+    ) -> None:
+
+        LOGGER.debug('start handling request')
+
+        try:
+            request_event = await self._receive_request(receive)
+
+            response = await self._handle_request(receive, request_event)
+
+            await self._send_response(receive, send, response)
+
+        except asyncio.CancelledError:
+            pass
+
+    async def _receive_request(
+            self,
+            receive: ASGIHTTPReceiveCallable,
+    ) -> HTTPRequestEvent:
+        event = await receive()
+        if event['type'] != 'http.request':
+            raise HttpInternalError('Expected http.request')
+        return cast(HTTPRequestEvent, event)
+
+    async def _handle_request(
+            self,
+            receive: ASGIHTTPReceiveCallable,
+            request_event: HTTPRequestEvent
+    ) -> HttpResponse:
+        body = BodyIterator(
+            receive,
+            request_event.get('body', b''),
+            request_event.get('more_body', False)
+        )
+        try:
+            response = await self.handler(
+                HttpRequest(
+                    self.scope,
+                    self.info,
+                    {},
+                    self.matches,
+                    body
+                )
+            )
+        except HttpError as error:
+            response = HttpResponse(error.status, error.headers, error.body)
+
+        # Typically the request handler has already processed the request
+        # body, but we flush all the "http.request" messages so we can catch
+        # the final "http.disconnect".
+        await body.flush()
+
+        return response
+
+    async def _send_response(
+            self,
+            receive: ASGIHTTPReceiveCallable,
+            send: ASGIHTTPSendCallable,
+            response: HttpResponse
+    ) -> None:
+        send_task = asyncio.create_task(
+            self._send_response_events(send, response)
+        )
+        receive_task = asyncio.create_task(receive())
+        pending: Set[asyncio.Future] = {send_task, receive_task}
+
+        is_connected = True
+
+        while is_connected:
+
+            done, pending = await asyncio.wait(
+                pending,
+                return_when=asyncio.FIRST_COMPLETED
+            )
+
+            if receive_task in done:
+                event = receive_task.result()
+                LOGGER.debug('event: %s', event)
+
+                # Cancel pending tasks.
+                for task in pending:
+                    try:
+                        task.cancel()
+                        await task
+                    except:  # pylint: disable=bare-except
+                        pass
+
+                # Check for abnormal disconnection.
+                if event['type'] != 'http.disconnect':
+                    raise HttpInternalError(
+                        f'Unexpected request type "{event["type"]}"'
+                    )
+
+                LOGGER.debug('disconnecting')
+
+                is_connected = False
+            elif send_task in done:
+                # Fetch result to trigger possible exceptions
+                send_task.result()
+
+        LOGGER.debug('finish handling request')
+
+    async def _send_response_events(
+            self,
+            send: ASGIHTTPSendCallable,
+            response: HttpResponse
+    ) -> None:
+        await self._send_response_start_event(
+            send,
+            response.status,
+            response.headers or []
         )
 
-    async def _send_response_start(
+        if response.pushes is not None and self._is_http_push_supported:
+            await self._send_response_push_event(send, response.pushes)
+
+        await self._send_response_body_event(send, response.body or NullIter())
+
+    async def _send_response_start_event(
             self,
             send: ASGIHTTPSendCallable,
             status: int,
@@ -155,7 +267,7 @@ class HttpInstance:
         )
         await send(response_start_event)
 
-    async def _send_response_push(
+    async def _send_response_push_event(
             self,
             send: ASGIHTTPSendCallable,
             pushes: Iterable[PushResponse]
@@ -172,7 +284,7 @@ class HttpInstance:
             }
             await send(server_push_event)
 
-    async def _send_response_body(
+    async def _send_response_body_event(
             self,
             send: ASGIHTTPSendCallable,
             body: AsyncIterable[bytes]
@@ -200,109 +312,11 @@ class HttpInstance:
             )
             await send(response_body_event)
 
-    async def _send_response(
-            self,
-            send: ASGIHTTPSendCallable,
-            response: HttpResponse
-    ) -> None:
-        await self._send_response_start(
-            send,
-            response.status,
-            response.headers or []
+    @property
+    def _is_http_push_supported(self) -> bool:
+        extensions = self.scope.get('extensions', {})
+        return (
+            self.scope['http_version'] in ('2', '2.0') and
+            extensions is not None and
+            'http.response.push' in extensions
         )
-
-        if response.pushes is not None and self._is_http_push_supported:
-            await self._send_response_push(send, response.pushes)
-
-        await self._send_response_body(send, response.body or NullIter())
-
-    async def __call__(
-            self,
-            receive: ASGIHTTPReceiveCallable,
-            send: ASGIHTTPSendCallable
-    ) -> None:
-
-        LOGGER.debug('start handling request')
-
-        # The first step is to receive the ASGI request.
-        try:
-            event = await receive()
-            if event['type'] != 'http.request':
-                raise HttpInternalError('Expected http.request')
-        except asyncio.CancelledError:
-            # At this stage we only handle a cancellation. All
-            # other errors fall through to the ASGI server.
-            return
-
-        # The next step is to call the handler.
-        body = BodyIterator(
-            receive,
-            event.get('body', b''),
-            event.get('more_body', False)
-        )
-        try:
-            response = await self.handler(
-                HttpRequest(
-                    self.scope,
-                    self.info,
-                    {},
-                    self.matches,
-                    body
-                )
-            )
-        except asyncio.CancelledError:
-            return
-        except HttpError as error:
-            response = HttpResponse(error.status, error.headers, error.body)
-
-        # Finally handle sending the body and the disconnect.
-        try:
-            # Typically the request handler has already processed the request
-            # body, but we flush all the "http.request" messages so we can catch
-            # the final "http.disconnect".
-            await body.flush()
-
-            send_task = asyncio.create_task(
-                self._send_response(send, response)
-            )
-            receive_task = asyncio.create_task(receive())
-            pending: Set[asyncio.Future] = {send_task, receive_task}
-
-            is_connected = True
-
-            while is_connected:
-
-                done, pending = await asyncio.wait(
-                    pending,
-                    return_when=asyncio.FIRST_COMPLETED
-                )
-
-                if receive_task in done:
-                    event = receive_task.result()
-                    LOGGER.debug('event: %s', event)
-
-                    # Cancel pending tasks.
-                    for task in pending:
-                        try:
-                            task.cancel()
-                            await task
-                        except:  # pylint: disable=bare-except
-                            pass
-
-                    # Check for abnormal disconnection.
-                    if event['type'] != 'http.disconnect':
-                        raise HttpInternalError(
-                            f'Unexpected request type "{event["type"]}"'
-                        )
-
-                    LOGGER.debug('disconnecting')
-
-                    is_connected = False
-                elif send_task in done:
-                    # Fetch result to trigger possible exceptions
-                    send_task.result()
-
-            LOGGER.debug('finish handling request')
-
-        except asyncio.CancelledError:
-            pass

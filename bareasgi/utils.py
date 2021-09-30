@@ -9,8 +9,6 @@ import re
 from typing import (
     Any,
     Callable,
-    AsyncIterable,
-    AsyncIterator,
     Generic,
     MutableMapping,
     Optional,
