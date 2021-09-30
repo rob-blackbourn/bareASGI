@@ -91,8 +91,8 @@ if __name__ == "__main__":
 
     USE_UVICORN = False
     hostname = socket.gethostname()
-    certfile = os.path.expanduser(f"~/.keys/{hostname}.crt")
-    keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
+    certfile = os.path.expanduser(f"~/.keys/server.crt")
+    keyfile = os.path.expanduser(f"~/.keys/server.key")
 
     if USE_UVICORN:
         uvicorn.run(app, host='0.0.0.0', port=9009,

@@ -4,7 +4,7 @@ Looking at different methods of transferring content.
 The http response header "transfer-encoding" is automagically set by the ASGI
 server to "chunked" if a "content-length" header is not specified.
 
-Inn bareASGI the content is provided by an asynchronous generator. This allows
+In bareASGI the content is provided by an asynchronous generator. This allows
 for efficient transfer of data in pieces, rather than as a single blob.
 
 A browser will show 'transfer-encoding' as 'chunked' for all cases except 'with content length'

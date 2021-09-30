@@ -7,9 +7,12 @@ from asyncio import Queue
 import logging
 from typing import (
     Any,
+    AsyncIterable,
     Dict,
     Iterable,
+    List,
     Set,
+    Tuple,
     cast
 )
 
@@ -23,12 +26,12 @@ from asgi_typing import (
     HTTPServerPushEvent
 )
 
-from ..utils import anext
+from ..utils import NullIter
 
 from .http_callbacks import HttpMiddlewareCallback
 from .http_errors import HttpInternalError, HttpDisconnectError, HttpError
 from .http_request import HttpRequest
-from .http_response import HttpResponse
+from .http_response import HttpResponse, PushResponse
 from .http_router import HttpRouter
 from .http_middleware import make_middleware_chain
 
@@ -117,10 +120,6 @@ class HttpInstance:
             scope['method'],
             scope['path']
         )
-        if self.handler is None:
-            raise ValueError(
-                f"Handler not found for {scope['method']} {scope['path']}"
-            )
 
         # Assemble any middleware.
         if middleware:
@@ -130,91 +129,92 @@ class HttpInstance:
             )
 
     @property
-    def _is_http_2(self) -> bool:
-        return self.scope['http_version'] in ('2', '2.0')
-
-    @property
     def _is_http_push_supported(self) -> bool:
         extensions = self.scope.get('extensions', {})
         return (
-            self._is_http_2 and
+            self.scope['http_version'] in ('2', '2.0') and
             extensions is not None and
             'http.response.push' in extensions
         )
+
+    async def _send_response_start(
+            self,
+            send: ASGIHTTPSendCallable,
+            status: int,
+            headers: List[Tuple[bytes, bytes]]
+    ) -> None:
+        response_start_event: HTTPResponseStartEvent = {
+            'type': 'http.response.start',
+            'status': status,
+            'headers': headers
+        }
+
+        LOGGER.debug(
+            'Sending "http.response.start" with status %s',
+            status,
+        )
+        await send(response_start_event)
+
+    async def _send_response_push(
+            self,
+            send: ASGIHTTPSendCallable,
+            pushes: Iterable[PushResponse]
+    ) -> None:
+        for push_path, push_headers in pushes:
+            LOGGER.debug(
+                'sending "http.response.push" for path "%s"',
+                push_path
+            )
+            server_push_event: HTTPServerPushEvent = {
+                'type': 'http.response.push',
+                'path': push_path,
+                'headers': push_headers
+            }
+            await send(server_push_event)
+
+    async def _send_response_body(
+            self,
+            send: ASGIHTTPSendCallable,
+            body: AsyncIterable[bytes]
+    ) -> None:
+        body_iter = body.__aiter__()
+        more_body = True
+        buf = b''
+        while more_body:
+            prev = buf
+            try:
+                # Try to get more body
+                buf = await body_iter.__anext__()
+            except StopAsyncIteration:
+                # The previous buf was the last
+                more_body = False
+
+            response_body_event: HTTPResponseBodyEvent = {
+                'type': 'http.response.body',
+                'body': prev,
+                'more_body': more_body
+            }
+            LOGGER.debug(
+                'Sending "http.response.body" with more body "%s"',
+                more_body
+            )
+            await send(response_body_event)
 
     async def _send_response(
             self,
             send: ASGIHTTPSendCallable,
             response: HttpResponse
     ) -> None:
-        # Create and send the start response.
-        response_start_event: HTTPResponseStartEvent = {
-            'type': 'http.response.start',
-            'status': response.status,
-            'headers': response.headers or []
-        }
-
-        LOGGER.debug(
-            'Sending "http.response.start" with status %s',
+        await self._send_response_start(
+            send,
             response.status,
-            extra=cast(Dict[str, Any], response_start_event)
+            response.headers or []
         )
-        await send(response_start_event)
 
         if response.pushes is not None and self._is_http_push_supported:
-            for push_path, push_headers in response.pushes:
-                LOGGER.debug(
-                    'sending "http.response.push" for path "%s"',
-                    push_path
-                )
-                server_push_event: HTTPServerPushEvent = {
-                    'type': 'http.response.push',
-                    'path': push_path,
-                    'headers': push_headers
-                }
-                await send(server_push_event)
+            await self._send_response_push(send, response.pushes)
 
-        # Create and send the response body.
-
-        # If we don't get a body, just send the basic response.
-        try:
-            buf = await anext(response.body) if response.body else None
-        except StopAsyncIteration:
-            buf = None
-        if buf is None:
-            response_body_event: HTTPResponseBodyEvent = {
-                'type': 'http.response.body',
-                'body': b'',
-                'more_body': False
-            }
-            LOGGER.debug(
-                'Sending "http.response.body" with empty body',
-                extra=cast(Dict[str, Any], response_body_event)
-            )
-            await send(response_body_event)
-            return
-
-        # Continue to get and send the body until exhausted.
-        while buf is not None:
-            body = buf
-            try:
-                buf = await anext(response.body)
-                more_body = True
-            except StopAsyncIteration:
-                buf = None
-                more_body = False
-            if body:
-                response_body_event = {
-                    'type': 'http.response.body',
-                    'body': body,
-                    'more_body': more_body
-                }
-                LOGGER.debug(
-                    'Sending "http.response.body" with more_body="%s',
-                    more_body,
-                    extra=cast(Dict[str, Any], response_body_event)
-                )
-                await send(response_body_event)
+        await self._send_response_body(send, response.body or NullIter())
 
     async def __call__(
             self,
