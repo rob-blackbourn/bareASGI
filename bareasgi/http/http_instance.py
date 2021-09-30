@@ -74,21 +74,14 @@ class BodyIterator:
 
     async def _read(self) -> bytes:
         event = await self._receive()
-        LOGGER.debug(
-            'Received "%s"',
-            event['type'],
-            extra=cast(Dict[str, Any], event)
-        )
+        LOGGER.debug('Received event type "%s".', event['type'])
 
         if event['type'] == 'http.disconnect':
             raise HttpDisconnectError
 
         if event['type'] != 'http.request':
             LOGGER.error(
-                'Failed to understand request type "%s"',
-                event['type'],
-                extra=cast(Dict[str, Any], event)
-            )
+                'Failed to understand event type "%s".', event['type'])
             raise HttpInternalError
 
         request_event = cast(HTTPRequestEvent, event)
@@ -134,7 +127,7 @@ class HttpInstance:
             send: ASGIHTTPSendCallable
     ) -> None:
 
-        LOGGER.debug('start handling request')
+        LOGGER.debug('Start handling request.')
 
         try:
             request_event = await self._receive_request(receive)
@@ -205,7 +198,7 @@ class HttpInstance:
 
             if receive_task in done:
                 event = receive_task.result()
-                LOGGER.debug('event: %s', event)
+                LOGGER.debug('Received event type "%s".', event)
 
                 # Cancel pending tasks.
                 for task in pending:
@@ -221,14 +214,14 @@ class HttpInstance:
                         f'Unexpected request type "{event["type"]}"'
                     )
 
-                LOGGER.debug('disconnecting')
+                LOGGER.debug('Disconnecting.')
 
                 is_connected = False
             elif send_task in done:
                 # Fetch result to trigger possible exceptions
                 send_task.result()
 
-        LOGGER.debug('finish handling request')
+        LOGGER.debug('Finish handling request.')
 
     async def _send_response_events(
             self,
@@ -258,10 +251,7 @@ class HttpInstance:
             'headers': headers
         }
 
-        LOGGER.debug(
-            'Sending "http.response.start" with status %s',
-            status,
-        )
+        LOGGER.debug('Sending "http.response.start" with status "%s".', status)
         await send(response_start_event)
 
     async def _send_response_push_event(
@@ -271,7 +261,7 @@ class HttpInstance:
     ) -> None:
         for push_path, push_headers in pushes:
             LOGGER.debug(
-                'sending "http.response.push" for path "%s"',
+                'Sending "http.response.push" for path "%s".',
                 push_path
             )
             server_push_event: HTTPServerPushEvent = {
@@ -304,7 +294,7 @@ class HttpInstance:
                 'more_body': more_body
             }
             LOGGER.debug(
-                'Sending "http.response.body" with more body "%s"',
+                'Sending "http.response.body" with more body "%s".',
                 more_body
             )
             await send(response_body_event)
