@@ -85,7 +85,7 @@ class CoreApplication:
         )
         await instance.process(receive, send)
 
-    async def process(
+    async def __call__(
             self,
             scope: Scope,
             receive: ASGIReceiveCallable,

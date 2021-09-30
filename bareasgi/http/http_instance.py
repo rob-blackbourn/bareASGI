@@ -277,6 +277,7 @@ class HttpInstance:
             body: AsyncIterable[bytes]
     ) -> None:
         body_iter = body.__aiter__()
+        is_first_time = True
         more_body = True
         buf = b''
         while more_body:
@@ -287,6 +288,10 @@ class HttpInstance:
             except StopAsyncIteration:
                 # The previous buf was the last
                 more_body = False
+
+            if is_first_time and more_body:
+                is_first_time = False
+                continue
 
             response_body_event: HTTPResponseBodyEvent = {
                 'type': 'http.response.body',

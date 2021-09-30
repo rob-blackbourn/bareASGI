@@ -3,14 +3,10 @@ Utilities
 """
 
 from datetime import datetime
-from decimal import Decimal
-import json
 import re
 from typing import (
-    Any,
     Callable,
     Generic,
-    MutableMapping,
     Optional,
     Pattern,
     Tuple,
@@ -73,39 +69,3 @@ def parse_json_datetime(value: str) -> Optional[datetime]:
                 timestamp = transform(value) if transform else value
                 return datetime.strptime(timestamp, fmt)
     return None
-
-
-def json_datetime_parser(
-        dct: MutableMapping[str, Any]
-) -> MutableMapping[str, Any]:
-    """Convert JSON datetimes in a dictionary.
-
-    Args:
-        dct (MutableMapping[str, Any]): The dictionary.
-
-    Returns:
-        MutableMapping[str, Any]: The converted dictionary.
-    """
-    for key, value in dct.items():
-        timestamp = parse_json_datetime(value)
-        if timestamp:
-            dct[key] = timestamp
-    return dct
-
-
-class JSONEncoderEx(json.JSONEncoder):
-    """A JSON encoder that supports datetime and decimal conversion"""
-
-    def default(self, obj):  # pylint: disable=arguments-renamed
-        if isinstance(obj, datetime):
-            return obj.isoformat() + ('Z' if not obj.tzinfo else '')
-        elif isinstance(obj, Decimal):
-            return float(
-                str(
-                    obj.quantize(Decimal(1))
-                    if obj == obj.to_integral()
-                    else obj.normalize()
-                )
-            )
-        else:
-            return super(JSONEncoderEx, self).default(obj)
