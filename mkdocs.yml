@@ -46,7 +46,6 @@ nav:
       - tutorial/streaming-fetch.md
       - tutorial/compression.md
       - tutorial/controller-classes.md
-      - tutorial/exceptions.md
   - API:
       - bareasgi: api/bareasgi.md
       - bareasgi.basic_router: api/bareasgi.basic_router.md

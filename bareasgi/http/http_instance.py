@@ -29,7 +29,7 @@ from asgi_typing import (
 from ..utils import NullIter
 
 from .http_callbacks import HttpMiddlewareCallback
-from .http_errors import HttpInternalError, HttpDisconnectError, HttpError
+from .http_errors import HttpInternalError, HttpDisconnectError
 from .http_request import HttpRequest
 from .http_response import HttpResponse, PushResponse
 from .http_router import HttpRouter
@@ -165,18 +165,15 @@ class HttpInstance:
             request_event.get('body', b''),
             request_event.get('more_body', False)
         )
-        try:
-            response = await self.handler(
-                HttpRequest(
-                    self.scope,
-                    self.info,
-                    {},
-                    self.matches,
-                    body
-                )
-            )
-        except HttpError as error:
-            response = HttpResponse(error.status, error.headers, error.body)
+        request = HttpRequest(
+            self.scope,
+            self.info,
+            {},
+            self.matches,
+            body
+        )
+
+        response = await self.handler(request)
 
         # Typically the request handler has already processed the request
         # body, but we flush all the "http.request" messages so we can catch

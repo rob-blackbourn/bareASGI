@@ -19,7 +19,6 @@ from bareutils.cookies import (
 
 from .application import Application
 from .http import (
-    HttpError,
     HttpRequest,
     HttpResponse,
     HttpRequestCallback,
@@ -34,7 +33,6 @@ __all__ = [
 
     "Scope",
     "PushResponse",
-    "HttpError",
     "HttpRequest",
     "HttpResponse",
     "HttpRequestCallback",
