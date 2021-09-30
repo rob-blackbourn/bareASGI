@@ -131,7 +131,7 @@ class WebSocketInstance:
             raise ValueError(f"No handler for path {scope['path']}")
         self.handler, self.matches = handler, matches
 
-    async def __call__(
+    async def process(
             self,
             receive: ASGIWebSocketReceiveCallable,
             send: ASGIWebSocketSendCallable

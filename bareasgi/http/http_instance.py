@@ -128,7 +128,7 @@ class HttpInstance:
                 handler=self.handler
             )
 
-    async def __call__(
+    async def process(
             self,
             receive: ASGIHTTPReceiveCallable,
             send: ASGIHTTPSendCallable

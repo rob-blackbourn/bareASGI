@@ -35,17 +35,29 @@ class LifespanInstance:
         self.shutdown_handlers = shutdown_handlers
         self.info = info
 
-    async def _call_handlers(
+    async def process(
             self,
-            handlers: List[LifespanRequestHandler]
+            receive: ASGILifespanReceiveCallable,
+            send: ASGILifespanSendCallable
     ) -> None:
-        for handler in handlers:
-            await handler(
-                LifespanRequest(
-                    self.scope,
-                    self.info
-                )
+        # The lifespan scope exists for the duration of the event loop, and
+        # only exits on 'lifespan.shutdown'.
+        has_shutdown = False
+        while has_shutdown:
+            # Fetch the lifespan request
+            event = await receive()
+
+            LOGGER.debug(
+                'Handling event for "%s"',
+                event['type'],
+                extra=cast(Dict[str, Any], event)
             )
+
+            if event['type'] == 'lifespan.startup':
+                await self._handle_startup_event(send)
+            elif event['type'] == 'lifespan.shutdown':
+                await self._handle_shutdown_event(send)
+                has_shutdown = True
 
     async def _handle_startup_event(
             self,
@@ -85,26 +97,14 @@ class LifespanInstance:
             }
             await send(shutdown_failed_event)
 
-    async def __call__(
+    async def _call_handlers(
             self,
-            receive: ASGILifespanReceiveCallable,
-            send: ASGILifespanSendCallable
+            handlers: List[LifespanRequestHandler]
     ) -> None:
-        # The lifespan scope exists for the duration of the event loop, and
-        # only exits on 'lifespan.shutdown'.
-        has_shutdown = False
-        while has_shutdown:
-            # Fetch the lifespan request
-            event = await receive()
-
-            LOGGER.debug(
-                'Handling event for "%s"',
-                event['type'],
-                extra=cast(Dict[str, Any], event)
+        for handler in handlers:
+            await handler(
+                LifespanRequest(
+                    self.scope,
+                    self.info
+                )
             )
-
-            if event['type'] == 'lifespan.startup':
-                await self._handle_startup_event(send)
-            elif event['type'] == 'lifespan.shutdown':
-                await self._handle_shutdown_event(send)
-                has_shutdown = True

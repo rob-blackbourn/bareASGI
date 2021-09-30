@@ -56,7 +56,7 @@ class CoreApplication:
             self.middlewares,
             self.info
         )
-        await instance(receive, send)
+        await instance.process(receive, send)
 
     async def _handle_lifespan_request(
             self,
@@ -70,7 +70,7 @@ class CoreApplication:
             self.shutdown_handlers,
             self.info
         )
-        await instance(receive, send)
+        await instance.process(receive, send)
 
     async def _handle_websocket_request(
             self,
@@ -83,9 +83,9 @@ class CoreApplication:
             self.ws_router,
             self.info
         )
-        await instance(receive, send)
+        await instance.process(receive, send)
 
-    async def __call__(
+    async def process(
             self,
             scope: Scope,
             receive: ASGIReceiveCallable,
