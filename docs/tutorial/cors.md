@@ -61,33 +61,33 @@ Note that this is not required on a `GET`.
 The web server doesn't need to do anything special.
 
 The page the web server provides calls a `GET` when the page loads.
+
 ```javascript
-window.onload = function() {
-fetch('http://127.0.0.1:9010/info')
-    .then(function(response) {
-    return response.json();
+window.onload = function () {
+  fetch("http://127.0.0.1:9010/info")
+    .then(function (response) {
+      return response.json();
     })
-    .then(function(info) {
-    const element = document.getElementById('info');
-    element.value = info.name;
+    .then(function (info) {
+      const element = document.getElementById("info");
+      element.value = info.name;
     });
-}
+};
 ```
 
 And when the form is submitted it makes a `POST`.
 
 ```javascript
-fetch('http://127.0.0.1:9010/info', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-})
-    .then(function(response) {
-    console.log(response);
-    return Promise.resolve('Done');
-    });
+fetch("http://127.0.0.1:9010/info", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(data),
+}).then(function (response) {
+  console.log(response);
+  return Promise.resolve("Done");
+});
 ```
 
 You can check that it's working by commenting out the CORS middleware in the
@@ -96,4 +96,4 @@ REST server. The browser will reject the fetch requests.
 ## What next?
 
 Either go back to the [table of contents](index.md) or go
-to [Exceptions](exceptions.md).
+to [Templating](jinja2.md).
