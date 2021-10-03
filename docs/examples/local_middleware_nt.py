@@ -1,31 +1,30 @@
 import uvicorn
-from bareasgi import Application, text_writer
-from bareasgi.middleware import make_middleware_chain
+from bareasgi import Application, HttpResponse, text_writer
+from bareasgi import make_middleware_chain
 
 
-async def first_middleware(scope, info, matches, content, handler):
+async def first_middleware(request, handler):
     print("First middleware - entry")
-    info['message'] = 'This is first the middleware. '
-    status, headers, response, pushes = await handler(
-        scope,
-        info,
-        matches,
-        content
-    )
+    request.context['message'] = 'This is first the middleware. '
+    response = await handler(request)
     print("First middleware - exit")
-    return status, headers, response, pushes
+    return response
 
 
-async def second_middleware(scope, info, matches, content, handler):
+async def second_middleware(request, handler):
     print("Second middleware - entry")
-    info['message'] += 'This is the second middleware.'
-    response = await handler(scope, info, matches, content)
+    request.context['message'] += 'This is the second middleware.'
+    response = await handler(request)
     print("Second middleware - exit")
     return response
 
 
-async def http_request_callback(scope, info, matches, content):
-    return 200, [(b'content-type', b'text/plain')], text_writer(info['message'])
+async def http_request_callback(request):
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer(request.context['message'])
+    )
 
 
 app = Application(info={'message': 'Unmodified'})

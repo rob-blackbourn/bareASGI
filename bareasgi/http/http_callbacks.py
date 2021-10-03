@@ -1,4 +1,4 @@
-"""Http callbacks"""
+"""The http callbacks"""
 
 from typing import Awaitable, Callable
 

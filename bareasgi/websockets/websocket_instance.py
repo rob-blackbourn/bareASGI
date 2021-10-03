@@ -1,6 +1,4 @@
-"""
-A handler for websocket event requests.
-"""
+"""A handler for websocket event requests."""
 
 import logging
 from typing import (

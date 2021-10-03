@@ -1,6 +1,4 @@
-"""
-A handler of lifecycle event requests
-"""
+"""A handler of lifecycle event requests"""
 
 import logging
 from typing import Any, Dict, List

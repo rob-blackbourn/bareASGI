@@ -3,22 +3,22 @@ import logging
 
 import uvicorn
 
-from bareasgi import Application, text_reader, text_writer
+from bareasgi import Application, HttpResponse, text_reader, text_writer
 from bareasgi_cors import CORSMiddleware
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def get_info(scope, info, matches, content):
-    text = json.dumps(info)
-    return 200, [(b'content-type', b'application/json')], text_writer(text)
+async def get_info(request):
+    text = json.dumps(request.info)
+    return HttpResponse(200, [(b'content-type', b'application/json')], text_writer(text))
 
 
-async def set_info(scope, info, matches, content):
-    text = await text_reader(content)
+async def set_info(request):
+    text = await text_reader(request.body)
     data = json.loads(text)
-    info.update(data)
-    return 204
+    request.info.update(data)
+    return HttpResponse(204)
 
 
 cors_middleware = CORSMiddleware()

@@ -1,6 +1,4 @@
-"""
-A handler of lifecycle event requests
-"""
+"""The lifespan request"""
 
 from typing import Any, Awaitable, Callable, Dict
 
@@ -15,7 +13,7 @@ class LifespanRequest:
             scope: LifespanScope,
             info: Dict[str, Any]
     ) -> None:
-        """Initialise a class holding a lifespan request
+        """Initialise a class holding a lifespan request.
 
         Args:
             scope (LifespanScope): The ASGI lifespan scope.

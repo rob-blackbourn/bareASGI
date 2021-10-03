@@ -1,11 +1,10 @@
 import asyncio
 from asyncio import Event
-from bareasgi.types import HttpRequest, HttpResponse
 from datetime import datetime
 import logging
 import uvicorn
 
-from bareasgi import Application, text_writer, LifespanRequest
+from bareasgi import Application, text_writer, HttpResponse
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -36,7 +35,7 @@ async def time_ticker(info, shutdown_event):
     LOGGER.debug('The time ticker has stopped')
 
 
-async def time_ticker_startup_handler(request: LifespanRequest) -> None:
+async def time_ticker_startup_handler(request) -> None:
     # Create an event that can be set when the background task should shutdown.
     shutdown_event = Event()
     request.info['shutdown_event'] = shutdown_event
@@ -47,7 +46,7 @@ async def time_ticker_startup_handler(request: LifespanRequest) -> None:
     )
 
 
-async def time_ticker_shutdown_handler(request: LifespanRequest) -> None:
+async def time_ticker_shutdown_handler(request) -> None:
     # Set the shutdown event so the background task can stop gracefully.
     shutdown_event: Event = request.info['shutdown_event']
     LOGGER.debug('Stopping the time_ticker')
@@ -60,7 +59,7 @@ async def time_ticker_shutdown_handler(request: LifespanRequest) -> None:
     LOGGER.debug('time_ticker shutdown')
 
 
-async def http_request_callback(request: HttpRequest) -> HttpResponse:
+async def http_request_callback(request) -> HttpResponse:
     headers = [
         (b'content-type', b'text/plain')
     ]

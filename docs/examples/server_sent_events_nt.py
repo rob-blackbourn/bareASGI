@@ -1,18 +1,24 @@
 import asyncio
 from datetime import datetime
 
-from bareasgi import Application, text_writer
+from bareasgi import Application, HttpResponse, text_writer
 import pkg_resources
 import uvicorn
 
 
-async def index(scope, info, matches, content):
-    return 303, [(b'Location', b'/test')], None
+async def index(_request):
+    return HttpResponse(303, [(b'Location', b'/test')])
 
-async def test_page(scope, info, matches, content):
-    return 200, [(b'content-type', b'text/html')], text_writer(info['html'])
 
-async def test_events(scope, info, matches, content):
+async def test_page(request):
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(request.info['html'])
+    )
+
+
+async def test_events(_request):
 
     async def send_events():
         is_cancelled = False
@@ -35,7 +41,7 @@ async def test_events(scope, info, matches, content):
         (b'connection', b'keep-alive')
     ]
 
-    return 200, headers, send_events()
+    return HttpResponse(200, headers, send_events())
 
 
 html_filename = pkg_resources.resource_filename(

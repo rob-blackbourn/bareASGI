@@ -3,8 +3,8 @@ from urllib.parse import parse_qsl
 
 import uvicorn
 
-from bareasgi import Application, text_reader, text_writer
-import bareutils.header as header
+from bareasgi import Application, HttpResponse, text_reader, text_writer
+from bareutils import header
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -33,11 +33,13 @@ FORM_HTML = """
 </html>
 """
 
-async def index(scope, info, matches, content):
+
+async def index(_request):
     return 303, [(b'location', b'/get_form')]
 
-async def get_form(scope, info, matches, content):
-    cookies = header.cookie(scope['headers'])
+
+async def get_form(request):
+    cookies = header.cookie(request.scope['headers'])
 
     first_name = cookies.get(b'first_name', [b'Micky'])[0]
     last_name = cookies.get(b'last_name', [b'Mouse'])[0]
@@ -56,14 +58,15 @@ async def get_form(scope, info, matches, content):
     headers = [
         (b'content-type', b'text/html'),
     ]
-    return 200, headers, text_writer(html)
+    return HttpResponse(200, headers, text_writer(html))
 
-async def post_form(scope, info, matches, content):
-    content_type = header.find(b'content-type', scope['headers'])
+
+async def post_form(request):
+    content_type = header.find(b'content-type', request.scope['headers'])
     if content_type != b'application/x-www-form-urlencoded':
         return 500
 
-    variables = await text_reader(content)
+    variables = await text_reader(request.body)
     values = dict(parse_qsl(variables))
     first_name = values['first_name']
     last_name = values['last_name']
@@ -73,9 +76,9 @@ async def post_form(scope, info, matches, content):
         (b'set-cookie', f'first_name={first_name}'.encode()),
         (b'set-cookie', f'last_name={last_name}'.encode()),
     ]
-    return 303, headers
+    return HttpResponse(303, headers)
 
-sapp = Application()
+app = Application()
 app.http_router.add({'GET'}, '/', index)
 app.http_router.add({'GET'}, '/get_form', get_form)
 app.http_router.add({'POST'}, '/post_form', post_form)

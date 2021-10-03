@@ -3,6 +3,7 @@ A Websocket example.
 """
 
 import logging
+from typing import cast
 
 import pkg_resources
 import uvicorn
@@ -28,12 +29,10 @@ async def index(_request: HttpRequest) -> HttpResponse:
 async def websocket_page(request: HttpRequest) -> HttpResponse:
     """Send the page with the example web socket"""
     scheme = 'wss' if request.scope['scheme'] == 'https' else 'ws'
-    if request.scope['http_version'] in ('2', '2.0'):
-        authority = header.find(
-            b':authority', request.scope['headers']).decode('ascii')
-    else:
-        host, port = request.scope['server']
-        authority = f'{host}:{port}'
+    server = request.scope['server']
+    assert server is not None
+    host, port = server
+    authority = f'{host}:{port}'
     web_socket_url = f"{scheme}://{authority}/websocket_handler"
     print(web_socket_url)
 
@@ -47,7 +46,7 @@ async def websocket_handler(request: WebSocketRequest) -> None:
 
     try:
         while True:
-            text = await request.web_socket.receive()
+            text = cast(str, await request.web_socket.receive())
             if text is None:
                 break
             await request.web_socket.send('You said: ' + text)
@@ -59,7 +58,8 @@ async def websocket_handler(request: WebSocketRequest) -> None:
 
 if __name__ == "__main__":
 
-    html_filename = pkg_resources.resource_filename(__name__, "web_socket.html")
+    html_filename = pkg_resources.resource_filename(
+        __name__, "web_socket.html")
     with open(html_filename, 'rt', encoding='utf-8') as file_ptr:
         html = file_ptr.read()
     app = Application(info=dict(html=html))

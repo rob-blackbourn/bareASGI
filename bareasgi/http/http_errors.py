@@ -1,4 +1,4 @@
-"""Types for bareASGI and bareClient"""
+"""The http errors"""
 
 
 class HttpInternalError(Exception):

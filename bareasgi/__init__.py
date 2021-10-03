@@ -1,6 +1,4 @@
-"""
-bareASGI exports
-"""
+"""bareASGI exports"""
 
 from asgi_typing import Scope
 
@@ -10,12 +8,6 @@ from bareutils import (
     bytes_reader,
     bytes_writer
 )
-from bareutils.cookies import (
-    encode_set_cookie,
-    decode_set_cookie,
-    encode_cookies,
-    decode_cookies
-)
 
 from .application import Application
 from .http import (
@@ -23,32 +15,31 @@ from .http import (
     HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback,
-    PushResponse
+    PushResponse,
+    make_middleware_chain
 )
 from .lifespan import LifespanRequest
 from .websockets import WebSocket, WebSocketRequest
 
 __all__ = [
+    "Scope",
+
+    "text_reader",
+    "text_writer",
+    "bytes_reader",
+    "bytes_writer",
+
     "Application",
 
-    "Scope",
-    "PushResponse",
     "HttpRequest",
     "HttpResponse",
     "HttpRequestCallback",
     "HttpMiddlewareCallback",
+    "PushResponse",
+    "make_middleware_chain",
+
     "LifespanRequest",
 
     "WebSocket",
     "WebSocketRequest",
-
-    "text_writer",
-    "text_reader",
-    "bytes_writer",
-    "bytes_reader",
-
-    "encode_set_cookie",
-    "decode_set_cookie",
-    "encode_cookies",
-    "decode_cookies"
 ]

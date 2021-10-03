@@ -1,6 +1,4 @@
-"""
-HTTP Instance
-"""
+"""The http instance"""
 
 import asyncio
 from asyncio import Queue

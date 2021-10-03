@@ -1,9 +1,9 @@
-from bareutils import make_default_compression_middleware
 import uvicorn
-from bareasgi import Application, bytes_writer
+from bareasgi import Application, HttpResponse, bytes_writer
+from bareasgi.middlewares import make_default_compression_middleware
 
 
-async def http_request_callback(scope, info, matches, content):
+async def http_request_callback(_request):
     with open(__file__, 'rb') as file_pointer:
         buf = file_pointer.read()
 
@@ -12,7 +12,7 @@ async def http_request_callback(scope, info, matches, content):
         (b'content-length', str(len(buf)).encode('ascii'))
     ]
 
-    return 200, headers, bytes_writer(buf, chunk_size=-1)
+    return HttpResponse(200, headers, bytes_writer(buf, chunk_size=-1))
 
 compression_middleware = make_default_compression_middleware(minimum_size=1024)
 

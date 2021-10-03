@@ -3,14 +3,14 @@ import logging
 import pkg_resources
 import uvicorn
 
-from bareasgi import Application, text_writer
+from bareasgi import Application, HttpResponse, text_writer
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def http_request_callback(scope, info, matches, content):
-    page = info['html']
-    return 200, [(b'content-type', b'text/html')], text_writer(page)
+async def http_request_callback(request):
+    page = request.info['html']
+    return HttpResponse(200, [(b'content-type', b'text/html')], text_writer(page))
 
 
 html_filename = pkg_resources.resource_filename(

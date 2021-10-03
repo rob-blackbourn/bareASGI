@@ -9,7 +9,7 @@ from bareasgi import (
     HttpResponse,
     HttpRequestCallback
 )
-from bareasgi.middleware import make_middleware_chain
+from bareasgi import make_middleware_chain
 
 
 async def first_middleware(

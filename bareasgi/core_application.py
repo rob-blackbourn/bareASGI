@@ -1,4 +1,4 @@
-"""Core ASGI Application"""
+"""The core ASGI application"""
 
 import logging
 from typing import Any, Dict, List, cast

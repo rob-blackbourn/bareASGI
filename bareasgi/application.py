@@ -1,4 +1,4 @@
-"""ASGI Application"""
+"""The ASGI application"""
 
 import logging
 from typing import (

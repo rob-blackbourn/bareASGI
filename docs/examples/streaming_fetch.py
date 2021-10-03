@@ -35,7 +35,7 @@ async def index(_request: HttpRequest) -> HttpResponse:
 
 async def test_page(request: HttpRequest) -> HttpResponse:
     """A request handler which provides the page to respond to server sent events"""
-    host = header.find(b'host', request.scope['headers']).decode()
+    host = header.find_exact(b'host', request.scope['headers']).decode()
     fetch_url = f"{request.scope['scheme']}://{host}/events"
     html = request.info['page_template'].substitute(__FETCH_URL__=fetch_url)
     return HttpResponse(200, [(b'content-type', b'text/html')], text_writer(html))
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     loop.run_until_complete(
         serve(
-            app, # type: ignore
+            app,  # type: ignore
             config,
             shutdown_trigger=shutdown_event.wait  # type: ignore
         )
