@@ -8,8 +8,6 @@ from typing import cast
 import pkg_resources
 import uvicorn
 
-import bareutils.header as header
-
 from bareasgi import (
     Application,
     HttpRequest,
