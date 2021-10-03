@@ -11,7 +11,7 @@ user had logged in before allowing the request handler to be called.
 ## Global middleware
 
 The following example creates a chain of two middleware functions which add
-content to a "message" provided by the `info` parameter.
+content to a "message" provided by the `context` field in the request.
 
 The source code for the following example can be found
 [here](../examples/global_middleware.py)
@@ -22,29 +22,28 @@ import uvicorn
 from bareasgi import Application, text_writer
 
 
-async def first_middleware(scope, info, matches, content, handler):
+async def first_middleware(request, handler):
     print("First middleware - entry")
-    info['message'] = 'This is first the middleware. '
-    status, headers, response, pushes = await handler(
-        scope,
-        info,
-        matches,
-        content
-    )
+    request.context['message'] = 'This is first the middleware. '
+    response = await handler(request)
     print("First middleware - exit")
-    return status, headers, response, pushes
+    return response
 
 
-async def second_middleware(scope, info, matches, content, handler):
+async def second_middleware(request, handler):
     print("Second middleware - entry")
-    info['message'] += 'This is the second middleware.'
-    response = await handler(scope, info, matches, content)
+    request.context['message'] += 'This is the second middleware.'
+    response = await handler(request)
     print("Second middleware - exit")
     return response
 
 
-async def http_request_callback(scope, info, matches, content):
-    return 200, [(b'content-type', b'text/plain')], text_writer(info['message'])
+async def http_request_callback(request):
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer(request.context['message'])
+    )
 
 app = Application(
     middlewares=[
@@ -76,17 +75,12 @@ If we look at the first middleware function we can see it takes one more
 argument, the `handler`, than a request handler.
 
 ```python
-async def first_middleware(scope, info, matches, content, handler):
+async def first_middleware(request, handler):
     print("First middleware - entry")
-    info['message'] = 'This is first the middleware. '
-    status, headers, response, pushes = await handler(
-        scope,
-        info,
-        matches,
-        content
-    )
+    request.context['message'] = 'This is first the middleware. '
+    response = await handler(request)
     print("First middleware - exit")
-    return status, headers, response, pushes
+    return response
 ```
 
 The `handler` is the next function to call. We can see with the two print

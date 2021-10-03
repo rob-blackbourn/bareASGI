@@ -15,8 +15,8 @@ The request handler looks very similar to that of server sent events, except
 there is no need to implement the protocol; just streaming data is fine.
 
 ```python
-async def test_events(scope, info, matches, content):
-    body = await text_reader(content)
+async def test_events(request):
+    body = await text_reader(request.body)
     data = json.loads(body)
 
     async def send_events():
@@ -44,7 +44,7 @@ async def test_events(scope, info, matches, content):
         (b'connection', b'keep-alive')
     ]
 
-    return 200, headers, send_events()
+    return HttpResponse(200, headers, send_events())
 ```
 
 Rather than yielding the event source protocol we simply stream JSON, with each
@@ -72,7 +72,7 @@ function streamingFetch(url, message) {
     body: JSON.stringify(message),
   });
 
-  eventTarget.addEventListener("tick", event => {
+  eventTarget.addEventListener("tick", (event) => {
     const data = JSON.stringify(event.data);
     console.log(data);
   });
@@ -91,13 +91,13 @@ function FetchEventTarget(input, init) {
   const jsonDecoder = makeJsonDecoder(input);
   const eventStream = makeWriteableEventStream(eventTarget);
   fetch(input, init)
-    .then(response => {
+    .then((response) => {
       response.body
         .pipeThrough(new TextDecoderStream())
         .pipeThrough(jsonDecoder)
         .pipeTo(eventStream);
     })
-    .catch(error => {
+    .catch((error) => {
       eventTarget.dispatchEvent(new CustomEvent("error", { detail: error }));
     });
   return eventTarget;

@@ -10,8 +10,8 @@ servers, so the first thing required is a server.
 
 The servers I have been using are:
 
-* [hypercorn](https://pgjones.gitlab.io/hypercorn/)
-* [uvicorn](https://www.uvicorn.org/)
+- [hypercorn](https://pgjones.gitlab.io/hypercorn/)
+- [uvicorn](https://www.uvicorn.org/)
 
 At the time of writing hypercorn has the best support for HTTP/2, while
 uvicorn is the most simple to use. Checkout the links above for installation
@@ -45,8 +45,8 @@ from bareasgi import Application, bytes_writer
 app = Application()
 
 @app.on_http_request({'GET'}, '/')
-async def http_request_handler(scope, info, matches, content):
-    return 200, [(b'content-type', b'text/plain')], bytes_writer(b'Hello, World!')
+async def http_request_handler(request):
+    return HttpResponse(200, [(b'content-type', b'text/plain')], bytes_writer(b'Hello, World!'))
 
 uvicorn.run(app, port=9009)
 ```
@@ -58,21 +58,18 @@ Now let’s take this apart.
 ### The HTTP Request Handler
 
 As it’s name suggests the `http_request_handler` function handles an HTTP
-*request*. It’s arguments form the request, and it returns a *response*. Unlike
-other frameworks I chose not to wrap these in an object. There aren’t many, and
-I took the view that the less work done that isn’t strictly necessary the faster
-the framework would be.
+_request_ of type `HttpRequest`. It returns a _response_ of type `HttpResponse`.
 
-This example doesn’t use any of the input parameters, so I’ll introduce them
+This example doesn’t use the request, so I’ll introduce that
 later, but it does return a whole lot of stuff for the response.
 
 ### The HTTP Response
 
-The first element of the response tuple is the **200** 
+The first element of the `HttpResponse` is the **200**
 [HTTP response code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 
 The second element are the headers. These are optional (we could have passed in
-None), but we’re returning plain text so I set the `content-type` accordingly. 
+None), but we’re returning plain text so I set the `content-type` accordingly.
 Note that the headers are a list of tuples of bytes. Also the header name is in
 lower case. This is all part of the ASGI standard, and it means this list can be
 passed directly through to the server without the framework doing any extra
@@ -93,7 +90,7 @@ async def bytes_writer(buf, chunk_size = -1):
             start, end = end, end + chunk_size
 ```
 
-This is an *[asynchronous generator](https://www.python.org/dev/peps/pep-0525/)*.
+This is an _[asynchronous generator](https://www.python.org/dev/peps/pep-0525/)_.
 It (optionally) splits the response into chunks which are sent to the client in
 sequence. We do this for a number of reasons.
 
@@ -110,7 +107,7 @@ and the server will stop sending it.
 Third we can support streaming content: for example a ticking price or a twitter
 feed.
 
-The last element of the response is a list of push request supported by the
+The last optional element of the response is a list of push request supported by the
 HTTP/2 protocol which I won’t discuss that here.
 
 ### Routing
@@ -132,13 +129,16 @@ import asyncio
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 from bareasgi import Application, bytes_writer
-async def http_request_callback(scope, info, matches, content):
+
+async def http_request_callback(request):
     headers = [
         (b'content-type', b'text/plain')
     ]
-    return 200, headers, bytes_writer(b'Hello, World!')
+    return HttpResponse(200, headers, bytes_writer(b'Hello, World!'))
+
 app = Application()
 app.http_router.add({'GET'}, '/hello-world')
+
 config = Config()
 config.bind = ["0.0.0.0:9009"]
 asyncio.run(serve(app, config))
@@ -147,8 +147,8 @@ asyncio.run(serve(app, config))
 This is my preferred method, as it allows more control over the creation of the
 Application object.
 
-In the examples above we used a literal path. We could also have used a 
-parameterised path:
+In the examples above we used a literal path. We could also have used a
+parameterized path:
 
 ```python
 '/foo/{name}/{id:int}/{created:datetime:%Y-%m-%d}'

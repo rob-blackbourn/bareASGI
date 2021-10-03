@@ -16,7 +16,7 @@ and [here for the python](../examples/server_sent_events_nt.py),
 The request handler looks as follows.
 
 ```python
-async def test_events(scope, info, matches, content):
+async def test_events(request):
 
     async def send_events():
         is_cancelled = False
@@ -39,7 +39,7 @@ async def test_events(scope, info, matches, content):
         (b'connection', b'keep-alive')
     ]
 
-    return 200, headers, send_events()
+    return HttpResponse(200, headers, send_events())
 ```
 
 The key to understanding this is the last line:

@@ -9,7 +9,7 @@ The source code for the following example can be found
 The middleware can be added as follows.
 
 ```python
-from bareutils.compression import make_default_compression_middleware
+from bareasgi.middlewares import make_default_compression_middleware
 
 compression_middleware = make_default_compression_middleware(minimum_size=1024)
 app = Application(middlewares=[compression_middleware])

@@ -26,10 +26,10 @@ import uvicorn
 
 from bareasgi import Application, text_writer
 
-async def on_startup(scope, info, request):
+async def on_startup(request):
     print("Running startup handler")
 
-async def on_shutdown(scope, info, request):
+async def on_shutdown(request):
     print("Running shutdown handler")
 
 app = Application(
@@ -55,30 +55,28 @@ We could have used a decorator instead.
 app = Application()
 
 @app.on_startup
-async def on_startup(scope, info, request):
+async def on_startup(request):
     print("Running startup handler")
 ```
 
-### Handler Parameters
+### LifspanRequest
+
+The request parameter is of type `LifespanRequest`.
+
+This has the following fields
 
 #### Scope
 
-The `scope` parameter contains the unmodified ASGI scope defined
+The `scope` field contains the unmodified ASGI scope defined
 [here](https://asgi.readthedocs.io/en/latest/specs/lifespan.html#scope).
 
 It doesn't contain much that's useful, but I pass it for completeness.
 
 #### Info
 
-The `info` parameter contains the data that is shared across the application.
+The `info` field contains the data that is shared across the application.
 
 This is typically used to retrieve configuration, and store resources.
-
-#### Request
-
-The `request` is another unmodified piece of ASGI data, which contains the
-content of the startup or shutdown event. This is also not particularly useful,
-and is provided for completeness
 
 ## What next?
 

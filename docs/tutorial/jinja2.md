@@ -34,17 +34,19 @@ env = jinja2.Environment(
 bareasgi_jinja2.add_jinja2(app, env)
 ```
 
-A decorator is applied to request handlers which use a jinja2 template.
+A class method `apply` on the `Jinja2TemplateProvider` can be used to handle the
+request.
 
 ```python
-import bareasgi_jinja2
+from bareasgi_jinja2 import Jinja2TemplateProvider
 
-@bareasgi_jinja2.template('index.html')
-async def handle_index_request(scope, info, matches, content):
-    return {
-        'title': 'bareASGI'
-    }
+async def handle_index_request(request):
+    return await Jinja2TemplateProvider.apply(
+        request,
+        'index.html',
+        {'title': 'bareASGI'}
+    )
 ```
 
-The decorator specifies the template to be used. The request handler returns a
-`dict` the values of which are available in the template.
+The method specifies the template to be used and a `dict` of values which are
+available in the template.
