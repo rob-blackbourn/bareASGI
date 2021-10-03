@@ -6,26 +6,26 @@ from hypercorn.asyncio import serve
 from hypercorn.config import Config
 import uvicorn
 
-from bareasgi import Application, text_writer
+from bareasgi import Application, HttpResponse, text_writer
 
 logging.basicConfig(level=logging.DEBUG)
 
 LOGGER = logging.getLogger(__name__)
 
 
-async def on_startup(scope, info, request):
+async def on_startup(_request):
     LOGGER.info("Running startup handler")
 
 
-async def on_shutdown(scope, info, request):
+async def on_shutdown(_request):
     LOGGER.info("Running shutdown handler")
 
 
-async def http_request_callback(scope, info, matches, content):
+async def http_request_callback(_request):
     headers = [
         (b'content-type', b'text/plain')
     ]
-    return 200, headers, text_writer('This is not a test')
+    return HttpResponse(200, headers, text_writer('This is not a test'))
 
 
 app = Application(

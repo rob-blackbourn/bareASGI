@@ -62,8 +62,8 @@ The source code for the following example can be found
 The key part of the code is where we set the cookies.
 
 ```python
-async def post_form(scope, info, matches, content):
-    content_type = header.find(b'content-type', scope['headers'])
+async def post_form(request):
+    content_type = header.find(b'content-type', request.scope['headers'])
     if content_type != b'application/x-www-form-urlencoded':
         return 500
 
@@ -77,14 +77,14 @@ async def post_form(scope, info, matches, content):
         (b'set-cookie', f'first_name={first_name}'.encode()),
         (b'set-cookie', f'last_name={last_name}'.encode()),
     ]
-    return 303, headers
+    return HttpResponse(303, headers)
 ```
 
 This handler receives the `POST` from the form. First it checks that the content
 type is appropriate for form data.
 
 Then it reads the body and unpacks it. Note that there is no special support for
-unpacking, we simply use the `urllib.parse.parse_sql` function from the standard
+unpacking, we simply use the `urllib.parse.parse_qsl` function from the standard
 library.
 
 Finally it sets the cookies with `set-cookie` in the headers. The `bareUtils`
@@ -118,8 +118,8 @@ def decode_set_cookie(set_cookie: bytes) -> Mapping[str, Any]:
 The form handler which presents the form looks like this:
 
 ```python
-async def get_form(scope, info, matches, content):
-    cookies = header.cookie(scope['headers'])
+async def get_form(request):
+    cookies = header.cookie(request.scope['headers'])
 
     first_name = cookies.get(b'first_name', [b'Micky'])[0]
     last_name = cookies.get(b'last_name', [b'Mouse'])[0]
@@ -138,12 +138,11 @@ async def get_form(scope, info, matches, content):
     headers = [
         (b'content-type', b'text/html'),
     ]
-    return 200, headers, text_writer(html)
+    return HttpResponse(200, headers, text_writer(html))
 ```
 
 It uses another utility function `header.cookies` which simply packs the cookies
 into a dict. Note that multiple cookies of the same name may be passed.
-
 
 ## What next?
 

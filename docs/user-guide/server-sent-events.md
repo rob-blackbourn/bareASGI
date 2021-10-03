@@ -5,13 +5,13 @@ generator.
 
 The following program provides an endpoint `test_page` for the html document
 which contains the JavaScript code to create the `EventSource` with a url
-served by the `test_events`function. This function returnes as the body an
+served by the `test_events`function. This function returns as the body an
 async generator which sends the time every second. When the event source
 is closed the task will be cancelled and the function exits.
 
 ```python
 import asyncio
-from bareasgi import Application, text_writer
+from bareasgi import Application, HttpResponse, text_writer
 from datetime import datetime
 import uvicorn
 
@@ -41,7 +41,7 @@ async def test_page(scope, info, matches, content):
     return 200, [(b'content-type', b'text/html')], text_writer(html)
 
 
-async def test_events(scope, info, matches, content):
+async def test_events(request):
 
     async def send_events():
         is_cancelled = False
@@ -60,7 +60,7 @@ async def test_events(scope, info, matches, content):
         (b'connection', b'keep-alive')
     ]
 
-    return 200, headers, send_events()
+    return HttpResponse(200, headers, send_events())
 
 app = Application()
 app.http_router.add({'GET'}, '/', index)

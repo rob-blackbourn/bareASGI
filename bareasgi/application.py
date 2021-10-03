@@ -1,46 +1,39 @@
-"""
-ASGI Application
-"""
+"""The ASGI application"""
 
-from typing import (
-    Mapping,
-    Any,
-    Optional,
-    MutableMapping,
-    List,
-    AbstractSet,
-    Callable
-)
 import logging
+from typing import (
+    AbstractSet,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional
+)
 
-from baretypes import (
-    Scope,
+from bareutils import text_writer
+
+from .http import (
     HttpRouter,
-    WebSocketRouter,
-    LifespanHandler,
     HttpResponse,
     HttpMiddlewareCallback,
-    HttpRequestCallback,
-    WebSocketRequestCallback,
-    Send,
-    Receive
+    HttpRequestCallback
 )
-from bareutils.streaming import text_writer
+from .lifespan import LifespanRequestHandler
+from .websockets import WebSocketRouter, WebSocketRequestCallback
 
-from .instance import Instance
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
-
-DEFAULT_NOT_FOUND_RESPONSE: HttpResponse = (
-    404,
-    [(b'content-type', b'text/plain')],
-    text_writer('Not Found'),
-    None
-)
+from .core_application import CoreApplication
 
 LOGGER = logging.getLogger(__name__)
 
+DEFAULT_NOT_FOUND_RESPONSE = HttpResponse(
+    404,
+    [(b'content-type', b'text/plain')],
+    text_writer('Not Found')
+)
 
-class Application:
+
+class Application(CoreApplication):
     """A class to hold the application."""
 
     def __init__(
@@ -49,10 +42,10 @@ class Application:
             middlewares: Optional[List[HttpMiddlewareCallback]] = None,
             http_router: Optional[HttpRouter] = None,
             web_socket_router: Optional[WebSocketRouter] = None,
-            startup_handlers: Optional[List[LifespanHandler]] = None,
-            shutdown_handlers: Optional[List[LifespanHandler]] = None,
-            not_found_response: Optional[HttpResponse] = None,
-            info: Optional[MutableMapping[str, Any]] = None
+            startup_handlers: Optional[List[LifespanRequestHandler]] = None,
+            shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
+            not_found_response: HttpResponse = DEFAULT_NOT_FOUND_RESPONSE,
+            info: Optional[Dict[str, Any]] = None
     ) -> None:
         """Construct the application
 
@@ -60,22 +53,19 @@ class Application:
         from bareasgi import (
             Application,
             Scope,
-            Info,
-            RouteMatches,
-            Content,
-            WebSocket,
+            HttpRequest,
+            HttpResponse,
             text_reader,
             text_writer
         )
 
-        async def http_request_callback(
-            scope: Scope,
-            info: Info,
-            matches: RouteMatches,
-            content: Content
-        ) -> HttpResponse:
-            text = await text_reader(content)
-            return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test'), None
+        async def http_request_callback(request: HttpRequest) -> HttpResponse:
+            text = await text_reader(request.body)
+            return HttpResponse(
+                200,
+                [(b'content-type', b'text/plain')],
+                text_writer('This is not a test')
+            )
 
         import uvicorn
 
@@ -97,79 +87,18 @@ class Application:
             shutdown_handlers (Optional[List[LifespanHandler]], optional): Optional
                 handlers to run at shutdown. Defaults to None.
             not_found_response (Optional[HttpResponse], optional): Optional not
-                found (404) response. Defaults to None.
-            info (Optional[MutableMapping[str, Any]], optional): Optional
+                found (404) response. Defaults to DEFAULT_NOT_FOUND_RESPONSE.
+            info (Optional[Dict[str, Any]], optional): Optional
                 dictionary for user data. Defaults to None.
         """
-        self._context: Mapping[str, Any] = {
-            'info': dict() if info is None else info,
-            'lifespan': {
-                'lifespan.startup': startup_handlers or [],
-                'lifespan.shutdown': shutdown_handlers or []
-            },
-            'http': {
-                'router': http_router or BasicHttpRouter(
-                    not_found_response or DEFAULT_NOT_FOUND_RESPONSE
-                ),
-                'middlewares': middlewares or []
-            },
-            'websocket': web_socket_router or BasicWebSocketRouter()
-        }
-
-    @property
-    def info(self) -> MutableMapping[str, Any]:
-        """A place to sto application specific data.
-
-        Returns:
-            MutableMapping[str, Any]: A dictionary
-        """
-        return self._context['info']
-
-    @property
-    def middlewares(self) -> List[HttpMiddlewareCallback]:
-        """The middlewares.
-
-        Returns:
-            List[HttpMiddlewareCallback]: A list of the middleware to apply to
-                every route.
-        """
-        return self._context['http']['middlewares']
-
-    @property
-    def http_router(self) -> HttpRouter:
-        """Router for http routes
-
-        Returns:
-            HttpRouter: The http router.
-        """
-        return self._context['http']['router']
-
-    @property
-    def ws_router(self) -> WebSocketRouter:
-        """Router for WebSocket routes
-
-        Returns:
-            WebSocketRouter: The WebSocket router.
-        """
-        return self._context['websocket']
-
-    @property
-    def startup_handlers(self) -> List[LifespanHandler]:
-        """Handlers run at startup
-
-        Returns:
-            List[LifespanHandler]: The startup handlers
-        """
-        return self._context['lifespan']['lifespan.startup']
-
-    @property
-    def shutdown_handlers(self) -> List[LifespanHandler]:
-        """Handlers run on shutdown
-
-        Returns:
-            List[LifespanHandler]: The shutdown handlers.
-        """
-        return self._context['lifespan']['lifespan.shutdown']
+        super().__init__(
+            middlewares or [],
+            http_router or BasicHttpRouter(not_found_response),
+            web_socket_router or BasicWebSocketRouter(),
+            startup_handlers or [],
+            shutdown_handlers or [],
+            info or {}
+        )
 
     def on_http_request(
             self,
@@ -215,35 +144,30 @@ class Application:
 
     def on_startup(
             self,
-            callback: LifespanHandler
-    ) -> LifespanHandler:
+            callback: LifespanRequestHandler
+    ) -> LifespanRequestHandler:
         """A decorator to add a startup handler to the application
 
         Args:
-            callback (LifespanHandler): The startup handler.
+            callback (LifespanRequestHandler): The startup handler.
 
         Returns:
-            LifespanHandler: The decorated handler.
+            LifespanRequestHandler: The decorated handler.
         """
         self.startup_handlers.append(callback)
         return callback
 
     def on_shutdown(
             self,
-            callback: LifespanHandler
-    ) -> LifespanHandler:
+            callback: LifespanRequestHandler
+    ) -> LifespanRequestHandler:
         """A decorator to add a startup handler to the application
 
         Args:
-            callback (LifespanHandler): The shutdown handler.
+            callback (LifespanRequestHandler): The shutdown handler.
 
         Returns:
-            LifespanHandler: The decorated handler.
+            LifespanRequestHandler: The decorated handler.
         """
         self.shutdown_handlers.append(callback)
         return callback
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        LOGGER.debug('Creating instance', extra={'scope': scope})
-        instance = Instance(self._context, scope)
-        await instance(receive, send)

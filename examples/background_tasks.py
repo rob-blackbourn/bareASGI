@@ -9,11 +9,8 @@ import logging
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
-    Message,
+    LifespanRequest,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -46,8 +43,7 @@ async def time_ticker(shutdown_event: Event) -> None:
     LOGGER.debug('The time ticker has stopped')
 
 
-# pylint: disable=unused-argument
-async def time_ticker_startup_handler(scope: Scope, info: Info, request: Message) -> None:
+async def time_ticker_startup_handler(request: LifespanRequest) -> None:
     """
     This handles starting the time ticker.
 
@@ -61,14 +57,14 @@ async def time_ticker_startup_handler(scope: Scope, info: Info, request: Message
 
     # Create an event that can be set when the background task should shutdown.
     shutdown_event = Event()
-    info['shutdown_event'] = shutdown_event
+    request.info['shutdown_event'] = shutdown_event
 
     # Create the background task.
-    info['time_ticker_task'] = asyncio.create_task(time_ticker(shutdown_event))
+    request.info['time_ticker_task'] = asyncio.create_task(
+        time_ticker(shutdown_event))
 
 
-# pylint: disable=unused-argument
-async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Message) -> None:
+async def time_ticker_shutdown_handler(request: LifespanRequest) -> None:
     """
     This handles shutting down the time ticker.
 
@@ -78,36 +74,33 @@ async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Messag
     """
 
     # Set the shutdown event so the background task can stop gracefully.
-    shutdown_event: Event = info['shutdown_event']
+    shutdown_event: Event = request.info['shutdown_event']
     LOGGER.debug('Stopping the time_ticker')
     shutdown_event.set()
 
     # Wait for the background task to finish.
-    time_ticker_task: asyncio.Task = info['time_ticker_task']
+    time_ticker_task: asyncio.Task = request.info['time_ticker_task']
     LOGGER.debug('Waiting for time_ticker')
     await time_ticker_task
     LOGGER.debug('time_ticker shutdown')
 
 
-# pylint: disable=unused-argument
-async def http_request_callback(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def http_request_callback(_request: HttpRequest) -> HttpResponse:
     """
     A Simple endpoint to demonstrate that requests can still be serviced when
     a background task is running.
     """
-    return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer('This is not a test')
+    )
 
 
 if __name__ == "__main__":
     import uvicorn
 
     # Create the application with startup and shutdown handlers.
-    # pylint: disable=invalid-name
     app = Application(
         startup_handlers=[time_ticker_startup_handler],
         shutdown_handlers=[time_ticker_shutdown_handler]

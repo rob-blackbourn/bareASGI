@@ -3,13 +3,11 @@ A simple request handler.
 """
 
 import logging
+import uvicorn
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -17,19 +15,16 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def http_request_callback(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def http_request_callback(_request: HttpRequest) -> HttpResponse:
     """A request handler which returns some text"""
-    return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer('This is not a test')
+    )
 
 
 if __name__ == "__main__":
-    import uvicorn
-
     app = Application()
     app.http_router.add({'GET'}, '/{rest:path}', http_request_callback)
 

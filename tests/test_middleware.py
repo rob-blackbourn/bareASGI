@@ -1,48 +1,55 @@
 """Tests for middleware"""
 
 import pytest
+
 from bareasgi import (
-    Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
+    HttpRequestCallback,
     text_reader,
     text_writer
 )
-from bareasgi.middleware import mw
-from .mock_io import MockIO
+from bareasgi.http import make_middleware_chain
 
 
 @pytest.mark.asyncio
 async def test_middleware():
 
-    async def first_middleware(scope, info, matches, content, handler):
-        info['path'].append('first')
-        response = await handler(scope, info, matches, content)
+    async def first_middleware(
+        request: HttpRequest,
+        handler: HttpRequestCallback,
+    ) -> HttpResponse:
+        request.info['path'].append('first')
+        response = await handler(request)
         return response
 
-    async def second_middleware(scope, info, matches, content, handler):
-        info['path'].append('second')
-        response = await handler(scope, info, matches, content)
+    async def second_middleware(
+            request: HttpRequest,
+            handler: HttpRequestCallback,
+    ) -> HttpResponse:
+        request.info['path'].append('second')
+        response = await handler(request)
         return response
 
-    async def http_request_callback(scope, info, matches, content):
-        info['path'].append('handler')
-        return 200, [(b'content-type', b'text/plain')], text_writer('test'), None
+    async def http_request_callback(request: HttpRequest) -> HttpResponse:
+        request.info['path'].append('handler')
+        return HttpResponse(
+            200,
+            [(b'content-type', b'text/plain')],
+            text_writer('test')
+        )
 
-    request = mw(
+    chain = make_middleware_chain(
         first_middleware,
         second_middleware,
         handler=http_request_callback
     )
 
     data = {'path': []}
-    status, headers, content, push_responses = await request({}, data, {}, None)
-    assert status == 200
+    response = await chain(HttpRequest({}, data, {}, {}, None))
+    assert response.status == 200
     assert data['path'] == ['first', 'second', 'handler']
-    assert headers == [(b'content-type', b'text/plain')]
-    text = await text_reader(content)
+    assert response.headers == [(b'content-type', b'text/plain')]
+    text = await text_reader(response.body)
     assert text == 'test'
-    assert push_responses is None
+    assert response.pushes is None

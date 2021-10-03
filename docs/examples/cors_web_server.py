@@ -7,10 +7,7 @@ import uvicorn
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -18,15 +15,14 @@ from bareasgi import (
 logging.basicConfig(level=logging.DEBUG)
 
 
-async def http_request_callback(
-        _scope: Scope,
-        info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def http_request_callback(request: HttpRequest) -> HttpResponse:
     """Serve the html page"""
-    page = info['html']
-    return 200, [(b'content-type', b'text/html')], text_writer(page)
+    page = request.info['html']
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(page)
+    )
 
 
 if __name__ == "__main__":
@@ -35,7 +31,7 @@ if __name__ == "__main__":
         __name__,
         "cors_web_server.html"
     )
-    with open(html_filename, 'rt') as file_ptr:
+    with open(html_filename, 'rt', encoding='utf-8') as file_ptr:
         html = file_ptr.read()
 
     app = Application(info=dict(html=html))

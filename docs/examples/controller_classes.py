@@ -6,10 +6,7 @@ import logging
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_reader,
     text_writer
@@ -29,37 +26,26 @@ class InfoController:
         app.http_router.add({'GET'}, '/info', self.get_info)
         app.http_router.add({'POST'}, '/info', self.set_info)
 
-    # pylint: disable=unused-argument
-    async def get_info(
-            self,
-            scope: Scope,
-            info: Info,
-            matches: RouteMatches,
-            content: Content
-    ) -> HttpResponse:
+    async def get_info(self, request: HttpRequest) -> HttpResponse:
         """A response handler which returns the content of the info property as json"""
-        text = json.dumps(info)
-        return 200, [(b'content-type', b'application/json')], text_writer(text)
+        text = json.dumps(request.info)
+        return HttpResponse(
+            200,
+            [(b'content-type', b'application/json')],
+            text_writer(text)
+        )
 
-    # pylint: disable=unused-argument
-    async def set_info(
-            self,
-            scope: Scope,
-            info: Info,
-            matches: RouteMatches,
-            content: Content
-    ) -> HttpResponse:
+    async def set_info(self, request: HttpRequest) -> HttpResponse:
         """A response handle which updates the info property with a json payload"""
-        text = await text_reader(content)
+        text = await text_reader(request.body)
         data = json.loads(text)
-        info.update(data)
-        return 204
+        request.info.update(data)
+        return HttpResponse(204)
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    # pylint: disable=invalid-name
     application = Application(info={'name': 'Michael Caine'})
 
     info_controller = InfoController()

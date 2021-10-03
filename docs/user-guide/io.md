@@ -9,39 +9,42 @@ Note that the content is sent and received in bytes.
 Here is a simple example of a reader that consumes all the body content and returns a string.
 
 ```python
-async def text_reader(content: Content) -> str:
+async def text_reader(body: AsyncIterable[bytes]) -> str:
     text = ''
     async for b in content:
         text += b.decode()
     return text
 ```
 
-This mechanism means that no unnecessary work is done. For example if the content type was invalid it would be pointless
-to decode the body. Also if inconsistent data was found an error can be returned rather than reading all the data.
+This mechanism means that no unnecessary work is done. For example if the content
+type was invalid it would be pointless to decode the body. Also if inconsistent
+data was found an error can be returned rather than reading all the data.
 
 ## Writing
 
-Here is a simple example of a reader that returns the body content as an async generator.
+Here is a simple example of a reader that returns the body content as an async
+iterable of bytes.
 
 ```python
-async def text_writer(text: str) -> AsyncGenerator[bytes, None]:
+async def text_writer(text: str) -> AsyncIterable[bytes]:
     n = 512
     while text:
         yield text[:n].encode()
         text = text[n:]
 ```
 
-Breaking up the message in this manner allows the ASGI server more control over the data sent. If the receiving client
-decides to stop consuming the data, the remaining body need never be sent.
+Breaking up the message in this manner allows the ASGI server more control over
+the data sent. If the receiving client decides to stop consuming the data, the
+remaining body need never be sent.
 
 ## Usage
 
 We might use these functions in a handler in the following manner:
 
 ```python
-async def set_info(scope, info, matches, content):
-    text = await text_reader(content)
-    return 204, None, text_writer(f'You said "{text}"')
+async def set_info(request):
+    text = await text_reader(request.body)
+    return HttpRequest(204, None, text_writer(f'You said "{text}"'))
 ```
 
 Notice how the `text_reader` is awaited.

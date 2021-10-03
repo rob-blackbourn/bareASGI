@@ -29,5 +29,5 @@ this may still be desirable for more performance.
 
 A number of servers have been written that support the specification. I have been using:
 
-* [uvicorn](https://www.uvicorn.org/)
-* [hypercorn](https://pgjones.gitlab.io/hypercorn/)
+- [hypercorn](https://pgjones.gitlab.io/hypercorn/)
+- [uvicorn](https://www.uvicorn.org/)

@@ -4,27 +4,18 @@ An example of using compression middleware for automatic compression
 
 import logging
 
-from bareutils.compression import make_default_compression_middleware
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     bytes_writer
 )
+from bareasgi.middlewares import make_default_compression_middleware
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-# pylint: disable=unused-argument
-async def http_request_callback(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def http_request_callback(_request: HttpRequest) -> HttpResponse:
     """A response handler which returns some text"""
     with open(__file__, 'rb') as file_pointer:
         buf = file_pointer.read()
@@ -34,15 +25,15 @@ async def http_request_callback(
         (b'content-length', str(len(buf)).encode('ascii'))
     ]
 
-    return 200, headers, bytes_writer(buf, chunk_size=-1)
+    return HttpResponse(200, headers, bytes_writer(buf, chunk_size=-1))
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    # pylint: disable=invalid-name
     compression_middleware = make_default_compression_middleware(
-        minimum_size=1024)
+        minimum_size=1024
+    )
 
     app = Application(middlewares=[compression_middleware])
 

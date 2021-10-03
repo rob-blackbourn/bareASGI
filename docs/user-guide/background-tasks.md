@@ -5,17 +5,17 @@ requests. For example incoming data might have to be processed before being used
 in subsequent responses.
 
 An important implementation details is that any code which uses the asyncio event
-loop (e.g. asyncio.Event(), asyncio.Queue(), etc.) *must* be done in the context
+loop (e.g. asyncio.Event(), asyncio.Queue(), etc.) _must_ be done in the context
 of the ASGI server. Failure to do this will lead to errors complaining that the
 object is owned by a different event loop.
 
 This can be achieved by passing the application startup and shutdown handlers:
 
 ```python
-async def my_startup_handler(scope: Scope, info: Info, request: Message) -> None:
+async def my_startup_handler(request: LifespanRequest) -> None:
     ...
 
-async def my_shutdown_handler(scope: Scope, info: Info, request: Message) -> None:
+async def my_shutdown_handler(request: LifespanRequest) -> None:
     ...
 
 # Create the application with startup and shutdown handlers.
@@ -44,22 +44,22 @@ async def time_ticker(shutdown_event: Event) -> None:
 
     log.debug('The time ticker has stopped')
 
-async def time_ticker_startup_handler(scope: Scope, info: Info, request: Message) -> None:
+async def time_ticker_startup_handler(request: LifespanRequest) -> None:
     # Create an event that can be set when the background task should shutdown.
     shutdown_event = Event()
-    info['shutdown_event'] = shutdown_event
+    request.info['shutdown_event'] = shutdown_event
 
     # Create the background task.
-    info['time_ticker_task'] = asyncio.create_task(time_ticker(shutdown_event))
+    request.info['time_ticker_task'] = asyncio.create_task(time_ticker(shutdown_event))
 
-async def time_ticker_shutdown_handler(scope: Scope, info: Info, request: Message) -> None:
+async def time_ticker_shutdown_handler(request: LifespanRequest) -> None:
     # Set the shutdown event so the background task can stop gracefully.
-    shutdown_event: Event = info['shutdown_event']
+    shutdown_event: Event = request.info['shutdown_event']
     log.debug('Stopping the time_ticker')
     shutdown_event.set()
 
     # Wait for the background task to finish.
-    time_ticker_task: asyncio.Task = info['time_ticker_task']
+    time_ticker_task: asyncio.Task = request.info['time_ticker_task']
     log.debug('Waiting for time_ticker')
     await time_ticker_task
     log.debug('time_ticker shutdown')

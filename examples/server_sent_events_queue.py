@@ -15,12 +15,9 @@ from typing import List
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
-    Message,
+    HttpRequest,
     HttpResponse,
+    LifespanRequest,
     text_writer
 )
 
@@ -66,8 +63,7 @@ class TimeTicker:
         self.listeners.remove(listener)
 
 
-# pylint: disable=unused-argument
-async def start_time_ticker(scope: Scope, info: Info, request: Message) -> None:
+async def start_time_ticker(request: LifespanRequest) -> None:
     """A startup task that starts the time ticker.
 
     It is important that the task gets created by the startup task as the
@@ -75,35 +71,27 @@ async def start_time_ticker(scope: Scope, info: Info, request: Message) -> None:
     loop of the ASGI server.
     """
     time_ticker = TimeTicker()
-    info['time_ticker'] = time_ticker
-    info['time_ticker_task'] = asyncio.create_task(time_ticker.start())
+    request.info['time_ticker'] = time_ticker
+    request.info['time_ticker_task'] = asyncio.create_task(time_ticker.start())
 
 
-# pylint: disable=unused-argument
-async def stop_time_ticker(scope: Scope, info: Info, request: Message) -> None:
+async def stop_time_ticker(request: LifespanRequest) -> None:
     """Stop the time ticker"""
-    time_ticker: TimeTicker = info['time_ticker']
+    time_ticker: TimeTicker = request.info['time_ticker']
     LOGGER.debug('Stopping time_ticker')
     time_ticker.stop()
-    time_ticker_task: asyncio.Task = info['time_ticker_task']
+    time_ticker_task: asyncio.Task = request.info['time_ticker_task']
     LOGGER.debug('Waiting for time_ticker')
     await time_ticker_task
     LOGGER.debug('time_ticker shutdown')
 
 
-# pylint: disable=unused-argument
-async def index(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+async def index(_request: HttpRequest) -> HttpResponse:
     """Redirect to the test page"""
-    return 303, [(b'Location', b'/test')]
+    return HttpResponse(303, [(b'Location', b'/test')])
 
 
-# pylint: disable=unused-argument
-async def test_page(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def test_page(_request: HttpRequest) -> HttpResponse:
     """A simple page which receives server sent events"""
     html = """
 <!DOCTYPE html>
@@ -129,20 +117,18 @@ async def test_page(
 </html>
 """
 
-    return 200, [(b'content-type', b'text/html')], text_writer(html)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(html)
+    )
 
 
-# pylint: disable=unused-argument
-async def test_event(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def test_event(request: HttpRequest) -> HttpResponse:
     """This request handler provides the server sent events."""
 
     # Get the time ticker event source from the application's info parameter.
-    time_ticker: TimeTicker = info['time_ticker']
+    time_ticker: TimeTicker = request.info['time_ticker']
     listener = time_ticker.add_listener()
 
     async def listen():
@@ -162,7 +148,7 @@ async def test_event(
         (b'content-type', b'text/event-stream'),
         (b'transfer-encoding', b'chunked')
     ]
-    return 200, headers, listen()
+    return HttpResponse(200, headers, listen())
 
 
 if __name__ == "__main__":

@@ -5,11 +5,13 @@ A segment of a path.
 from typing import Optional, Tuple, Any, Callable, Mapping
 from datetime import datetime
 
-from baretypes import ParseError
-
 from ..utils import parse_json_datetime
 
 Converter = Callable[[Any, Optional[str]], Any]
+
+
+class ParseError(Exception):
+    """Exception raised on a parse error"""
 
 
 def _parse_datetime(value, fmt) -> Optional[datetime]:

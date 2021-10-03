@@ -9,33 +9,27 @@ import socket
 from hypercorn.asyncio import serve
 from hypercorn.config import Config
 
+from bareutils import response_code, text_writer
 from bareasgi import (
     Application,
+    HttpRequest,
     HttpResponse,
 )
-from baretypes import (
-    Scope,
-    Info,
-    RouteMatches,
-    Content
-)
-from bareutils import response_code, text_writer
-from bareutils.compression import make_default_compression_middleware
+from bareasgi.middlewares import make_default_compression_middleware
 
 # logging.basicConfig(level=logging.DEBUG)
 
 
-async def http_request_callback(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def http_request_callback(request: HttpRequest) -> HttpResponse:
     """consume content"""
-    async for item in content:
+    async for item in request.body:
         print(item)
     headers = [(b'content-type', b'text/plain')]
-    return response_code.OK, headers, text_writer('THis is not a test')
+    return HttpResponse(
+        response_code.OK,
+        headers,
+        text_writer('THis is not a test')
+    )
 
 
 if __name__ == "__main__":
@@ -45,7 +39,7 @@ if __name__ == "__main__":
     app = Application(middlewares=[compression_middleware])
     app.http_router.add({'GET'}, '/consume', http_request_callback)
 
-    hostname = socket.getfqdn()  # pylint: disable=invalid-name
+    hostname = socket.getfqdn()
 
     config = Config()
     config.bind = [f"{hostname}:9005"]

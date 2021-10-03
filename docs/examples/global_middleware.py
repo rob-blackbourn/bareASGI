@@ -4,59 +4,44 @@ An example of global middleware.
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
     text_writer,
+    HttpRequest,
     HttpResponse,
     HttpRequestCallback
 )
 
 
 async def first_middleware(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content,
+        request: HttpRequest,
         handler: HttpRequestCallback
 ) -> HttpResponse:
     """The first part of a middleware chain"""
     print("First middleware - entry")
-    info['message'] = 'This is first the middleware. '
-    status, headers, response, pushes = await handler(
-        scope,
-        info,
-        matches,
-        content
-    )
+    request.context['message'] = 'This is first the middleware. '
+    response = await handler(request)
     print("First middleware - exit")
-    return status, headers, response, pushes
+    return response
 
 
 async def second_middleware(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content,
+        request: HttpRequest,
         handler: HttpRequestCallback
 ) -> HttpResponse:
     """The second part of a middleware chain"""
     print("Second middleware - entry")
-    info['message'] += 'This is the second middleware.'
-    response = await handler(scope, info, matches, content)
+    request.context['message'] += 'This is the second middleware.'
+    response = await handler(request)
     print("Second middleware - exit")
     return response
 
 
-async def http_request_callback(
-        _scope: Scope,
-        info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def http_request_callback(request: HttpRequest) -> HttpResponse:
     """The final request handler"""
-    return 200, [(b'content-type', b'text/plain')], text_writer(info['message'])
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer(request.context['message'])
+    )
 
 
 if __name__ == "__main__":

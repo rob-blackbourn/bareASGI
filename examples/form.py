@@ -7,10 +7,7 @@ import urllib.parse
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_reader,
     text_writer
@@ -42,29 +39,25 @@ FORM = """
 """
 
 
-# pylint: disable=unused-argument
-async def get_form(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def get_form(_request: HttpRequest) -> HttpResponse:
     """A request handler which returns a form"""
-    return 200, [(b'content-type', b'text/html')], text_writer(FORM)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(FORM)
+    )
 
 
-# pylint: disable=unused-argument
-async def post_form(
-        scope: Scope,
-        info: Info,
-        matches: RouteMatches,
-        content: Content
-) -> HttpResponse:
+async def post_form(request: HttpRequest) -> HttpResponse:
     """A request handler for the form POST"""
-    text = await text_reader(content)
+    text = await text_reader(request.body)
     data = urllib.parse.parse_qs(text)
     print(data)
-    return 200, [(b'content-type', b'text/plain')], text_writer('This is not a test')
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer('This is not a test')
+    )
 
 
 if __name__ == "__main__":

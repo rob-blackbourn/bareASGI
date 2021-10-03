@@ -1,6 +1,4 @@
-"""
-Basic routing support
-"""
+"""Basic routing support"""
 
 from .http_router import BasicHttpRouter
 from .web_socket_router import BasicWebSocketRouter

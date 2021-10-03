@@ -16,7 +16,7 @@ The following code provides a dummy task, which just waits for a second then
 gets the time. This time I've used the typed code.
 
 ```python
-async def time_ticker(info: Info, shutdown_event: Event) -> None:
+async def time_ticker(info: Dict[str, Any], shutdown_event: Event) -> None:
 
     print('Starting the time ticker')
 
@@ -47,17 +47,17 @@ Then we create the task with
 and store the task in the application's `info`.
 
 When the task is created it will be scheduled to run. Any time the task
-*awaits*, it gives up control and other tasks which are ready to run can
+_awaits_, it gives up control and other tasks which are ready to run can
 proceed.
 
 ```python
-async def time_ticker_startup_handler(scope, info, request):
+async def time_ticker_startup_handler(request):
     # Create an event that can be set when the background task should shutdown.
     shutdown_event = Event()
-    info['shutdown_event'] = shutdown_event
+    request.info['shutdown_event'] = shutdown_event
 
     # Create the background task.
-    info['time_ticker_task'] = asyncio.create_task(
+    request.info['time_ticker_task'] = asyncio.create_task(
         time_ticker(info, shutdown_event)
     )
 ```
@@ -70,13 +70,13 @@ Note that the shutdown event was created in the startup handler. This is
 Here is the code for the shutdown handler.
 
 ```python
-async def time_ticker_shutdown_handler(scope, info, request):
+async def time_ticker_shutdown_handler(request):
     # Set the shutdown event so the background task can stop gracefully.
-    shutdown_event: Event = info['shutdown_event']
+    shutdown_event: Event = request.info['shutdown_event']
     shutdown_event.set()
 
     # Wait for the background task to finish.
-    time_ticker_task: asyncio.Task = info['time_ticker_task']
+    time_ticker_task: asyncio.Task = request.info['time_ticker_task']
     await time_ticker_task
 ```
 
@@ -106,7 +106,7 @@ from datetime import datetime
 import logging
 import uvicorn
 
-from bareasgi import Application, text_writer
+from bareasgi import Application, text_writer, HttpResponse
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -129,34 +129,34 @@ async def time_ticker(info, shutdown_event):
 
     LOGGER.debug('The time ticker has stopped')
 
-async def time_ticker_startup_handler(scope, info, request):
+async def time_ticker_startup_handler(request):
     # Create an event that can be set when the background task should shutdown.
     shutdown_event = Event()
-    info['shutdown_event'] = shutdown_event
+    request.info['shutdown_event'] = shutdown_event
 
     # Create the background task.
-    info['time_ticker_task'] = asyncio.create_task(
+    request.info['time_ticker_task'] = asyncio.create_task(
         time_ticker(info, shutdown_event)
     )
 
-async def time_ticker_shutdown_handler(scope, info, request):
+async def time_ticker_shutdown_handler(request):
     # Set the shutdown event so the background task can stop gracefully.
-    shutdown_event: Event = info['shutdown_event']
+    shutdown_event: Event = request.info['shutdown_event']
     LOGGER.debug('Stopping the time_ticker')
     shutdown_event.set()
 
     # Wait for the background task to finish.
-    time_ticker_task: asyncio.Task = info['time_ticker_task']
+    time_ticker_task: asyncio.Task = request.info['time_ticker_task']
     LOGGER.debug('Waiting for time_ticker')
     await time_ticker_task
     LOGGER.debug('time_ticker shutdown')
 
 
-async def http_request_callback(scope, info, matches, content):
+async def http_request_callback(request):
     headers = [
         (b'content-type', b'text/plain')
     ]
-    return 200, headers, text_writer(f"Last time tick: {info.get('now')}")
+    return HttpResponse(200, headers, text_writer(f"Last time tick: {request.info.get('now')}"))
 
 app = Application(
     startup_handlers=[time_ticker_startup_handler],

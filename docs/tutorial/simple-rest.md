@@ -18,26 +18,26 @@ from hypercorn.config import Config
 from bareasgi import Application, text_reader, text_writer
 import bareutils.header as header
 
-async def get_info(scope, info, matches, content):
-    accept = header.find(b'accept', scope['headers'])
+async def get_info(request):
+    accept = header.find(b'accept', request.scope['headers'])
     if accept != b'application/json':
         return 500
     # Get the info
-    text = json.dumps(info)
+    text = json.dumps(request.info)
     headers = [
         (b'content-type', b'application/json')
     ]
-    return 200, headers, text_writer(text)
+    return HttpResponse(200, headers, text_writer(text))
 
-async def set_info(scope, info, matches, content):
-    content_type = header.find(b'content-type', scope['headers'])
+async def set_info(request):
+    content_type = header.find(b'content-type', request.scope['headers'])
     if content_type != b'application/json':
         return 500
-    text = await text_reader(content)
+    text = await text_reader(request.body)
     data = json.loads(text)
     # Set the info
-    info.update(data)
-    return 204
+    request.info.update(data)
+    return HttpResponse(204)
 
 app = Application(info={'name': 'Michael Caine'})
 app.http_router.add({'GET'}, '/info', get_info)
@@ -51,28 +51,28 @@ asyncio.run(serve(app, config))
 
 To try this out make a `GET` request to http://localhost:9009/info with the
 `accept` header set to `application/json`. It should respond with a
-`content-type` of `application/json` and *body* of `{“name": “Michael Caine"}`.
+`content-type` of `application/json` and _body_ of `{“name": “Michael Caine"}`.
 Sending a `POST` to the same endpoint with the body `{“name": “Peter Sellers"}`
 and a `content-type` of `application/json` should respond with a `204` status
 code. A subsequent `GET` should return `{“name": “Peter Sellers"}`.
 
 ## Request Parameters
 
-In this example we start to use some of the request parameters. 
+In this example we start to use some of the request fields.
 
-### Scope
+### scope
 
 The `scope` is passed directly from the ASGI server. It is a dictionary of
 values describing the request. We use it here to inspect the headers.
 
-Looking at the ASGI 
+Looking at the ASGI
 [cconnection-scope](https://asgi.readthedocs.io/en/latest/specs/www.html#connection-scope)
 documentation we can see it contains everything the ASGI server knows about the
 request, including the scheme, the query string, etc.
 
-### Info
+### info
 
-The `info` is a `dict` which is supplied to the `Application` on construction 
+The `info` is a `dict` which is supplied to the `Application` on construction
 (or automatically generated if not). It is the means of the application sharing
 data.
 
@@ -89,21 +89,21 @@ text = json.dumps(info)
 headers = [
     (b'content-type', b'application/json')
 ]
-return 200, headers, text_writer(text)
+return HttpResponse(200, headers, text_writer(text))
 ```
 
 The `POST` handler reads the new data from the request body and updates the
 `info` with whatever was sent.
 
 ```python
-text = await text_reader(content)
+text = await text_reader(request.body)
 data = json.loads(text)
-info.update(data)
+request.info.update(data)
 ```
 
 A subsequent `GET` will return the new content of info.
 
-### Content
+### body
 
 The `content` is the complement of the body in the response. It is another
 asynchronous generator and is used to read the body of the request. The
@@ -116,7 +116,7 @@ The handlers respond with `500` if the request was incorrect.
 
 ```python
 if content_type != b'application/json':
-    return 500
+    return HttpResponse(500)
 ```
 
 We can see that it is not necessary to provide all the elements of the response,

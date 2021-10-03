@@ -11,10 +11,7 @@ from hypercorn.config import Config
 
 from bareasgi import (
     Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
+    HttpRequest,
     HttpResponse,
     text_writer
 )
@@ -24,12 +21,7 @@ logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger('server_sent_events')
 
 
-async def test_page(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def test_page(_request: HttpRequest) -> HttpResponse:
     """A request handler which returns some html"""
     html = """
 <!DOCTYPE html>
@@ -45,7 +37,11 @@ async def test_page(
   </body>
 </html>
 """
-    return 200, [(b'content-type', b'text/html')], text_writer(html)
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(html)
+    )
 
 if __name__ == "__main__":
     app = Application()
@@ -65,12 +61,12 @@ if __name__ == "__main__":
     config = Config()
     config.bind = ["0.0.0.0:9009"]
     config.loglevel = 'debug'
-    config.certfile = os.path.expanduser(f"~/.keys/server.crt")
-    config.keyfile = os.path.expanduser(f"~/.keys/server.key")
+    config.certfile = os.path.expanduser("~/.keys/server.crt")
+    config.keyfile = os.path.expanduser("~/.keys/server.key")
 
     loop.run_until_complete(
         serve(
-            app,
+            app, # type: ignore
             config,
             shutdown_trigger=shutdown_event.wait  # type: ignore
         )

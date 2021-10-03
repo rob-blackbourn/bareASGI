@@ -5,45 +5,30 @@ A simple example of server sent events.
 import asyncio
 from datetime import datetime
 
-from bareasgi import (
-    Application,
-    text_writer
-)
-from baretypes import (
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
-    HttpResponse
-)
 import pkg_resources
 import uvicorn
 
+from bareasgi import (
+    Application,
+    text_writer,
+    HttpRequest,
+    HttpResponse
+)
 
-async def index(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+
+async def index(_request: HttpRequest) -> HttpResponse:
     """Redirect to the index page"""
-    return 303, [(b'Location', b'/test')], None
+    return HttpResponse(303, [(b'Location', b'/test')])
 
-async def test_page(
-        _scope: Scope,
-        info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def test_page(request: HttpRequest) -> HttpResponse:
     """A request handler which provides the page to respond to server sent events"""
-    return 200, [(b'content-type', b'text/html')], text_writer(info['html'])
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/html')],
+        text_writer(request.info['html'])
+    )
 
-async def test_events(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> HttpResponse:
+async def test_events(_response: HttpRequest) -> HttpResponse:
     """A request handler which provides server sent events"""
 
     async def send_events():
@@ -67,12 +52,12 @@ async def test_events(
         (b'connection', b'keep-alive')
     ]
 
-    return 200, headers, send_events()
+    return HttpResponse(200, headers, send_events())
 
 
 if __name__ == "__main__":
     html_filename = pkg_resources.resource_filename(__name__, "server_sent_events.html")
-    with open(html_filename, 'rt') as file_ptr:
+    with open(html_filename, 'rt', encoding='utf-8') as file_ptr:
         html = file_ptr.read()
 
     app = Application(info=dict(html=html))
