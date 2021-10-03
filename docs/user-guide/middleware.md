@@ -2,15 +2,16 @@
 
 Middleware is a chain of functions terminated by a callback.
 
-It can be used to add content to the request and response or to control the calling of subsequent handlers.
+It can be used to add content to the request and response or to control the
+calling of subsequent handlers.
 
 A middleware callback is an async function with the following prototype.
 
 ```python
-status, headers, content, pushes = await fn(scope, info, matches, content, callback)
+response = await fn(request)
 ```
 
-This is the same as an HTTP handler, with the addition of the ``callback`` which is
+This is the same as an HTTP handler, with the addition of the `callback` which is
 either another middleware callback or an HTTP handler.
 
 ## Simple Example
@@ -21,20 +22,20 @@ Here is a simple middleware example.
 import uvicorn
 from bareasgi import Application, text_writer
 
-async def first_middleware(scope, info, matches, content, handler):
-    info['message'] = 'This is first the middleware. '
-    response = await handler(scope, info, matches, content)
+async def first_middleware(request, handler):
+    request.context['message'] = 'This is first the middleware. '
+    response = await handler(request)
     return response
 
 
-async def second_middleware(scope, info, matches, content, handler):
-    info['message'] += 'This is the second middleware.'
-    response = await handler(scope, info, matches, content)
+async def second_middleware(request, handler):
+    request.context['message'] += 'This is the second middleware.'
+    response = await handler(request)
     return response
 
 
-async def http_request_callback(scope, info, matches, content):
-    return 200, [(b'content-type', b'text/plain')], text_writer(info['message'])
+async def http_request_callback(request):
+    return HttpResponse(200, [(b'content-type', b'text/plain')], text_writer(request.context['message']))
 
 
 app = Application(middlewares=[first_middleware, second_middleware])

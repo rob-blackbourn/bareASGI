@@ -6,9 +6,9 @@ The package can be installed with pip.
 pip install bareasgi
 ```
 
-This is a Python3.7 and later package.
+This is a Python3.8 and later package.
 
 It has dependencies on:
 
-* [bareTypes](https://github.com/rob-blackbourn/bareTypes)
-* [bareUtils](https://github.com/rob-blackbourn/bareUtils)
+- [bareUtils](https://github.com/rob-blackbourn/bareUtils)
+- [jetblack-asgi-typing](https://github.com/rob-blackbourn/jetblack-asgi-typing)
