@@ -40,8 +40,8 @@ class LifespanInstance:
     ) -> None:
         # The lifespan scope exists for the duration of the event loop, and
         # only exits on 'lifespan.shutdown'.
-        has_shutdown = False
-        while has_shutdown:
+        done = False
+        while not done:
             # Fetch the lifespan request
             event = await receive()
 
@@ -51,7 +51,7 @@ class LifespanInstance:
                 await self._handle_startup_event(send)
             elif event['type'] == 'lifespan.shutdown':
                 await self._handle_shutdown_event(send)
-                has_shutdown = True
+                done = True
 
     async def _handle_startup_event(
             self,
