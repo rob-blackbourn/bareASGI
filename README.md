@@ -9,8 +9,8 @@ This is a _bare_ ASGI web server framework. The goal is to provide
 a minimal implementation, with other facilities (serving static files, CORS,
 sessions, etc.) being implemented by optional packages.
 
-The framework is targeted at micro-services which require a light footprint, or
-as a base for larger frameworks.
+The framework is targeted at micro-services which require a light footprint
+(in a container for example), or as a base for larger frameworks.
 
 Python 3.8+ is required.
 
@@ -26,15 +26,14 @@ Python 3.8+ is required.
 
 ## Functionality
 
-While lightweight, the framework contains all the functionality required for
-developing sophisticated web applications including:
+The framework provides the basic functionality required for developing a web
+application, including:
 
-- Http (1.0, 1.1, 2, 3),
+- Http,
 - WebSockets,
-- A method and path based router,
-- Middleware,
-- Http 2 push,
-- Streaming requests and responses.
+- Routing,
+- Lifecycle,
+- Middleware
 
 ## Simple Server
 
@@ -44,11 +43,15 @@ Here is a simple server with a request handler that returns some text.
 import uvicorn
 from bareasgi import Application, text_writer
 
-async def http_request_callback(request):
-    return HttpResponse(200, [(b'content-type', b'text/plain')], text_writer('This is not a test'))
+async def example_handler(request):
+    return HttpResponse(
+        200,
+        [(b'content-type', b'text/plain')],
+        text_writer('This is not a test')
+    )
 
 app = Application()
-app.http_router.add({'GET'}, '/', http_request_callback)
+app.http_router.add({'GET'}, '/', example_handler)
 
 uvicorn.run(app, port=9009)
 ```
