@@ -9,6 +9,7 @@ packages = [
     { include = "bareasgi" }
 ]
 repository = "https://github.com/rob-blackbourn/bareasgi"
+documentation = "https://rob-blackbourn.github.io/bareASGI"
 
 [tool.poetry.dependencies]
 python = "^3.8"
