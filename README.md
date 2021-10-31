@@ -41,9 +41,9 @@ Here is a simple server with a request handler that returns some text.
 
 ```python
 import uvicorn
-from bareasgi import Application, text_writer
+from bareasgi import Application, HttpRequest, HttpResponse, text_writer
 
-async def example_handler(request):
+async def example_handler(request: HttpRequest) -> HttpResponse:
     return HttpResponse(
         200,
         [(b'content-type', b'text/plain')],
