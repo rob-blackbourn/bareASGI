@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import json
+from json import dumps
 from typing import Any, AsyncIterable, Callable, Iterable, List, Optional, Tuple
 
-from bareutils import text_writer
+from bareutils import bytes_writer, text_writer
 
 PushResponse = Tuple[str, List[Tuple[bytes, bytes]]]
 
@@ -38,23 +38,26 @@ class HttpResponse:
         self.pushes = pushes
 
     @classmethod
-    def from_text(
+    def from_bytes(
             cls,
-            text: str,
+            content: bytes,
             *,
             status: int = 200,
             content_type: bytes = b'text/plain',
-            headers: Optional[List[Tuple[bytes, bytes]]] = None
+            headers: Optional[List[Tuple[bytes, bytes]]] = None,
+            chunk_size: int = -1
     ) -> HttpResponse:
-        """Create an HTTP response from a text string.
+        """Create an HTTP response from bytes content.
 
         Args:
-            text (str): A text string.
-            headers (Optional[List[Tuple[bytes, bytes]]]): Optional headers. Defaults
-                to `None`.
+            content (bytes): The content.
+            headers (Optional[List[Tuple[bytes, bytes]]]): Optional headers.
+                Defaults to `None`.
             status (int, optional): An optional status. Defaults to `200`.
             content_type (bytes, optional): An optional content type. Defaults
                 to `b'text/plain'`.
+            chunk_size (int, optional): The size of each chunk to send or -1 to
+                send as a single chunk. Defaults to -1.
 
         Returns:
             HttpResponse: The built HTTP response.
@@ -62,7 +65,41 @@ class HttpResponse:
         return HttpResponse(
             status,
             [(b'content-type', content_type)] + (headers or []),
-            text_writer(text)
+            bytes_writer(content, chunk_size)
+        )
+
+    @classmethod
+    def from_text(
+            cls,
+            text: str,
+            *,
+            status: int = 200,
+            content_type: bytes = b'text/plain',
+            headers: Optional[List[Tuple[bytes, bytes]]] = None,
+            encoding: str = 'utf-8',
+            chunk_size: int = -1
+    ) -> HttpResponse:
+        """Create an HTTP response from a text string.
+
+        Args:
+            text (str): A text string.
+            headers (Optional[List[Tuple[bytes, bytes]]]): Optional headers.
+                Defaults to `None`.
+            status (int, optional): An optional status. Defaults to `200`.
+            content_type (bytes, optional): An optional content type. Defaults
+                to `b'text/plain'`.
+            encoding (str, optional): The encoding to apply when transforming
+                the text into bytes. Defaults to 'utf-8'.
+            chunk_size (int, optional): The size of each chunk to send or -1 to
+                send as a single chunk. Defaults to -1.
+
+        Returns:
+            HttpResponse: The built HTTP response.
+        """
+        return HttpResponse(
+            status,
+            [(b'content-type', content_type)] + (headers or []),
+            text_writer(text, encoding, chunk_size)
         )
 
     @classmethod
@@ -73,25 +110,25 @@ class HttpResponse:
             status: int = 200,
             content_type: bytes = b'application/json',
             headers: Optional[List[Tuple[bytes, bytes]]] = None,
-            dumps: Callable[[Any], str] = json.dumps
+            encode: Callable[[Any], str] = dumps
     ) -> HttpResponse:
         """Create an HTTP response from data converted to JSON.
 
         Args:
             data (Any): The data to be converted to JSON.
-            headers (Optional[List[Tuple[bytes, bytes]]]): Optional headers. Defaults
-                to `None`.
+            headers (Optional[List[Tuple[bytes, bytes]]]): Optional headers.
+                Defaults to `None`.
             status (int, optional): An optional status code. Defaults to `200`.
             content_type (bytes, optional): An optional content type. Defaults
                 to `b'application/json'`.
-            dumps (Callable[[Any], str], optional): An optional function to convert
-                the data to a JSON string. Defaults to `json.dumps`.
+            encode (Callable[[Any], str], optional): An optional function to
+                convert the data to a JSON string. Defaults to `json.dumps`.
 
         Returns:
             HttpResponse: _description_
         """
         return cls.from_text(
-            dumps(data),
+            encode(data),
             status=status,
             content_type=content_type,
             headers=headers
