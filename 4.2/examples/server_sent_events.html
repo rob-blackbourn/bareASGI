@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Example</title>
+  </head>
+  <body>
+    <h1>Server Sent Events</h1>
+    
+    Time: <snap id="time"></span>
+    
+    <script>
+      var eventSource = new EventSource("/events")
+      eventSource.onmessage = function(event) {
+        element = document.getElementById("time")
+        element.innerHTML = event.data
+      }
+    </script>
+  </body>
+</html>
