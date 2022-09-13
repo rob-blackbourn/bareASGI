@@ -1,9 +1,10 @@
 """The http request"""
 
-from typing import Any, AsyncIterable, Dict, Mapping
+from json import loads
+from typing import Any, AsyncIterable, Callable, Dict, Mapping
 
 from asgi_typing import HTTPScope
-from bareutils import header
+from bareutils import header, bytes_reader, text_reader
 
 
 class HttpRequest:
@@ -45,3 +46,44 @@ class HttpRequest:
         assert host is not None
         path = self.scope['path']
         return f"{scheme}://{host.decode()}{path}"
+
+    async def text(self, encoding: str = 'utf-8') -> str:
+        """Return the request body as text.
+
+        This function consumes the body. Calling it a second time will generate
+        an error.
+
+        Args:
+            encoding (str, optional): The encoding. Defaults to 'utf-8'.
+
+        Returns:
+            str: The body as text.
+        """
+        return await text_reader(self.body, encoding)
+
+    async def content(self) -> bytes:
+        """Return the contents of the request body as bytes.
+
+        This function consumes the body. Calling it a second time will generate
+        an error.
+
+        Returns:
+            bytes: The body as bytes.
+        """
+        return await bytes_reader(self.body)
+
+    async def json(self, decode: Callable[[bytes], Any] = loads) -> Any:
+        """Return the contents of the request body as JSON.
+
+        This function consumes the body. Calling it a second time will generate
+        an error.
+
+        Args:
+            decode (Callable[[Union[str, bytes]], Any], optional): A function to
+                decode the body to json. Defaults to `json.loads`.
+
+        Returns:
+            Any: The body as JSON.
+        """
+        data = await self.content()
+        return decode(data)
