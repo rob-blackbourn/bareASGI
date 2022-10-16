@@ -110,7 +110,8 @@ class HttpResponse:
             status: int = 200,
             content_type: bytes = b'application/json',
             headers: Optional[List[Tuple[bytes, bytes]]] = None,
-            encode: Callable[[Any], str] = dumps
+            encode: Callable[[Any], str] = dumps,
+            encode_bytes: Optional[Callable[[Any], bytes]] = None
     ) -> HttpResponse:
         """Create an HTTP response from data converted to JSON.
 
@@ -121,13 +122,22 @@ class HttpResponse:
             status (int, optional): An optional status code. Defaults to `200`.
             content_type (bytes, optional): An optional content type. Defaults
                 to `b'application/json'`.
-            encode (Callable[[Any], str], optional): An optional function to
-                convert the data to a JSON string. Defaults to `json.dumps`.
+            encode (Callable[[Any], str], optional): An function to convert the
+                data to a JSON string. Defaults to `json.dumps`.
+            encode_bytes (Optional[Callable[[Any]], bytes], optional): An
+                optional function to convert the data to JSON bytes. If
+                specified this will be preferred to the `encode` argument.
+                Defaults to None.
 
         Returns:
-            HttpResponse: _description_
+            HttpResponse: A JSON http response.
         """
-        return cls.from_text(
+        return cls.from_bytes(
+            encode_bytes(data),
+            status=status,
+            content_type=content_type,
+            headers=headers
+        ) if encode_bytes is not None else cls.from_text(
             encode(data),
             status=status,
             content_type=content_type,
