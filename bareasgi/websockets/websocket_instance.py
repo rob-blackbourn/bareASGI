@@ -4,6 +4,7 @@ import logging
 from typing import (
     Any,
     Dict,
+    Iterable,
     List,
     Optional,
     Tuple,
@@ -23,7 +24,9 @@ from asgi_typing import (
 )
 
 from .websocket import WebSocket
+from .websocket_callbacks import WebSocketMiddlewareCallback
 from .websocket_errors import WebSocketInternalError
+from .websocket_middleware import make_middleware_chain
 from .websocket_request import WebSocketRequest
 from .websocket_router import WebSocketRouter
 
@@ -104,14 +107,24 @@ class WebSocketInstance:
             self,
             scope: WebSocketScope,
             router: WebSocketRouter,
+            middleware: Iterable[WebSocketMiddlewareCallback],
             info: Dict[str, Any]
     ) -> None:
         self.scope = scope
         self.info = info
+
+        # Find the route.
         handler, matches = router.resolve(scope['path'])
         if handler is None:
             raise ValueError(f"No handler for path {scope['path']}")
         self.handler, self.matches = handler, matches
+
+        # Assemble any middleware.
+        if middleware:
+            self.handler = make_middleware_chain(
+                *middleware,
+                handler=self.handler
+            )
 
     async def process(
             self,

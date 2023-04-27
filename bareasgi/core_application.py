@@ -20,7 +20,11 @@ from asgi_typing import (
 
 from .http import HttpInstance, HttpRouter, HttpMiddlewareCallback
 from .lifespan import LifespanRequestHandler, LifespanInstance
-from .websockets import WebSocketRouter, WebSocketInstance
+from .websockets import (
+    WebSocketRouter,
+    WebSocketInstance,
+    WebSocketMiddlewareCallback
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -30,33 +34,21 @@ class CoreApplication:
 
     def __init__(
             self,
-            middlewares: List[HttpMiddlewareCallback],
+            http_middlewares: List[HttpMiddlewareCallback],
             http_router: HttpRouter,
+            web_socket_middlewares: List[WebSocketMiddlewareCallback],
             web_socket_router: WebSocketRouter,
             startup_handlers: List[LifespanRequestHandler],
             shutdown_handlers: List[LifespanRequestHandler],
             info: Dict[str, Any]
     ) -> None:
         self.info = info
+        self.http_middlewares = http_middlewares
         self.http_router = http_router
-        self.middlewares = middlewares
         self.ws_router = web_socket_router
+        self.ws_middlewares = web_socket_middlewares
         self.startup_handlers = startup_handlers
         self.shutdown_handlers = shutdown_handlers
-
-    async def _handle_http_request(
-            self,
-            scope: HTTPScope,
-            receive: ASGIHTTPReceiveCallable,
-            send: ASGIHTTPSendCallable
-    ) -> None:
-        instance = HttpInstance(
-            scope,
-            self.http_router,
-            self.middlewares,
-            self.info
-        )
-        await instance.process(receive, send)
 
     async def _handle_lifespan_request(
             self,
@@ -72,6 +64,20 @@ class CoreApplication:
         )
         await instance.process(receive, send)
 
+    async def _handle_http_request(
+            self,
+            scope: HTTPScope,
+            receive: ASGIHTTPReceiveCallable,
+            send: ASGIHTTPSendCallable
+    ) -> None:
+        instance = HttpInstance(
+            scope,
+            self.http_router,
+            self.http_middlewares,
+            self.info
+        )
+        await instance.process(receive, send)
+
     async def _handle_websocket_request(
             self,
             scope: WebSocketScope,
@@ -81,6 +87,7 @@ class CoreApplication:
         instance = WebSocketInstance(
             scope,
             self.ws_router,
+            self.ws_middlewares,
             self.info
         )
         await instance.process(receive, send)
@@ -96,7 +103,7 @@ class CoreApplication:
         Args:
             scope (Scope): The ASGI scope.
             receive (ASGIReceiveCallable): A coroutine to receive ASGI events.
-            send (ASGISendCallable): A corouting to send ASGI events.
+            send (ASGISendCallable): A coroutine to send ASGI events.
 
         Raises:
             ValueError: For an unknown event type.

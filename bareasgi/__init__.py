@@ -19,7 +19,7 @@ from .http import (
     make_middleware_chain
 )
 from .lifespan import LifespanRequest
-from .websockets import WebSocket, WebSocketRequest
+from .websockets import WebSocket, WebSocketRequest, WebSocketRequestCallback
 
 __all__ = [
     "Scope",
@@ -42,4 +42,5 @@ __all__ = [
 
     "WebSocket",
     "WebSocketRequest",
+    "WebSocketRequestCallback",
 ]

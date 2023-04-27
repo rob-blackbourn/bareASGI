@@ -19,7 +19,11 @@ from .http import (
     HttpRequestCallback
 )
 from .lifespan import LifespanRequestHandler
-from .websockets import WebSocketRouter, WebSocketRequestCallback
+from .websockets import (
+    WebSocketRouter,
+    WebSocketRequestCallback,
+    WebSocketMiddlewareCallback
+)
 
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
 from .core_application import CoreApplication
@@ -32,6 +36,9 @@ DEFAULT_NOT_FOUND_RESPONSE = HttpResponse(
     text_writer('Not Found')
 )
 
+HttpMiddlewares = List[HttpMiddlewareCallback]
+WebSocketMiddlewares = List[WebSocketMiddlewareCallback]
+
 
 class Application(CoreApplication):
     """A class to hold the application."""
@@ -39,8 +46,9 @@ class Application(CoreApplication):
     def __init__(
             self,
             *,
-            middlewares: Optional[List[HttpMiddlewareCallback]] = None,
+            middlewares: Optional[HttpMiddlewares] = None,
             http_router: Optional[HttpRouter] = None,
+            web_socket_middlewares: Optional[WebSocketMiddlewares] = None,
             web_socket_router: Optional[WebSocketRouter] = None,
             startup_handlers: Optional[List[LifespanRequestHandler]] = None,
             shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
@@ -76,10 +84,12 @@ class Application(CoreApplication):
         ```
 
         Args:
-            middlewares (Optional[List[HttpMiddlewareCallback]], optional): Optional
+            middlewares (Optional[HttpMiddlewares], optional): Optional
                 middleware callbacks. Defaults to None.
             http_router (Optional[HttpRouter], optional): Optional router to for
                 http routes. Defaults to None.
+            web_socket_middlewares (Optional[WebSocketMiddlewares], optional):
+                Optional middleware callbacks. Defaults to None.
             web_socket_router (Optional[WebSocketRouter], optional): Optional
                 router for web routes. Defaults to None.
             startup_handlers (Optional[List[LifespanHandler]], optional): Optional
@@ -94,6 +104,7 @@ class Application(CoreApplication):
         super().__init__(
             middlewares or [],
             http_router or BasicHttpRouter(not_found_response),
+            web_socket_middlewares or [],
             web_socket_router or BasicWebSocketRouter(),
             startup_handlers or [],
             shutdown_handlers or [],

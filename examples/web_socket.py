@@ -8,17 +8,18 @@ import os
 import socket
 from typing import cast
 
-import bareutils.header as header
-
 from bareasgi import (
     Application,
     HttpRequest,
     HttpResponse,
     WebSocketRequest,
+    WebSocketRequestCallback,
     text_writer
 )
 
-logging.basicConfig(level=logging.DEBUG)
+LOGGER = logging.getLogger(__name__)
+
+logging.basicConfig(level=logging.INFO)
 
 
 async def index(_request: HttpRequest) -> HttpResponse:
@@ -29,26 +30,20 @@ async def index(_request: HttpRequest) -> HttpResponse:
 async def test_page(request: HttpRequest) -> HttpResponse:
     """Send the page with the example web socket"""
     scheme = 'wss' if request.scope['scheme'] == 'https' else 'ws'
-    if request.scope['http_version'] in ('2', '2.0'):
-        authority = cast(
-            bytes,
-            header.find(b':authority', request.scope['headers'])
-        ).decode('ascii')
-    else:
-        assert request.scope['server'] is not None, "scope missing server"
-        host, port = request.scope['server']
-        authority = f'{host}:{port}'
+    assert request.scope['server'] is not None, "scope missing server"
+    host, port = request.scope['server']
+    authority = f'{host}:{port}'
     web_socket_url = f"{scheme}://{authority}/test"
     print(web_socket_url)
 
     page = """
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>WebSocket Example</title>
-        <style>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Example</title>
+    <style>
 *, *:before, *:after {{
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -157,25 +152,25 @@ button:hover {{
   opacity: 0.75;
   cursor: pointer;
 }}        
-        </style>
-      </head>
-      <body>
-      
-        <div id="page-wrapper">
-          <h1>WebSockets Demo</h1>
+    </style>
+  </head>
+  <body>
   
-          <div id="status">Connecting...</div>
-  
-          <ul id="messages"></ul>
-  
-          <form id="message-form" action="#" method="post">
-            <textarea id="message" placeholder="Write your message here..." required></textarea>
-            <button type="submit">Send Message</button>
-            <button type="button" id="close">Close Connection</button>
-          </form>
-        </div>
-        
-        <script language="javascript" type="text/javascript">
+    <div id="page-wrapper">
+      <h1>WebSockets Demo</h1>
+
+      <div id="status">Connecting...</div>
+
+      <ul id="messages"></ul>
+
+      <form id="message-form" action="#" method="post">
+        <textarea id="message" placeholder="Write your message here..." required></textarea>
+        <button type="submit">Send Message</button>
+        <button type="button" id="close">Close Connection</button>
+      </form>
+    </div>
+    
+    <script language="javascript" type="text/javascript">
 
 window.onload = function() {{
 
@@ -249,10 +244,10 @@ window.onload = function() {{
   }};
 
 }};
-        </script>
-      </body>
-    </html>
-    """.format(web_socket_url=web_socket_url)
+    </script>
+  </body>
+</html>
+""".format(web_socket_url=web_socket_url)
     return HttpResponse(
         200,
         [(b'content-type', b'text/html')],
@@ -300,9 +295,29 @@ async def test_page1(_request: HttpRequest) -> HttpResponse:
     )
 
 
+async def first_middleware(
+    request: WebSocketRequest,
+    handler: WebSocketRequestCallback
+) -> None:
+    request.context['message'] = 'This is the first middleware. '
+    LOGGER.info("message %s", request.context['message'])
+    await handler(request)
+
+
+async def second_middleware(
+    request: WebSocketRequest,
+    handler: WebSocketRequestCallback
+) -> None:
+    request.context['message'] = 'This is the second middleware. '
+    LOGGER.info("message %s", request.context['message'])
+    await handler(request)
+
+
 if __name__ == "__main__":
 
-    app = Application()
+    app = Application(
+        web_socket_middlewares=[first_middleware, second_middleware]
+    )
     app.http_router.add({'GET'}, '/', index)
     app.http_router.add({'GET'}, '/example1', test_page1)
     app.http_router.add({'GET'}, '/test', test_page)
@@ -319,7 +334,7 @@ if __name__ == "__main__":
         uvicorn.run(app, port=9009)
     else:
         config = Config()
-        config.bind = [f"{hostname}:9009"]
-        config.certfile = os.path.expanduser(f"~/.keys/{hostname}.crt")
-        config.keyfile = os.path.expanduser(f"~/.keys/{hostname}.key")
+        config.bind = ["0.0.0.0:9009"]
+        # config.certfile = os.path.expanduser(f"~/.keys/server.crt")
+        # config.keyfile = os.path.expanduser(f"~/.keys/server.key")
         asyncio.run(serve(app, config))  # type: ignore
