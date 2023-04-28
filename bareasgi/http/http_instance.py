@@ -1,7 +1,7 @@
 """The http instance"""
 
 import asyncio
-from asyncio import Queue
+from asyncio import Queue, Task
 import logging
 from typing import (
     Any,
@@ -18,6 +18,7 @@ from asgi_typing import (
     HTTPResponseBodyEvent,
     HTTPScope,
     ASGIHTTPReceiveCallable,
+    ASGIHTTPReceiveEvent,
     ASGIHTTPSendCallable,
     HTTPRequestEvent,
     HTTPResponseStartEvent,
@@ -182,7 +183,9 @@ class HttpInstance:
         send_task = asyncio.create_task(
             self._send_response_events(send, response)
         )
-        receive_task = asyncio.create_task(receive())
+        receive_task: Task[ASGIHTTPReceiveEvent] = asyncio.create_task(
+            receive()  # type: ignore
+        )
         pending: Set[asyncio.Future] = {send_task, receive_task}
 
         is_connected = True

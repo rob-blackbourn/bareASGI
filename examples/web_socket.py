@@ -316,7 +316,7 @@ async def second_middleware(
 if __name__ == "__main__":
 
     app = Application(
-        web_socket_middlewares=[first_middleware, second_middleware]
+        ws_middlewares=[first_middleware, second_middleware]
     )
     app.http_router.add({'GET'}, '/', index)
     app.http_router.add({'GET'}, '/example1', test_page1)

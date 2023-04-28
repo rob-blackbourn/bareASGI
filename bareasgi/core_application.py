@@ -36,8 +36,8 @@ class CoreApplication:
             self,
             http_middlewares: List[HttpMiddlewareCallback],
             http_router: HttpRouter,
-            web_socket_middlewares: List[WebSocketMiddlewareCallback],
-            web_socket_router: WebSocketRouter,
+            ws_middlewares: List[WebSocketMiddlewareCallback],
+            ws_router: WebSocketRouter,
             startup_handlers: List[LifespanRequestHandler],
             shutdown_handlers: List[LifespanRequestHandler],
             info: Dict[str, Any]
@@ -45,8 +45,8 @@ class CoreApplication:
         self.info = info
         self.http_middlewares = http_middlewares
         self.http_router = http_router
-        self.ws_router = web_socket_router
-        self.ws_middlewares = web_socket_middlewares
+        self.ws_router = ws_router
+        self.ws_middlewares = ws_middlewares
         self.startup_handlers = startup_handlers
         self.shutdown_handlers = shutdown_handlers
 

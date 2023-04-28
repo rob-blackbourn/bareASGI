@@ -48,8 +48,8 @@ class Application(CoreApplication):
             *,
             middlewares: Optional[HttpMiddlewares] = None,
             http_router: Optional[HttpRouter] = None,
-            web_socket_middlewares: Optional[WebSocketMiddlewares] = None,
-            web_socket_router: Optional[WebSocketRouter] = None,
+            ws_middlewares: Optional[WebSocketMiddlewares] = None,
+            ws_router: Optional[WebSocketRouter] = None,
             startup_handlers: Optional[List[LifespanRequestHandler]] = None,
             shutdown_handlers: Optional[List[LifespanRequestHandler]] = None,
             not_found_response: HttpResponse = DEFAULT_NOT_FOUND_RESPONSE,
@@ -88,9 +88,9 @@ class Application(CoreApplication):
                 middleware callbacks. Defaults to None.
             http_router (Optional[HttpRouter], optional): Optional router to for
                 http routes. Defaults to None.
-            web_socket_middlewares (Optional[WebSocketMiddlewares], optional):
+            ws_middlewares (Optional[WebSocketMiddlewares], optional):
                 Optional middleware callbacks. Defaults to None.
-            web_socket_router (Optional[WebSocketRouter], optional): Optional
+            ws_router (Optional[WebSocketRouter], optional): Optional
                 router for web routes. Defaults to None.
             startup_handlers (Optional[List[LifespanHandler]], optional): Optional
                 handlers to run at startup. Defaults to None.
@@ -104,8 +104,8 @@ class Application(CoreApplication):
         super().__init__(
             middlewares or [],
             http_router or BasicHttpRouter(not_found_response),
-            web_socket_middlewares or [],
-            web_socket_router or BasicWebSocketRouter(),
+            ws_middlewares or [],
+            ws_router or BasicWebSocketRouter(),
             startup_handlers or [],
             shutdown_handlers or [],
             info or {}
