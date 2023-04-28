@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Any, Mapping, Tuple
 
-from .websocket_request import WebSocketRequestCallback
+from .websocket_callbacks import WebSocketRequestCallback
 
 
 class WebSocketRouter(metaclass=ABCMeta):

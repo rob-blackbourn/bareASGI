@@ -11,7 +11,7 @@ from asyncio import Event
 from asyncio.queues import Queue
 from datetime import datetime
 import logging
-from typing import List
+from typing import AsyncGenerator, List
 
 from bareasgi import (
     Application,
@@ -131,7 +131,7 @@ async def test_event(request: HttpRequest) -> HttpResponse:
     time_ticker: TimeTicker = request.info['time_ticker']
     listener = time_ticker.add_listener()
 
-    async def listen():
+    async def listen() -> AsyncGenerator[bytes, None]:
         is_cancelled = False
         while not is_cancelled:
             try:

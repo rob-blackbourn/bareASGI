@@ -1,12 +1,6 @@
 """The websocket request"""
 
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Mapping,
-)
+from typing import Any, Dict, Mapping
 
 from asgi_typing import WebSocketScope
 
@@ -38,9 +32,3 @@ class WebSocketRequest:
         self.context = context
         self.matches = matches
         self.web_socket = web_socket
-
-
-WebSocketRequestCallback = Callable[
-    [WebSocketRequest],
-    Awaitable[None]
-]

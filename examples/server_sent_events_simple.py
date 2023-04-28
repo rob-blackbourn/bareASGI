@@ -111,10 +111,10 @@ if __name__ == "__main__":
         uvicorn.run(app, port=9009)
     else:
         import signal
-        import uvloop
+        # import uvloop
         from hypercorn.asyncio import serve
         from hypercorn.config import Config
-        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
