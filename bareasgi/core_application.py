@@ -34,7 +34,7 @@ class CoreApplication:
 
     def __init__(
             self,
-            http_middlewares: List[HttpMiddlewareCallback],
+            middlewares: List[HttpMiddlewareCallback],
             http_router: HttpRouter,
             ws_middlewares: List[WebSocketMiddlewareCallback],
             ws_router: WebSocketRouter,
@@ -43,7 +43,7 @@ class CoreApplication:
             info: Dict[str, Any]
     ) -> None:
         self.info = info
-        self.http_middlewares = http_middlewares
+        self.middlewares = middlewares
         self.http_router = http_router
         self.ws_router = ws_router
         self.ws_middlewares = ws_middlewares
@@ -73,7 +73,7 @@ class CoreApplication:
         instance = HttpInstance(
             scope,
             self.http_router,
-            self.http_middlewares,
+            self.middlewares,
             self.info
         )
         await instance.process(receive, send)
