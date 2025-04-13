@@ -6,7 +6,7 @@ import asyncio
 import logging
 from typing import cast
 
-from asgi_typing import ASGI3Application
+from bareasgi.typing import ASGI3Application
 from bareasgi import (
     Application,
     HttpRequest,

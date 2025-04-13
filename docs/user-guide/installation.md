@@ -6,7 +6,7 @@ The package can be installed with pip.
 pip install bareasgi
 ```
 
-This is a Python3.8 and later package.
+This is a Python 3.11 and later package.
 
 It has dependencies on:
 

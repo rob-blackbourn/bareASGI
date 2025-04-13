@@ -1,5 +1,3 @@
-"""Tests for http_router"""
-
 from datetime import datetime
 from bareasgi import (
     HttpRequest,
