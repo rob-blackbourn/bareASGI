@@ -6,24 +6,19 @@ I use standard python environments which I install in the root folder of the
 project. I typically call the folder `.venv`, and this is in the `.gitignore`.
 
 ```bash
-~/bareASGI$ python3.8 -m venv .venv
+~/bareASGI$ python3.11 -m venv .venv
 ~/bareASGI$ . .venv/bin/activate
 (.venv) ~/bareASGI$
 ```
 
 ## Install the packages
 
-The project uses the [poetry](https://python-poetry.org/) build system. I set
-the following poetry config options, but this may not be necessary.
-
-```bash
-(.venv) ~/bareASGI$ poetry config virtualenvs.in-project true
-```
+The project uses standard tooling.
 
 The required packages can be installed wit the following command.
 
 ```bash
-(.venv) ~/bareASGI$ poetry install
+(.venv) ~/bareASGI$ pip install -e '.[dev,docs,examples]'
 ```
 
 ## Check types
@@ -32,7 +27,7 @@ The python code is fully typed. Types can be checked by running the standalone
 `mypy` command.
 
 ```bash
-(.venv) ~/bareASGI$ poetry install
+(.venv) ~/bareASGI$ mypy
 Success: no issues found in 58 source files
 ```
 
@@ -58,13 +53,13 @@ The following commands build the package and publish it. Note that publishing
 requires authentication.
 
 ```bash
-(.venv) ~/bareASGI$ poetry build
+(.venv) ~/bareASGI$ python -m build
 Building bareasgi (4.0.1)
   - Building sdist
   - Built bareasgi-4.0.1.tar.gz
   - Building wheel
   - Built bareasgi-4.0.1-py3-none-any.whl
-(.venv) ~/bareASGI$ poetry publish
+(.venv) ~/bareASGI$ twine upload dist/*
 
 Username:
 ```

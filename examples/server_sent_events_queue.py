@@ -11,7 +11,7 @@ from asyncio import Event
 from asyncio.queues import Queue
 from datetime import datetime
 import logging
-from typing import AsyncGenerator, List
+from typing import AsyncGenerator
 
 from bareasgi import (
     Application,
@@ -31,7 +31,7 @@ class TimeTicker:
 
     def __init__(self) -> None:
         self.shutdown_event = Event()
-        self.listeners: List[Queue] = []
+        self.listeners: list[Queue] = []
 
     async def start(self) -> None:
         """Start generating events"""
