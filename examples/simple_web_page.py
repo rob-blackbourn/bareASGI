@@ -95,8 +95,10 @@ if __name__ == "__main__":
     keyfile = os.path.expanduser(f"~/.keys/server.key")
 
     if USE_UVICORN:
-        uvicorn.run(app, host='0.0.0.0', port=9009,
-                    ssl_keyfile=keyfile, ssl_certfile=certfile)
+        uvicorn.run(
+            app,
+            host='0.0.0.0', port=9009,
+            ssl_keyfile=keyfile, ssl_certfile=certfile)
     else:
         config = Config()
         config.bind = ["0.0.0.0:9009"]
