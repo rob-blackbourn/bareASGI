@@ -5,21 +5,20 @@ description = "A lightweight ASGI framework"
 authors = [
     { name = "Rob Blackbourn", email = "rob.blackbourn@gmail.com" }
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Internet :: WWW/HTTP",
 ]
 readme = "README.md"
 dependencies = [
-    "bareutils >=5.0.0-alpha.1"
+    "bareutils >=5.0.0-alpha.2"
 ]
 license = "Apache-2.0"
 license-files = [
@@ -65,7 +64,7 @@ build-backend = "setuptools.build_meta"
 
 # pylint
 [tool.pylint.main]
-py-version = "3.11"
+py-version = "3.12"
 jobs = 4
 
 [tool.pylint.basic]

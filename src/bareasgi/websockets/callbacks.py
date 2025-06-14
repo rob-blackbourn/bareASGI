@@ -4,11 +4,11 @@ from typing import Awaitable, Callable
 
 from .request import WebSocketRequest
 
-WebSocketRequestCallback = Callable[
+type WebSocketRequestCallback = Callable[
     [WebSocketRequest],
     Awaitable[None]
 ]
-WebSocketMiddlewareCallback = Callable[
+type WebSocketMiddlewareCallback = Callable[
     [WebSocketRequest, WebSocketRequestCallback],
     Awaitable[None]
 ]

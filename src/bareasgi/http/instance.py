@@ -122,6 +122,12 @@ class HttpInstance:
             receive: ASGIHTTPReceiveCallable,
             send: ASGIHTTPSendCallable
     ) -> None:
+        """Process the requests.
+
+        Args:
+            receive (ASGIHTTPReceiveCallable): The function that receives requests.
+            send (ASGIHTTPSendCallable): The function that sends responses.
+        """
 
         LOGGER.debug('Start handling request.')
 
@@ -274,7 +280,7 @@ class HttpInstance:
             send: ASGIHTTPSendCallable,
             body: AsyncIterable[bytes]
     ) -> None:
-        body_iter = body.__aiter__()
+        body_iter = aiter(body)
         is_first_time = True
         more_body = True
         buf = b''
@@ -282,7 +288,7 @@ class HttpInstance:
             prev = buf
             try:
                 # Try to get more body
-                buf = await body_iter.__anext__()
+                buf = await anext(body_iter)
             except StopAsyncIteration:
                 # The previous buf was the last
                 more_body = False

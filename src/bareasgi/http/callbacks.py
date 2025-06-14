@@ -5,11 +5,11 @@ from typing import Awaitable, Callable
 from .request import HttpRequest
 from .response import HttpResponse
 
-HttpRequestCallback = Callable[
+type HttpRequestCallback = Callable[
     [HttpRequest],
     Awaitable[HttpResponse]
 ]
-HttpMiddlewareCallback = Callable[
+type HttpMiddlewareCallback = Callable[
     [HttpRequest, HttpRequestCallback],
     Awaitable[HttpResponse]
 ]

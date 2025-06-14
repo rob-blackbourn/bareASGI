@@ -7,7 +7,7 @@ from typing import Any, AsyncIterable, Callable, Iterable
 
 from bareutils import bytes_writer, text_writer
 
-PushResponse = tuple[str, list[tuple[bytes, bytes]]]
+type PushResponse = tuple[str, list[tuple[bytes, bytes]]]
 
 
 class HttpResponse:

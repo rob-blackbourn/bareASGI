@@ -204,35 +204,35 @@ class WebSocketCloseEvent(TypedDict):
     code: int
 
 
-ASGIWebSocketReceiveEventType = Union[
+type ASGIWebSocketReceiveEventType = Union[
     Literal["websocket.connect"],
     Literal["websocket.receive"],
     Literal["websocket.disconnect"]
 ]
 
-ASGIWebSocketReceiveEvent = Union[
+type ASGIWebSocketReceiveEvent = Union[
     WebSocketConnectEvent,
     WebSocketReceiveEvent,
     WebSocketDisconnectEvent,
 ]
 
-ASGIWebSocketSendEventType = Union[
+type ASGIWebSocketSendEventType = Union[
     Literal["websocket.accept"],
     Literal["websocket.send"],
     Literal["websocket.close"]
 ]
 
-ASGIWebSocketSendEvent = Union[
+type ASGIWebSocketSendEvent = Union[
     WebSocketAcceptEvent,
     WebSocketSendEvent,
     WebSocketCloseEvent,
 ]
 
-ASGIWebSocketReceiveCallable = Callable[
+type ASGIWebSocketReceiveCallable = Callable[
     [],
     Awaitable[ASGIWebSocketReceiveEvent]
 ]
-ASGIWebSocketSendCallable = Callable[
+type ASGIWebSocketSendCallable = Callable[
     [ASGIWebSocketSendEvent],
     Awaitable[None]
 ]

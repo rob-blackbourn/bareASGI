@@ -7,7 +7,7 @@ from typing import Any, Callable, Mapping
 
 from ..utils import parse_json_datetime
 
-Converter = Callable[[Any, str | None], Any]
+type Converter = Callable[[Any, str | None], Any]
 
 
 class ParseError(Exception):

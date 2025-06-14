@@ -1,8 +1,6 @@
 """ASGI Application"""
 
-from typing import Awaitable, Callable, Type, Union
-
-from typing import Protocol
+from typing import Awaitable, Callable, Protocol, Union
 
 from .http.typing import (
     HTTPScope,
@@ -35,10 +33,10 @@ from .lifespan.typing import (
     LifespanShutdownFailedEvent
 )
 
-WWWScope = HTTPScope | WebSocketScope
-Scope = HTTPScope | WebSocketScope | LifespanScope
+type WWWScope = HTTPScope | WebSocketScope
+type Scope = HTTPScope | WebSocketScope | LifespanScope
 
-ASGIReceiveEvent = Union[
+type ASGIReceiveEvent = Union[
     HTTPRequestEvent,
     HTTPDisconnectEvent,
     WebSocketConnectEvent,
@@ -49,7 +47,7 @@ ASGIReceiveEvent = Union[
 ]
 
 
-ASGISendEvent = Union[
+type ASGISendEvent = Union[
     HTTPResponseStartEvent,
     HTTPResponseBodyEvent,
     HTTPServerPushEvent,
@@ -65,11 +63,12 @@ ASGISendEvent = Union[
     LifespanShutdownFailedEvent,
 ]
 
-ASGIReceiveCallable = Callable[[], Awaitable[ASGIReceiveEvent]]
-ASGISendCallable = Callable[[ASGISendEvent], Awaitable[None]]
+type ASGIReceiveCallable = Callable[[], Awaitable[ASGIReceiveEvent]]
+type ASGISendCallable = Callable[[ASGISendEvent], Awaitable[None]]
 
 
 class ASGI2Protocol(Protocol):
+    """Protocol for ASGIv2"""
 
     def __init__(self, scope: Scope) -> None:
         ...
@@ -80,8 +79,8 @@ class ASGI2Protocol(Protocol):
         ...
 
 
-ASGI2Application = Type[ASGI2Protocol]
-ASGI3Application = Callable[
+type ASGI2Application = type[ASGI2Protocol]
+type ASGI3Application = Callable[
     [
         Scope,
         ASGIReceiveCallable,
@@ -89,4 +88,4 @@ ASGI3Application = Callable[
     ],
     Awaitable[None],
 ]
-ASGIApplication = ASGI2Application | ASGI3Application
+type ASGIApplication = ASGI2Application | ASGI3Application

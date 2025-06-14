@@ -28,5 +28,6 @@ def make_middleware_chain(
         HttpRequestCallback: A handler which calls the middleware chain.
     """
     for middleware in reversed(handlers):
-        handler = partial(middleware, handler=partial(_call_handler, handler))
+        nested_handler = partial(_call_handler, handler)
+        handler = partial(middleware, handler=nested_handler)  # type: ignore
     return handler

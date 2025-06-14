@@ -29,8 +29,8 @@ DEFAULT_NOT_FOUND_RESPONSE: Final[HttpResponse] = HttpResponse(
     text_writer('Not Found')
 )
 
-HttpMiddlewares = list[HttpMiddlewareCallback]
-WebSocketMiddlewares = list[WebSocketMiddlewareCallback]
+type HttpMiddlewares = list[HttpMiddlewareCallback]
+type WebSocketMiddlewares = list[WebSocketMiddlewareCallback]
 
 
 class Application(CoreApplication):
