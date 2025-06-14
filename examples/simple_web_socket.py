@@ -181,6 +181,6 @@ if __name__ == "__main__":
         config = Config()
         config.bind = ["0.0.0.0:9009"]
         config.loglevel = 'debug'
-        # config.certfile = certfile
-        # config.keyfile = keyfile
+        config.certfile = certfile
+        config.keyfile = keyfile
         asyncio.run(serve(app, config))  # type: ignore

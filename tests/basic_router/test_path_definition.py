@@ -2,6 +2,8 @@
 
 from datetime import datetime
 
+import pytest
+
 from bareasgi.basic_router.path_definition import PathDefinition
 
 
@@ -72,6 +74,10 @@ def test_path_type():
     assert 'rest' in matches
     assert matches['rest'] == 'folder/other.html'
 
+    path_def = PathDefinition('/ui/{rest:path}/')
+    is_match, matches = path_def.match('/ui/index.html/')
+    assert not is_match
+
 
 def test_hashing():
     """Test that path definitions can be keys"""
@@ -81,3 +87,13 @@ def test_hashing():
     }
     for path_definition, path in dct.items():
         assert path_definition.path == path
+
+
+def test_non_absolute_path():
+    """Test that non-absolute paths are not accepted"""
+    with pytest.raises(ValueError):
+        PathDefinition('foo/bar')
+
+    path_def = PathDefinition('/foo/bar')
+    with pytest.raises(ValueError):
+        path_def.match('foo/bar')
