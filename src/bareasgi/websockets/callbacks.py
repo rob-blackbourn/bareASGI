@@ -12,3 +12,5 @@ type WebSocketMiddlewareCallback = Callable[
     [WebSocketRequest, WebSocketRequestCallback],
     Awaitable[None]
 ]
+
+type WebSocketMiddlewares = list[WebSocketMiddlewareCallback]

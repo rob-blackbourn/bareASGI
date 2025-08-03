@@ -1,6 +1,6 @@
 [project]
-name = "bareasgi"
-version = "5.0.0-alpha.2"
+name = "bareASGI"
+version = "5.0.0-alpha.3"
 description = "A lightweight ASGI framework"
 authors = [
     { name = "Rob Blackbourn", email = "rob.blackbourn@gmail.com" }

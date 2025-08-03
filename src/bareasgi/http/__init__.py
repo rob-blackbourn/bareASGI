@@ -3,6 +3,7 @@
 from .callbacks import (
     HttpRequestCallback,
     HttpMiddlewareCallback,
+    HttpMiddlewares,
 )
 from .instance import HttpInstance
 from .middleware import make_middleware_chain
@@ -22,6 +23,7 @@ __all__ = [
     'HttpRouter',
     'HttpRequestCallback',
     'HttpMiddlewareCallback',
+    'HttpMiddlewares',
     'PushResponse',
     'make_middleware_chain',
     'HTTPScope',

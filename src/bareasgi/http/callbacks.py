@@ -13,3 +13,5 @@ type HttpMiddlewareCallback = Callable[
     [HttpRequest, HttpRequestCallback],
     Awaitable[HttpResponse]
 ]
+
+type HttpMiddlewares = list[HttpMiddlewareCallback]
