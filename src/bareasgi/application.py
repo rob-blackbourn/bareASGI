@@ -8,14 +8,14 @@ from bareutils import text_writer
 from .http import (
     HttpRouter,
     HttpResponse,
-    HttpMiddlewareCallback,
+    HttpMiddlewares,
     HttpRequestCallback
 )
 from .lifespan import LifespanRequestHandler
 from .websockets import (
     WebSocketRouter,
     WebSocketRequestCallback,
-    WebSocketMiddlewareCallback
+    WebSocketMiddlewares
 )
 
 from .basic_router import BasicHttpRouter, BasicWebSocketRouter
@@ -28,9 +28,6 @@ DEFAULT_NOT_FOUND_RESPONSE: Final[HttpResponse] = HttpResponse(
     [(b'content-type', b'text/plain')],
     text_writer('Not Found')
 )
-
-HttpMiddlewares = list[HttpMiddlewareCallback]
-WebSocketMiddlewares = list[WebSocketMiddlewareCallback]
 
 
 class Application(CoreApplication):

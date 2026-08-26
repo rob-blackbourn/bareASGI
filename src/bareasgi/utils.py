@@ -2,17 +2,10 @@
 
 from datetime import datetime
 import re
-from typing import (
-    Callable,
-    Generic,
-    Pattern,
-    TypeVar
-)
-
-T = TypeVar('T')
+from typing import Callable, Pattern
 
 
-class NullIter(Generic[T]):
+class NullIter[T]:
     """An iterator conttaining no items"""
 
     def __aiter__(self):
@@ -22,7 +15,7 @@ class NullIter(Generic[T]):
         raise StopAsyncIteration
 
 
-DateTimeFormat = tuple[str, Pattern, Callable[[str], str] | None]
+type DateTimeFormat = tuple[str, Pattern, Callable[[str], str] | None]
 
 DATETIME_FORMATS: tuple[DateTimeFormat, ...] = (
     (

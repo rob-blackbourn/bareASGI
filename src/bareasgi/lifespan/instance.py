@@ -38,6 +38,12 @@ class LifespanInstance:
             receive: ASGILifespanReceiveCallable,
             send: ASGILifespanSendCallable
     ) -> None:
+        """Process lifespan requests.
+
+        Args:
+            receive (ASGILifespanReceiveCallable): The function that receives requests.
+            send (ASGILifespanSendCallable): The function that send requests.
+        """
         # The lifespan scope exists for the duration of the event loop, and
         # only exits on 'lifespan.shutdown'.
         done = False

@@ -11,7 +11,7 @@ from .path_definition import PathDefinition
 
 LOGGER: Final[logging.Logger] = logging.getLogger(__name__)
 
-Route = tuple[PathDefinition, HttpRequestCallback]
+type Route = tuple[PathDefinition, HttpRequestCallback]
 
 
 class BasicHttpRouter(HttpRouter):

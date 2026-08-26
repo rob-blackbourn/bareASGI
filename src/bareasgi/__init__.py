@@ -14,12 +14,21 @@ from .http import (
     HttpResponse,
     HttpRequestCallback,
     HttpMiddlewareCallback,
+    HttpMiddlewares,
     PushResponse,
-    make_middleware_chain
+    make_middleware_chain,
+    HttpRouter,
 )
-from .lifespan import LifespanRequest
+from .lifespan import LifespanRequest, LifespanRequestHandler
 from .typing import Scope
-from .websockets import WebSocket, WebSocketRequest, WebSocketRequestCallback, WebSocketState
+from .websockets import (
+    WebSocket,
+    WebSocketRequest,
+    WebSocketRequestCallback,
+    WebSocketMiddlewares,
+    WebSocketRouter,
+    WebSocketState,
+)
 
 __all__ = [
     "Scope",
@@ -35,13 +44,18 @@ __all__ = [
     "HttpResponse",
     "HttpRequestCallback",
     "HttpMiddlewareCallback",
+    "HttpMiddlewares",
     "PushResponse",
     "make_middleware_chain",
+    "HttpRouter",
 
     "LifespanRequest",
+    "LifespanRequestHandler",
 
     "WebSocket",
     "WebSocketRequest",
     "WebSocketRequestCallback",
+    "WebSocketMiddlewares",
+    "WebSocketRouter",
     "WebSocketState",
 ]

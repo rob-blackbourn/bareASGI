@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Literal
 
 
-WebSocketState = Literal['connected', 'open', 'closed']
+type WebSocketState = Literal['connected', 'open', 'closed']
 
 
 class WebSocket(metaclass=ABCMeta):

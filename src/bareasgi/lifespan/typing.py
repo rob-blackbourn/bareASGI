@@ -79,7 +79,8 @@ class LifespanStartupEvent(TypedDict):
 class LifespanShutdownEvent(TypedDict):
     """Shutdown - `receive` event
 
-    Sent to the application when the server has stopped accepting connections and closed all active connections.
+    Sent to the application when the server has stopped accepting connections
+    and closed all active connections.
 
     Attributes:
         type (Literal["lifespan.shutdown"]): The message type.
@@ -118,7 +119,8 @@ class LifespanStartupFailedEvent(TypedDict):
 class LifespanShutdownCompleteEvent(TypedDict):
     """Shutdown Complete - `send` event
 
-    Sent by the application when it has completed its cleanup. A server must wait for this message before terminating.
+    Sent by the application when it has completed its cleanup. A server must
+    wait for this message before terminating.
 
     Attributes:
         type (Literal["lifespan.shutdown.complete"]): The message type.
@@ -142,29 +144,35 @@ class LifespanShutdownFailedEvent(TypedDict):
     message: str
 
 
-ASGILifespanReceiveEventType = Union[
+type ASGILifespanReceiveEventType = Union[
     Literal["lifespan.startup"],
     Literal["lifespan.shutdown"]
 ]
 
-ASGILifespanReceiveEvent = Union[
+type ASGILifespanReceiveEvent = Union[
     LifespanStartupEvent,
     LifespanShutdownEvent,
 ]
 
-ASGILifespanSendEventType = Union[
+type ASGILifespanSendEventType = Union[
     Literal["lifespan.startup.complete"],
     Literal["lifespan.startup.failed"],
     Literal["lifespan.shutdown.complete"],
     Literal["lifespan.shutdown.failed"]
 ]
 
-ASGILifespanSendEvent = Union[
+type ASGILifespanSendEvent = Union[
     LifespanStartupCompleteEvent,
     LifespanStartupFailedEvent,
     LifespanShutdownCompleteEvent,
     LifespanShutdownFailedEvent,
 ]
 
-ASGILifespanReceiveCallable = Callable[[], Awaitable[ASGILifespanReceiveEvent]]
-ASGILifespanSendCallable = Callable[[ASGILifespanSendEvent], Awaitable[None]]
+type ASGILifespanReceiveCallable = Callable[
+    [],
+    Awaitable[ASGILifespanReceiveEvent]
+]
+type ASGILifespanSendCallable = Callable[
+    [ASGILifespanSendEvent],
+    Awaitable[None]
+]

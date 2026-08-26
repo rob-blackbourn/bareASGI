@@ -8,7 +8,8 @@ from .typing import (
 from .websocket import WebSocket, WebSocketState
 from .callbacks import (
     WebSocketRequestCallback,
-    WebSocketMiddlewareCallback
+    WebSocketMiddlewareCallback,
+    WebSocketMiddlewares,
 )
 from .instance import WebSocketInstance
 from .request import WebSocketRequest
@@ -21,6 +22,7 @@ __all__ = [
     'WebSocket',
     'WebSocketInstance',
     'WebSocketMiddlewareCallback',
+    'WebSocketMiddlewares',
     'WebSocketRequest',
     'WebSocketRequestCallback',
     'WebSocketRouter',

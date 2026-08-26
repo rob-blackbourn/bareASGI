@@ -11,7 +11,7 @@ from .path_definition import PathDefinition
 
 LOGGER: Final[logging.Logger] = logging.getLogger(__name__)
 
-Route = tuple[PathDefinition, WebSocketRequestCallback]
+type Route = tuple[PathDefinition, WebSocketRequestCallback]
 
 
 class BasicWebSocketRouter(WebSocketRouter):

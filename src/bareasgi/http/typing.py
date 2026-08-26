@@ -244,27 +244,27 @@ class HTTPDisconnectEvent(TypedDict):
     type: Literal["http.disconnect"]
 
 
-ASGIHTTPReceiveEventType = Union[
+type ASGIHTTPReceiveEventType = Union[
     Literal["http.request"],
     Literal["http.disconnect"]
 ]
 
-ASGIHTTPReceiveEvent = Union[
+type ASGIHTTPReceiveEvent = Union[
     HTTPRequestEvent,
     HTTPDisconnectEvent
 ]
 
-ASGIHTTPSendEventType = Union[
+type ASGIHTTPSendEventType = Union[
     Literal["http.response.start"],
     Literal["http.response.body"],
     Literal["http.response.push"],
 ]
 
-ASGIHTTPSendEvent = Union[
+type ASGIHTTPSendEvent = Union[
     HTTPResponseStartEvent,
     HTTPResponseBodyEvent,
     HTTPServerPushEvent,
 ]
 
-ASGIHTTPReceiveCallable = Callable[[], Awaitable[ASGIHTTPReceiveEvent]]
-ASGIHTTPSendCallable = Callable[[ASGIHTTPSendEvent], Awaitable[None]]
+type ASGIHTTPReceiveCallable = Callable[[], Awaitable[ASGIHTTPReceiveEvent]]
+type ASGIHTTPSendCallable = Callable[[ASGIHTTPSendEvent], Awaitable[None]]
