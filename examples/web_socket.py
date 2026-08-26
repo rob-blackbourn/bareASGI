@@ -19,7 +19,7 @@ from bareasgi import (
 
 LOGGER = logging.getLogger(__name__)
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 async def index(_request: HttpRequest) -> HttpResponse:
@@ -257,18 +257,22 @@ window.onload = function() {{
 
 async def test_callback(request: WebSocketRequest) -> None:
     """The websocket callback handler"""
+
     await request.web_socket.accept()
 
     try:
-        while True:
-            text = cast(str, await request.web_socket.receive())
-            if text is None:
+        while request.web_socket.state == 'open':
+            text = await request.web_socket.receive()
+            if not isinstance(text, str) or text.lower() == 'exit':
                 break
             await request.web_socket.send('You said: ' + text)
     except Exception as error:  # pylint: disable=broad-except
         print(error)
 
-    await request.web_socket.close()
+    if request.web_socket.state == 'open':
+        await request.web_socket.close()
+
+    await request.web_socket.wait_closed()
 
 
 async def test_page1(_request: HttpRequest) -> HttpResponse:

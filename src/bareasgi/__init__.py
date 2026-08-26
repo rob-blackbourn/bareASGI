@@ -19,7 +19,7 @@ from .http import (
 )
 from .lifespan import LifespanRequest
 from .typing import Scope
-from .websockets import WebSocket, WebSocketRequest, WebSocketRequestCallback
+from .websockets import WebSocket, WebSocketRequest, WebSocketRequestCallback, WebSocketState
 
 __all__ = [
     "Scope",
@@ -43,4 +43,5 @@ __all__ = [
     "WebSocket",
     "WebSocketRequest",
     "WebSocketRequestCallback",
+    "WebSocketState",
 ]

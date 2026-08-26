@@ -1,6 +1,10 @@
 """The abstract class for a websocket"""
 
 from abc import ABCMeta, abstractmethod
+from typing import Literal
+
+
+WebSocketState = Literal['connected', 'open', 'closed']
 
 
 class WebSocket(metaclass=ABCMeta):
@@ -41,9 +45,43 @@ class WebSocket(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    async def close(self, code: int = 1000) -> None:
+    async def close(self, code: int = 1000, reason: str | None = None) -> None:
         """Close the WebSocket.
 
         Args:
             code (int, optional): The reason code. Defaults to 1000.
+            reason (str | None, optional): The reason. Can be any string.
+                Defaults to 1000.
+        """
+
+    @abstractmethod
+    async def wait_closed(self) -> None:
+        """Wait until the connection is closed.
+        """
+
+    @property
+    @abstractmethod
+    def state(self) -> WebSocketState:
+        """The state of the WebSocket lifecycle.
+
+        Returns:
+            WebSocketState: The state.
+        """
+
+    @property
+    @abstractmethod
+    def code(self) -> int:
+        """The close code.
+
+        Returns:
+            int: The code the WebSocket was closed with.
+        """
+
+    @property
+    @abstractmethod
+    def reason(self) -> str | None:
+        """The reason for the closure.
+
+        Returns:
+            str | None: The reason the WebSocket was closed.
         """
