@@ -1,8 +1,8 @@
 """Websocket"""
 
-from typing import Awaitable, Callable, Iterable, Union
+from typing import Any, Awaitable, Callable, Iterable, Union
 
-from typing import Literal, TypedDict
+from typing import Literal, NotRequired, TypedDict
 
 from ..versions import ASGIVersions
 
@@ -53,6 +53,8 @@ class WebSocketScope(TypedDict):
             server, and port is the integer listening port, or `[path, None]`
             where path is that of the unix socket. Optional; if missing defaults
             to `None`.
+        state (NotRequired[dict[str, Any]]):  copy of the namespace passed into
+            the lifespan corresponding to this request.
         subprotocols (Iterable[str]): Subprotocols the client advertised.
             Optional; if missing defaults to empty list.    
     """
@@ -68,7 +70,8 @@ class WebSocketScope(TypedDict):
     client: tuple[str, int] | None
     server: tuple[str, int | None] | None
     subprotocols: Iterable[str]
-    extensions: dict[str, dict[object, object]] | None
+    state: NotRequired[dict[str, Any]]
+    extensions: NotRequired[dict[str, dict[object, object]]]
 
 
 class WebSocketConnectEvent(TypedDict):
@@ -96,8 +99,8 @@ class WebSocketAcceptEvent(TypedDict):
 
     Attributes:
         type (Literal["websocket.accept"]): The message type.
-        subprotocol (str): The subprotocol the server wishes to accept.
-        Optional; if missing defaults to `None`.
+        subprotocol (NotRequired[str | None]): The subprotocol the server wishes
+            to accept. Optional; if missing defaults to `None`.
         headers (Iterable[tuple[bytes, bytes]]) – An iterable of `[name, value]`
             two-item iterables, where name is the header name, and value is the
             header value. Order must be preserved in the HTTP response. Header
@@ -107,7 +110,7 @@ class WebSocketAcceptEvent(TypedDict):
             Pseudo headers (present in HTTP/2 and HTTP/3) must not be present.
     """
     type: Literal["websocket.accept"]
-    subprotocol: str | None
+    subprotocol: NotRequired[str | None]
     headers: Iterable[tuple[bytes, bytes]]
 
 
@@ -128,8 +131,8 @@ class WebSocketReceiveEvent(TypedDict):
         present, however.
     """
     type: Literal["websocket.receive"]
-    bytes: bytes | None
-    text: str | None
+    bytes: NotRequired[bytes | None]
+    text: NotRequired[str | None]
 
 
 class WebSocketSendEvent(TypedDict):
@@ -150,8 +153,8 @@ class WebSocketSendEvent(TypedDict):
         present, however.
     """
     type: Literal["websocket.send"]
-    bytes: bytes | None
-    text: str | None
+    bytes: NotRequired[bytes | None]
+    text: NotRequired[str | None]
 
 
 class WebSocketResponseStartEvent(TypedDict):
@@ -176,9 +179,12 @@ class WebSocketDisconnectEvent(TypedDict):
     Attributes:
         type (Literal["websocket.disconnect"]): The message type.
         code (int): The WebSocket close code, as per the WebSocket spec.
+        reason (str | None): A reason given for the disconnect, can be any
+            string. Optional; if missing or None default is empty string.
     """
     type: Literal["websocket.disconnect"]
     code: int
+    reason: NotRequired[str | None]
 
 
 class WebSocketCloseEvent(TypedDict):
@@ -199,9 +205,12 @@ class WebSocketCloseEvent(TypedDict):
         type (Literal["websocket.close"]): The message type.
         code (int): The WebSocket close code, as per the WebSocket spec.
             Optional; if missing defaults to `1000`.
+        reason (str | None): A reason given for the closure, can be any
+            string. Optional; if missing or None default is empty string.
     """
     type: Literal["websocket.close"]
     code: int
+    reason: NotRequired[str | None]
 
 
 type ASGIWebSocketReceiveEventType = Union[

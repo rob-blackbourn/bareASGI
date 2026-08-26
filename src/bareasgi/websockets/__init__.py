@@ -5,7 +5,7 @@ from .typing import (
     ASGIWebSocketReceiveCallable,
     ASGIWebSocketSendCallable,
 )
-from .websocket import WebSocket
+from .websocket import WebSocket, WebSocketState
 from .callbacks import (
     WebSocketRequestCallback,
     WebSocketMiddlewareCallback,
@@ -25,5 +25,6 @@ __all__ = [
     'WebSocketMiddlewares',
     'WebSocketRequest',
     'WebSocketRequestCallback',
-    'WebSocketRouter'
+    'WebSocketRouter',
+    'WebSocketState'
 ]

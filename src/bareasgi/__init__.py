@@ -27,6 +27,7 @@ from .websockets import (
     WebSocketRequestCallback,
     WebSocketMiddlewares,
     WebSocketRouter,
+    WebSocketState,
 )
 
 __all__ = [
@@ -56,4 +57,5 @@ __all__ = [
     "WebSocketRequestCallback",
     "WebSocketMiddlewares",
     "WebSocketRouter",
+    "WebSocketState",
 ]
