@@ -1,5 +1,6 @@
 """A handler for websocket event requests."""
 
+from asyncio import Event
 import logging
 from typing import Any, Final, Iterable, cast
 
@@ -19,7 +20,8 @@ from .errors import WebSocketInternalError
 from .middleware import make_middleware_chain
 from .request import WebSocketRequest
 from .router import WebSocketRouter
-from .websocket import WebSocket
+from .websocket import WebSocket, WebSocketState
+
 
 LOGGER: Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -30,7 +32,10 @@ class WebSocketImpl(WebSocket):
     def __init__(self, receive: ASGIWebSocketReceiveCallable, send: ASGIWebSocketSendCallable):
         self._receive = receive
         self._send = send
+        self._state: WebSocketState = 'connected'
         self._code: int | None = None
+        self._reason: str | None = None
+        self._close_event = Event()
 
     async def accept(
             self,
@@ -44,20 +49,27 @@ class WebSocketImpl(WebSocket):
         }
         LOGGER.debug('Accepting.')
         await self._send(accept_event)
+        self._state = 'open'
 
     async def receive(self) -> bytes | str | None:
         event = await self._receive()
         LOGGER.debug('Received event type "%s".', event['type'])
 
         if event['type'] == 'websocket.receive':
+
             receive_event = cast(WebSocketReceiveEvent, event)
             if 'bytes' in receive_event and receive_event['bytes']:
                 return receive_event['bytes']
             else:
                 return receive_event['text']
+
         if event['type'] == 'websocket.disconnect':
+
             disconnect_event = cast(WebSocketDisconnectEvent, event)
-            self._code = disconnect_event.get('code', 1000)
+            self._mark_closed(
+                disconnect_event.get('code', 1000),
+                disconnect_event.get('reason')
+            )
             return None
 
         LOGGER.error('Failed to understand event type "%s".', event['type'])
@@ -65,30 +77,52 @@ class WebSocketImpl(WebSocket):
 
     async def send(self, content: bytes | str) -> None:
         send_event: WebSocketSendEvent = {
-            'type': 'websocket.send',
-            'bytes': content if isinstance(content, bytes) else None,
-            'text': content if isinstance(content, str) else None
+            'type': 'websocket.send'
         }
+        if isinstance(content, bytes):
+            send_event['bytes'] = content
+        else:
+            send_event['text'] = content
 
         LOGGER.debug('Sending event type "%s".', send_event["type"])
         await self._send(send_event)
 
-    async def close(self, code: int = 1000) -> None:
+    async def close(self, code: int = 1000, reason: str | None = None) -> None:
         response: WebSocketCloseEvent = {
             'type': 'websocket.close',
             'code': code
         }
-        LOGGER.debug('Closing with code %d.', code)
+        if reason:
+            response['reason'] = reason
+        LOGGER.debug('Closing with code %d (%s).', code, reason or "")
         await self._send(response)
+        self._mark_closed(code, reason)
+
+    def _mark_closed(self, code: int, reason: str | None) -> None:
+        self._code = code
+        self._reason = reason
+        self._state = 'closed'
+        self._close_event.set()
+
+    async def wait_closed(self) -> None:
+        await self._close_event.wait()
 
     @property
-    def code(self) -> str | None:
-        """The code return on close
+    def state(self) -> WebSocketState:
+        return self._state
 
-        Returns:
-            str | None: The close code
-        """
-        return "self._code"
+    @property
+    def code(self) -> int:
+        if self._state != 'closed':
+            raise ValueError("The WebSocket is not closed.")
+        assert self._code is not None
+        return self._code
+
+    @property
+    def reason(self) -> str | None:
+        if self._state != 'closed':
+            raise ValueError("The WebSocket is not closed.")
+        return self._reason
 
 
 class WebSocketInstance:
@@ -103,6 +137,8 @@ class WebSocketInstance:
     ) -> None:
         self.scope = scope
         self.info = info
+
+        self.impl: WebSocketImpl | None = None
 
         # Find the route.
         handler, matches = router.resolve(scope['path'])
@@ -126,17 +162,23 @@ class WebSocketInstance:
         LOGGER.debug('Received event type "%s".', event['type'])
 
         if event['type'] == 'websocket.connect':
+            self.impl = WebSocketImpl(receive, send)
             await self.handler(
                 WebSocketRequest(
                     self.scope,
                     self.info,
                     {},
                     self.matches,
-                    WebSocketImpl(receive, send)
+                    self.impl
                 )
             )
         elif event['type'] == 'websocket.disconnect':
-            pass
+            disconnect_event = cast(WebSocketDisconnectEvent, event)
+            LOGGER.debug(
+                "WebSocket disconnected: %s (%s)",
+                disconnect_event['code'],
+                disconnect_event.get('reason')
+            )
         else:
             LOGGER.error(
                 'Failed to understand event type "%s".',
